@@ -31,7 +31,7 @@ const Inventory: NextPage = () => {
   >([])
 
   const countMutation = trpc.transaction.updateCounts.useMutation()
-  const nameMutation = trpc.transaction.updateNames.useMutation()
+  // const nameMutation = trpc.transaction.updateNames.useMutation()
   const { data, refetch } = trpc.item.getAll.useQuery()
   const { data: bags } = trpc.meta.get.useQuery("monthlyBags")
 
