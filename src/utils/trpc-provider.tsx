@@ -16,10 +16,7 @@ export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
       })
   )
 
-  const domain =
-    process.env.VERCEL_CUSTOM_DOMAIN || process.env.NEXT_PUBLIC_VERCEL_URL
-
-  console.log(process.env.VERCEL_CUSTOM_DOMAIN)
+  const domain = "inventory-stk.vercel.app"
 
   const url = domain
     ? `https://${domain}/api/trpc`
