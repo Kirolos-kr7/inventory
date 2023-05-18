@@ -2,6 +2,7 @@ import { toast } from "react-hot-toast"
 
 export const handleError = (err: { name: string; message: string }) => {
   const { name, message } = err
+  console.log(err)
   let errMessage = ""
 
   if (name == "TRPCClientError" && isJSON(message))
