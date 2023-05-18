@@ -6,10 +6,12 @@ import { trpc } from "@/utils/trpc"
 import MonthlyBags from "../../components/MonthlyBags"
 import Dialog from "../../components/Dialog"
 import BagContent from "../../components/dialogs/BagContent"
+import { useState } from "react"
 
 const Inventory: NextPage = () => {
   const { data, isFetching } = trpc.item.getAll.useQuery()
   const { data: bags } = trpc.meta.get.useQuery("monthlyBags")
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <div>
@@ -23,11 +25,11 @@ const Inventory: NextPage = () => {
         <div>
           <div className="flex justify-between items-start mb-4">
             <h3 className="text-2xl font-semibold">محتويات الشنطة</h3>
-            <Dialog
-              cta="تعديل"
-              header="محتويات الشنطة"
-              body={<BagContent items={data} />}
-            />
+            {data && data?.length > 0 && (
+              <button className="btn" onClick={() => setIsOpen(true)}>
+                تعديل
+              </button>
+            )}
           </div>
 
           <div className="grid grid-cols-3 gap-3 md:gap-5">
@@ -45,6 +47,12 @@ const Inventory: NextPage = () => {
           </div>
         </div>
       </div>
+
+      <Dialog
+        open={isOpen}
+        header="محتويات الشنطة"
+        body={<BagContent items={data} />}
+      />
     </div>
   )
 }
