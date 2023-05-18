@@ -18,8 +18,6 @@ export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const domain = "inventory-stk.vercel.app"
 
-  console.log(domain)
-
   const url = domain
     ? `https://${domain}/api/trpc`
     : "http://localhost:3000/api/trpc"
