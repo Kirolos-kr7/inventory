@@ -58,7 +58,7 @@ const Sidebar = () => {
             <Link
               href={to}
               className={`${!sideOpened && "mx-auto"}`}
-              prefetch={false}
+              prefetch={process.env.NODE_ENV == "production"}
             >
               <Icon icon={icon} width={28} />
               {sideOpened && name}
