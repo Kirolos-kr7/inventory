@@ -25,7 +25,7 @@ const Auth: NextPage = () => {
         maxAge: 8 * 60 * 60,
       })
       router.push("/")
-    } catch (err) {
+    } catch (err: any) {
       handleError(err as any)
     }
   }

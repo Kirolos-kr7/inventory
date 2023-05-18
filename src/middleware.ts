@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
     await jwtVerify(token, secret)
 
     isAuthed = true
-  } catch (err) {
+  } catch (err: any) {
     request.cookies.delete("auth")
   }
 

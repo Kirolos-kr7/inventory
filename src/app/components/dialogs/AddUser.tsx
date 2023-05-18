@@ -30,7 +30,7 @@ const AddUser = ({ done }: { done: () => void }) => {
         passwordConfirm: "",
       })
       done()
-    } catch (err) {
+    } catch (err: any) {
       handleError(err)
     }
   }

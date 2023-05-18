@@ -16,7 +16,7 @@ const isJSON = (val: string) => {
   try {
     JSON.parse(val)
     return true
-  } catch (err) {
+  } catch (err: any) {
     return false
   }
 }
