@@ -16,8 +16,11 @@ export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
       })
   )
 
-  const url = process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/trpc`
+  const domain =
+    process.env.VERCEL_CUSTOM_DOMAIN || process.env.NEXT_PUBLIC_VERCEL_URL
+
+  const url = domain
+    ? `https://${domain}/api/trpc`
     : "http://localhost:3000/api/trpc"
 
   console.log(process.env)
