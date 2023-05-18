@@ -23,8 +23,6 @@ export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
     ? `https://${domain}/api/trpc`
     : "http://localhost:3000/api/trpc"
 
-  console.log(process.env)
-
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [
