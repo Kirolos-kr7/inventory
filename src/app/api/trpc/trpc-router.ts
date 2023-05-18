@@ -119,7 +119,11 @@ const authRouter = t.router({
 
 const itemRouter = t.router({
   getAll: t.procedure.query(async () => {
-    return prisma.item.findMany()
+    return prisma.item.findMany({
+      orderBy: {
+        createdAt: "asc",
+      },
+    })
   }),
   add: t.procedure
     .input(
