@@ -19,7 +19,9 @@ const Auth: NextPage = () => {
     e.preventDefault()
 
     try {
+      console.log(userData)
       const token = await loginMutation.mutateAsync(userData)
+      console.log(token)
       setCookie("auth", token, {
         secure: true,
         maxAge: 8 * 60 * 60,
