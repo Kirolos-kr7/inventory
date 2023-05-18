@@ -18,9 +18,10 @@ export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const domain = "inventory-stk.vercel.app"
 
-  const url = domain
-    ? `https://${domain}/api/trpc`
-    : "http://localhost:3000/api/trpc"
+  const url =
+    process.env.NODE_ENV == "production"
+      ? `https://${domain}/api/trpc`
+      : "http://localhost:3000/api/trpc"
 
   const [trpcClient] = useState(() =>
     trpc.createClient({
