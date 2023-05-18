@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  Transactions Transaction[]
+}
+
+model Item {
+  id        Int      @id @default(autoincrement())
+  name      String
+  count     Int      @default(0)
+  perBag    Int      @default(0)
+  createdAt DateTime @default(now())
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  for       Item     @relation(fields: [itemId], references: [id])
+  by        User     @relation(fields: [userId], references: [id])
+  message   String
+  createdAt DateTime @default(now())
+
+  itemId Int
+  userId Int
+}
+
+model meta {
+  key   String @id
+  value String
+}
