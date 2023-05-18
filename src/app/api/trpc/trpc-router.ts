@@ -204,6 +204,43 @@ const transactionRouter = t.router({
         })
       })
     }),
+  updateBag: t.procedure
+    .input(
+      z.array(
+        z.object({
+          itemId: z.number(),
+          type: z.enum(["inc", "dec"]),
+          by: z.number(),
+        })
+      )
+    )
+    .mutation(async ({ input: transactions }) => {
+      await Promise.all(
+        transactions.map(async ({ itemId, type, by }) => {
+          const operation: { increment?: number; decrement?: number } = {}
+
+          if (type == "inc") operation.increment = by
+          if (type == "dec") operation.decrement = by
+
+          await prisma.item.update({
+            data: {
+              perBag: operation,
+            },
+            where: { id: itemId },
+          })
+
+          prisma.transaction.create({
+            data: {
+              itemId,
+              message: `قام ${"كيرلس"} ${
+                type == "inc" ? "بزيادة العدد الشهري" : "بالخصم من العدد الشهري"
+              } بمقدار ${by}`,
+              userId: 1,
+            },
+          })
+        })
+      )
+    }),
 })
 
 const metaRouter = t.router({

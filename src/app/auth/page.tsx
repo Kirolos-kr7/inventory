@@ -6,6 +6,7 @@ import { setCookie } from "cookies-next"
 import { NextPage } from "next"
 import { FormEvent, useState } from "react"
 import { useRouter } from "next/navigation"
+import Button from "../components/Button"
 
 const Auth: NextPage = () => {
   const router = useRouter()
@@ -14,10 +15,12 @@ const Auth: NextPage = () => {
     name: "",
     password: "",
   })
+  const [pending, setPending] = useState(false)
 
   const login = async (e: FormEvent) => {
     e.preventDefault()
 
+    setPending(true)
     try {
       const token = await loginMutation.mutateAsync(userData)
       setCookie("auth", token, {
@@ -28,6 +31,7 @@ const Auth: NextPage = () => {
     } catch (err: any) {
       handleError(err as any)
     }
+    setPending(false)
   }
 
   return (
@@ -69,7 +73,9 @@ const Auth: NextPage = () => {
           </div>
 
           <div className="flex justify-end mt-1">
-            <button className="btn">دخول</button>
+            <Button type="submit" pending={pending}>
+              دخول
+            </Button>
           </div>
         </form>
       </main>

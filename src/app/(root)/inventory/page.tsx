@@ -148,7 +148,7 @@ const Inventory: NextPage = () => {
             {isEditing && (
               <>
                 <button
-                  className="btn btn-error"
+                  className="btn btn-error btn-sm"
                   onClick={() => {
                     setUpdatedData(structuredClone(data))
                     setIsEditing(false)
@@ -179,7 +179,6 @@ const Inventory: NextPage = () => {
 
             {!isEditing && !isRemoving && (
               <>
-                {" "}
                 <button className="btn" onClick={() => setIsEditing((v) => !v)}>
                   تعديل
                 </button>

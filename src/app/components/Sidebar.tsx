@@ -46,8 +46,8 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`bg-base-100 flex items-start flex-col text-base-content transition-all overflow-hidden ${
-        sideOpened ? "w-80" : "w-24"
+      className={`bg-base-100 !shrink-0 flex items-start flex-col text-base-content transition-all overflow-hidden ${
+        sideOpened ? "w-60 md:w-80" : "w-24"
       }`}
     >
       <h1 className="text-2xl m-4 font-semibold mb-5">الجمعية</h1>
@@ -55,7 +55,11 @@ const Sidebar = () => {
       <ul className="menu gap-1 grow p-2 w-full">
         {sidebarItems.map(({ name, to, icon }) => (
           <li key={name}>
-            <Link href={to} className={`${!sideOpened && "mx-auto"}`}>
+            <Link
+              href={to}
+              className={`${!sideOpened && "mx-auto"}`}
+              prefetch={false}
+            >
               <Icon icon={icon} width={28} />
               {sideOpened && name}
             </Link>

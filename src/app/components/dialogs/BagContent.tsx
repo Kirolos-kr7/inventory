@@ -3,11 +3,28 @@ import { FormEvent, useState } from "react"
 import { Icon } from "@iconify/react"
 import Add from "@iconify/icons-mdi/add"
 import Subrtact from "@iconify/icons-mdi/minus"
+import Button from "../Button"
+import { trpc } from "@/utils/trpc"
 
-const BagContent = ({ items }: { items: Item[] | undefined }) => {
+const BagContent = ({
+  items,
+  done,
+}: {
+  items: Item[] | undefined
+  done: () => void
+}) => {
+  const [pending, setPending] = useState(false)
+  const [bagTransactions, setBagTransactions] = useState<
+    {
+      itemId: number
+      type: "inc" | "dec"
+      by: number
+    }[]
+  >([])
   const [content, setContent] = useState<Item[] | undefined>(
     structuredClone(items)
   )
+  const bagMutation = trpc.transaction.updateBag.useMutation()
 
   const change = (type: "inc" | "dec", id: number) => {
     setContent((v) => {
@@ -17,6 +34,25 @@ const BagContent = ({ items }: { items: Item[] | undefined }) => {
         if (item.id == id) {
           if (type == "inc") item.perBag++
           if (type == "dec") item.perBag--
+
+          setBagTransactions((p) => {
+            const isIn = p.find(({ itemId }) => itemId == item.id)
+
+            if (isIn) p.splice(p.indexOf(isIn), 1)
+
+            const diff = getPerBagDiff(item.id, item.perBag)
+
+            return diff == 0
+              ? p
+              : [
+                  ...p,
+                  {
+                    itemId: id,
+                    type: diff < 0 ? "dec" : "inc",
+                    by: Math.abs(diff),
+                  },
+                ]
+          })
         }
 
         return item
@@ -26,10 +62,18 @@ const BagContent = ({ items }: { items: Item[] | undefined }) => {
     })
   }
 
-  const save = (e: FormEvent) => {
+  const save = async (e: FormEvent) => {
     e.preventDefault()
+    setPending(true)
 
-    console.log(e)
+    await bagMutation.mutateAsync(bagTransactions)
+    setPending(false)
+    done()
+  }
+
+  const getPerBagDiff = (itemId: number, latestValue: number) => {
+    const item = items?.find(({ id }) => id == itemId)!
+    return latestValue - item?.perBag
   }
 
   return (
@@ -67,7 +111,9 @@ const BagContent = ({ items }: { items: Item[] | undefined }) => {
           </div>
         ))}
         <div className="col-span-2 flex justify-end">
-          <button className="btn mt-1">حفظ</button>
+          <Button type="submit" className="mt-1" pending={pending}>
+            حفظ
+          </Button>
         </div>
       </form>
     </>
