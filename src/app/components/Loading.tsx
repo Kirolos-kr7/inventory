@@ -1,6 +1,10 @@
-const Loading = ({ page = true }: { page?: boolean }) => {
+const Loading = ({ page = false }: { page?: boolean }) => {
   return (
-    <div className={`w-full grid place-content-center ${page && "h-[500px]"}`}>
+    <div
+      className={`w-full grid place-content-center ${
+        page ? "h-[500px]" : "h-40"
+      }`}
+    >
       <svg
         className="stroke-secondary"
         width="50px"

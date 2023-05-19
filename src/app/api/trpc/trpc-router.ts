@@ -48,7 +48,7 @@ const authRouter = t.router({
       delete (user as any).password
       const token = await genJWT(user)
 
-      return token
+      return { token, user }
     }),
   add: t.procedure
     .input(
@@ -184,29 +184,61 @@ const transactionRouter = t.router({
       )
     )
     .mutation(async ({ input: transactions }) => {
-      transactions.forEach(async ({ itemId, type, by }) => {
-        const operation: { increment?: number; decrement?: number } = {}
+      await Promise.all(
+        transactions.map(async ({ itemId, type, by }) => {
+          const operation: { increment?: number; decrement?: number } = {}
 
-        if (type == "inc") operation.increment = by
-        if (type == "dec") operation.decrement = by
+          if (type == "inc") operation.increment = by
+          if (type == "dec") operation.decrement = by
 
-        await prisma.item.update({
-          data: {
-            count: operation,
-          },
-          where: { id: itemId },
+          await prisma.item.update({
+            data: {
+              count: operation,
+            },
+            where: { id: itemId },
+          })
+
+          prisma.transaction.create({
+            data: {
+              itemId,
+              message: `قام ${"كيرلس"} ${
+                type == "inc" ? "بزيادة المخزون" : "بالخصم من المخزون"
+              } بمقدار ${by}`,
+              userId: 1,
+            },
+          })
         })
-
-        await prisma.transaction.create({
-          data: {
-            itemId,
-            message: `قام ${"كيرلس"} ${
-              type == "inc" ? "بزيادة المخزون" : "بالخصم من المخزون"
-            } بمقدار ${by}`,
-            userId: 1,
-          },
+      )
+    }),
+  updateNames: t.procedure
+    .input(
+      z.array(
+        z.object({
+          itemId: z.number(),
+          newVal: z.string(),
+          oldVal: z.string(),
         })
-      })
+      )
+    )
+    .mutation(async ({ input: transactions }) => {
+      await Promise.all(
+        transactions.map(async ({ itemId, newVal, oldVal }) => {
+          await prisma.item.update({
+            data: {
+              name: newVal,
+            },
+            where: { id: itemId },
+          })
+
+          prisma.transaction.create({
+            data: {
+              itemId,
+              message: `قام ${"كيرلس"} بتغيير اسم العنصر من (${oldVal}) الى (${newVal})`,
+              userId: 1,
+            },
+          })
+        })
+      )
     }),
   updateBag: t.procedure
     .input(

@@ -9,7 +9,7 @@ export default function MainLayout({
     <div className="flex min-h-screen">
       <Sidebar />
 
-      <main className="w-[stretch] p-5">{children}</main>
+      <main className="w-full sm:w-[stretch] p-5">{children}</main>
     </div>
   )
 }

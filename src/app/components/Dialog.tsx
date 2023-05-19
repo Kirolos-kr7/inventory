@@ -12,8 +12,8 @@ const Dialog = ({
   return (
     <>
       {open && (
-        <div className="fixed grid place-content-center inset-0 z-40">
-          <div className="modal-box relative w-full z-10 shadow-md md:min-w-[480px]">
+        <div className="fixed inset-0 z-40">
+          <div className="modal-box fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-full z-10 shadow-md md:min-w-[480px]">
             <h3 className="text-2xl font-bold">{header}</h3>
             <div className="pt-4">{body}</div>
           </div>

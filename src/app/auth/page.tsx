@@ -7,9 +7,12 @@ import { NextPage } from "next"
 import { FormEvent, useState } from "react"
 import { useRouter } from "next/navigation"
 import Button from "../components/Button"
+import { useStore } from "@/utils/store"
 
 const Auth: NextPage = () => {
   const router = useRouter()
+  const { user, setUser } = useStore()
+
   const loginMutation = trpc.auth.login.useMutation()
   const [userData, setUserData] = useState<{ name: string; password: string }>({
     name: "",
@@ -22,11 +25,13 @@ const Auth: NextPage = () => {
 
     setPending(true)
     try {
-      const token = await loginMutation.mutateAsync(userData)
+      const { token, user } = await loginMutation.mutateAsync(userData)
       setCookie("auth", token, {
         secure: true,
-        maxAge: 8 * 60 * 60,
+        maxAge: 2 * 60 * 60,
       })
+
+      setUser(user)
       router.push("/")
     } catch (err: any) {
       handleError(err as any)

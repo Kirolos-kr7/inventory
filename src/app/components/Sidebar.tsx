@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Icon } from "@iconify/react"
 import Home from "@iconify/icons-mdi/home"
 import Inventory from "@iconify/icons-mdi/package-variant"
@@ -11,10 +11,34 @@ import Users from "@iconify/icons-mdi/users"
 import Menu from "@iconify/icons-mdi/chevron-double-left"
 import { deleteCookie } from "cookies-next"
 import Image from "next/image"
+import { useStore } from "@/utils/store"
 
 const Sidebar = () => {
   const router = useRouter()
-  const [sideOpened, setSideOpened] = useState(true)
+  const { sbOpened, toggleSb } = useStore()
+  const { user, setUser } = useStore()
+  const [userName, setUserName] = useState<string | undefined>(undefined)
+  const [sideOpened, setSideOpened] = useState(false)
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) toggleSb(false)
+    }
+
+    handleResize()
+    window.addEventListener("resize", handleResize)
+
+    return window.addEventListener("resize", handleResize)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    setSideOpened(sbOpened)
+  }, [sbOpened])
+
+  useEffect(() => {
+    setUserName(user?.name)
+  }, [user])
 
   const sidebarItems = [
     {
@@ -40,24 +64,23 @@ const Sidebar = () => {
   ]
 
   const logout = () => {
+    setUser(null)
     deleteCookie("auth")
     router.push("/auth")
   }
 
   return (
     <aside
-      className={`bg-base-100 !shrink-0 flex items-start flex-col text-base-content transition-all overflow-hidden ${
-        sideOpened ? "w-60 md:w-80" : "w-24"
+      className={`bg-base-100 !shrink-0 flex items-start flex-col fixed h-screen z-30 sm:static text-base-content transition-all ${
+        sideOpened ? "w-full sm:w-60 md:w-72" : "w-0 sm:w-24 overflow-hidden"
       }`}
     >
-      <h1 className="text-2xl m-4 font-semibold mb-5">الجمعية</h1>
-
-      <ul className="menu gap-1 grow p-2 w-full">
+      <ul className="menu gap-1 grow  p-2 pt-3 w-full">
         {sidebarItems.map(({ name, to, icon }) => (
           <li key={name}>
             <Link
               href={to}
-              className={`${!sideOpened && "mx-auto"}`}
+              className={`truncate ${!sideOpened && "mx-auto"}`}
               prefetch={process.env.NODE_ENV == "production"}
             >
               <Icon icon={icon} width={28} />
@@ -79,7 +102,7 @@ const Sidebar = () => {
                 sideOpened ? "w-36" : "!w-16"
               }`}
             >
-              <div className="avatar flex items-center">
+              <div className="avatar flex items-center gap-2">
                 <div className="w-12 rounded-full">
                   <Image
                     src="/user.jpg"
@@ -88,13 +111,13 @@ const Sidebar = () => {
                     alt="user image"
                   />
                 </div>
-                {sideOpened && "Kirolos Rafaat"}
+                {sideOpened && userName}
               </div>
             </button>
           </label>
           <ul
             tabIndex={0}
-            className="dropdown-content bg-base-200 menu p-2 shadow mb-4 rounded-box w-52"
+            className="dropdown-content bg-base-200 menu p-2 shadow mb-3 rounded-box w-52"
           >
             <li>
               <button onClick={logout}>تسجيل خروج</button>
@@ -103,8 +126,8 @@ const Sidebar = () => {
         </div>
 
         <button
-          className={`btn ${sideOpened ? "" : "btn-sm"}`}
-          onClick={() => setSideOpened((v) => !v)}
+          className={`btn mb-2 ${sideOpened ? "" : "btn-sm"}`}
+          onClick={() => toggleSb()}
         >
           <Icon
             className={`transition-all ${

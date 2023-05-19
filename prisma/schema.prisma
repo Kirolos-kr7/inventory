@@ -30,8 +30,8 @@ model Item {
 
 model Transaction {
   id        Int      @id @default(autoincrement())
-  for       Item     @relation(fields: [itemId], references: [id])
-  by        User     @relation(fields: [userId], references: [id])
+  for       Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  by        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   message   String
   createdAt DateTime @default(now())
 

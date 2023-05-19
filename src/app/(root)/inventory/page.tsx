@@ -1,7 +1,7 @@
 "use client"
 
 import { NextPage } from "next"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import PageHeader from "../../components/PageHeader"
 import { trpc } from "@/utils/trpc"
 import ItemCard from "../../components/ItemCard"
@@ -12,6 +12,8 @@ import Dialog from "../../components/Dialog"
 import AddItem from "../../components/dialogs/AddItem"
 import Confirmation from "../../components/dialogs/Confirmation"
 import History from "../../components/dialogs/History"
+import Loading from "@/app/components/Loading"
+import Button from "@/app/components/Button"
 
 const Inventory: NextPage = () => {
   const [updatedData, setUpdatedData] = useState<Item[]>()
@@ -25,14 +27,14 @@ const Inventory: NextPage = () => {
   const [nameTransactions, setNameTransactions] = useState<
     {
       itemId: number
-      newValue: string
-      oldValue: string
+      newVal: string
+      oldVal: string
     }[]
   >([])
 
   const countMutation = trpc.transaction.updateCounts.useMutation()
-  // const nameMutation = trpc.transaction.updateNames.useMutation()
-  const { data, refetch } = trpc.item.getAll.useQuery()
+  const nameMutation = trpc.transaction.updateNames.useMutation()
+  const { data, refetch, isLoading, isRefetching } = trpc.item.getAll.useQuery()
   const { data: bags } = trpc.meta.get.useQuery("monthlyBags")
 
   const [isAdding, setIsAdding] = useState(false)
@@ -101,8 +103,8 @@ const Inventory: NextPage = () => {
                 ...p,
                 {
                   itemId: id,
-                  newValue: item.name,
-                  oldValue: data?.find(({ id }) => id == item.id)?.name!,
+                  newVal: item.name,
+                  oldVal: data?.find(({ id }) => id == item.id)?.name!,
                 },
               ]
             })
@@ -116,13 +118,15 @@ const Inventory: NextPage = () => {
   }
 
   const save = async () => {
-    countMutation.mutate(countTransactions)
-    // nameMutation.mutate(nameTransactions)
+    countTransactions.length > 0 &&
+      (await countMutation.mutateAsync(countTransactions))
+    nameTransactions.length > 0 &&
+      (await nameMutation.mutateAsync(nameTransactions))
 
     setCountTransactions([])
     setNameTransactions([])
     setIsEditing(false)
-    refetch()
+    await refetch()
   }
 
   const getCountDiff = (itemId: number, latestValue: number) => {
@@ -139,90 +143,101 @@ const Inventory: NextPage = () => {
     refetch()
   }
 
+  const pending = useMemo(
+    () =>
+      isLoading ||
+      isRefetching ||
+      countMutation.isLoading ||
+      nameMutation.isLoading,
+    [isLoading, isRefetching, countMutation, nameMutation]
+  )
+
   return (
     <div>
       <PageHeader
         title="المخزون"
         actions={
-          <div className="flex gap-2">
-            {isEditing && (
-              <>
-                <button
-                  className="btn btn-error btn-sm"
-                  onClick={() => {
-                    setUpdatedData(structuredClone(data))
-                    setIsEditing(false)
-                    setIsRemoving(false)
-                  }}
-                >
-                  الغاء
-                </button>
-                <button className="btn" onClick={() => save()}>
-                  حفظ
-                </button>
-              </>
-            )}
+          !pending && (
+            <div className="flex gap-2">
+              {isEditing && (
+                <>
+                  <Button
+                    className="btn-error"
+                    onClick={() => {
+                      setUpdatedData(structuredClone(data))
+                      setIsEditing(false)
+                      setIsRemoving(false)
+                    }}
+                  >
+                    الغاء
+                  </Button>
+                  <Button onClick={() => save()}>حفظ</Button>
+                </>
+              )}
 
-            {isRemoving && (
-              <>
-                <button
-                  className="btn"
-                  onClick={() => {
-                    setUpdatedData(structuredClone(data))
-                    setIsRemoving(false)
-                  }}
-                >
-                  تم
-                </button>
-              </>
-            )}
+              {isRemoving && (
+                <>
+                  <Button
+                    onClick={() => {
+                      setUpdatedData(structuredClone(data))
+                      setIsRemoving(false)
+                    }}
+                  >
+                    تم
+                  </Button>
+                </>
+              )}
 
-            {!isEditing && !isRemoving && (
-              <>
-                <button className="btn" onClick={() => setIsEditing((v) => !v)}>
-                  تعديل
-                </button>
-                <button
-                  className="btn btn-error"
-                  onClick={() => setIsRemoving((v) => !v)}
-                >
-                  حذف
-                </button>
-              </>
-            )}
-          </div>
+              {!isEditing && !isRemoving && (
+                <>
+                  <Button onClick={() => setIsEditing((v) => !v)}>تعديل</Button>
+                  <Button
+                    className="btn-error"
+                    onClick={() => setIsRemoving((v) => !v)}
+                  >
+                    حذف
+                  </Button>
+                </>
+              )}
+            </div>
+          )
         }
       />
-      <div className="grid grid-cols-4 gap-3 md:gap-5">
-        {updatedData?.map((item) => (
-          <div key={item.id}>
-            <ItemCard
-              item={item}
-              bags={bags ? parseInt(bags) : 0}
-              isEditing={isEditing}
-              isRemoving={isRemoving}
-              changeCount={changeCount}
-              changeName={changeName}
-              countChanged={
-                countTransactions.find(({ itemId }) => itemId == item.id)
-                  ? true
-                  : false
-              }
-              remove={(id) => setSelectedItem(id)}
-              showHistory={(id) => (setIsHistory(true), setSelectedItem(id))}
-            />
-          </div>
-        ))}
-        {!isRemoving && (
-          <button
-            className="btn btn-ghost hover:bg-base-300/80 h-full focus:bg-base-300/80 shadow-md min-h-16 flex items-center justify-center flex-col bg-base-300 relative rounded-md"
-            onClick={() => setIsAdding(true)}
-          >
-            <Icon icon={Add} width={20} />
-            <span className="mt-1 font-semibold">اضافة</span>
-          </button>
-        )}
-      </div>
+
+      {pending && <Loading page />}
+
+      {!pending && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
+          {updatedData?.map((item) => (
+            <div key={item.id}>
+              <ItemCard
+                item={item}
+                bags={bags ? parseInt(bags) : 0}
+                isEditing={isEditing}
+                isRemoving={isRemoving}
+                changeCount={changeCount}
+                changeName={changeName}
+                countChanged={
+                  countTransactions.find(({ itemId }) => itemId == item.id)
+                    ? true
+                    : false
+                }
+                remove={(id) => setSelectedItem(id)}
+                showHistory={(id) => (setIsHistory(true), setSelectedItem(id))}
+              />
+            </div>
+          ))}
+          {!isRemoving && (
+            <button
+              className="btn btn-ghost hover:bg-base-300/80 h-full focus:bg-base-300/80 shadow-md min-h-16 flex items-center justify-center flex-col bg-base-300 relative rounded-md"
+              onClick={() => setIsAdding(true)}
+            >
+              <Icon icon={Add} width={20} />
+              <span className="mt-1 font-semibold">اضافة</span>
+            </button>
+          )}
+        </div>
+      )}
 
       <Dialog
         open={isAdding}

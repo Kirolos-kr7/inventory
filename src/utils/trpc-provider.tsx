@@ -12,7 +12,9 @@ export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
   const [queryClient] = useState(
     () =>
       new QueryClient({
-        defaultOptions: { queries: { staleTime: 5000 } },
+        defaultOptions: {
+          queries: { refetchOnWindowFocus: false },
+        },
       })
   )
 

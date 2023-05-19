@@ -34,14 +34,17 @@ const ItemCard: React.FC<{
   showHistory,
 }) => {
   const { id, name, count, perBag } = item
+  const PROGRESS = perBag * bags
 
   return (
     <div className="shadow-md bg-base-300 flex flex-col relative rounded-md">
-      <progress
-        className="progress progress-primary w-full"
-        value={count}
-        max={perBag * bags}
-      />
+      <div className="tooltip -my-2.5" data-tip={"المطلوب " + PROGRESS}>
+        <progress
+          className="progress progress-primary w-full"
+          value={count}
+          max={PROGRESS}
+        />
+      </div>
 
       <div className="p-3 flex flex-col">
         <div className="font-semibold text-2xl mb-2">

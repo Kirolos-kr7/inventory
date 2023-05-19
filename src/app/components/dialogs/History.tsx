@@ -2,9 +2,12 @@
 
 import { trpc } from "@/utils/trpc"
 import dayjs from "@/utils/dayjs"
+import Loading from "../Loading"
 
 const History = ({ itemId }: { itemId: number | null }) => {
-  const { data } = trpc.transaction.getAll.useQuery(itemId)
+  const { data, isLoading } = trpc.transaction.getAll.useQuery(itemId)
+
+  if (isLoading) return <Loading />
 
   return (
     <ul>
@@ -20,7 +23,7 @@ const History = ({ itemId }: { itemId: number | null }) => {
                 data-tip={cat.format("LLLL")}
               >
                 [{cat.format("LT")}]
-              </span>{" "}
+              </span>
               {message}
             </p>
           </li>

@@ -22,7 +22,7 @@ const Inventory: NextPage = () => {
     <div>
       <PageHeader title="الشنطة" subtitle="الشنطة دي فيها اييه!" />
 
-      {(isLoading || isRefetching || refetchingMbs) && <Loading />}
+      {(isLoading || isRefetching || refetchingMbs) && <Loading page />}
 
       {!isLoading && !isRefetching && !refetchingMbs && (
         <div>

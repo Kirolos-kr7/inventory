@@ -1,3 +1,4 @@
+import { handleError } from "@/utils/handleError"
 import { trpc } from "@/utils/trpc"
 import { FormEvent, useState } from "react"
 
@@ -8,14 +9,18 @@ const AddItem = ({ done }: { done: () => void }) => {
   const addItem = async (e: FormEvent) => {
     e.preventDefault()
 
-    await mutation.mutateAsync({
-      name,
-      count: 0,
-      perBag: 0,
-    })
+    try {
+      await mutation.mutateAsync({
+        name,
+        count: 0,
+        perBag: 0,
+      })
 
-    setName("")
-    done()
+      setName("")
+      done()
+    } catch (err) {
+      handleError(err as any)
+    }
   }
 
   return (

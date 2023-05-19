@@ -89,7 +89,7 @@ const AddUser = ({ done }: { done: () => void }) => {
         </div>
 
         <div className="flex justify-end mt-3">
-          <button className="btn">دخول</button>
+          <button className="btn">اضافة</button>
         </div>
       </form>
     </>
