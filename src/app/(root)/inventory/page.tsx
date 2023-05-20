@@ -139,8 +139,8 @@ const Inventory: NextPage = () => {
     if (!selectedItem) return
 
     await removeMutation.mutateAsync(selectedItem)
+    await refetch()
     setSelectedItem(null)
-    refetch()
   }
 
   const pending = useMemo(
@@ -157,7 +157,7 @@ const Inventory: NextPage = () => {
       <PageHeader
         title="المخزون"
         actions={
-          !pending && (
+          !isLoading && (
             <div className="flex gap-2">
               {isEditing && (
                 <>
@@ -165,13 +165,25 @@ const Inventory: NextPage = () => {
                     className="btn-error"
                     onClick={() => {
                       setUpdatedData(structuredClone(data))
+                      setCountTransactions([])
+                      setNameTransactions([])
                       setIsEditing(false)
                       setIsRemoving(false)
                     }}
+                    disabled={pending}
                   >
                     الغاء
                   </Button>
-                  <Button onClick={() => save()}>حفظ</Button>
+                  <Button
+                    pending={pending}
+                    onClick={() => save()}
+                    disabled={
+                      countTransactions.length == 0 &&
+                      nameTransactions.length == 0
+                    }
+                  >
+                    حفظ
+                  </Button>
                 </>
               )}
 
@@ -204,9 +216,9 @@ const Inventory: NextPage = () => {
         }
       />
 
-      {pending && <Loading page />}
+      {isLoading && <Loading page />}
 
-      {!pending && (
+      {!isLoading && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
           {updatedData?.map((item) => (
             <div key={item.id}>
@@ -224,10 +236,11 @@ const Inventory: NextPage = () => {
                 }
                 remove={(id) => setSelectedItem(id)}
                 showHistory={(id) => (setIsHistory(true), setSelectedItem(id))}
+                pending={pending}
               />
             </div>
           ))}
-          {!isRemoving && (
+          {!isEditing && !isRemoving && (
             <button
               className="btn btn-ghost hover:bg-base-300/80 h-full focus:bg-base-300/80 shadow-md min-h-16 flex items-center justify-center flex-col bg-base-300 relative rounded-md"
               onClick={() => setIsAdding(true)}
@@ -244,10 +257,11 @@ const Inventory: NextPage = () => {
         header="اضافة عنصر"
         body={
           <AddItem
-            done={() => {
+            done={async () => {
+              await refetch()
               setIsAdding(false)
-              refetch()
             }}
+            pending={isRefetching}
           />
         }
         close={() => setIsAdding(false)}
@@ -261,6 +275,7 @@ const Inventory: NextPage = () => {
             message="مسح هذا العنصر, هل انت متأكد؟"
             cta="مسح"
             accept={removeItem}
+            pending={removeMutation.isLoading || isRefetching}
           />
         }
         close={() => setSelectedItem(null)}

@@ -103,8 +103,6 @@ const authRouter = t.router({
       await prisma.user.create({
         data: { name, password: hashedPassword },
       })
-
-      return "User added"
     }),
   removeUser: t.procedure.input(z.number()).mutation(async ({ input }) => {
     await prisma.user.delete({
@@ -112,8 +110,6 @@ const authRouter = t.router({
         id: input,
       },
     })
-
-    return "User removed"
   }),
 })
 
@@ -169,7 +165,7 @@ const transactionRouter = t.router({
     return prisma.transaction.findMany({
       where,
       orderBy: {
-        createdAt: "asc",
+        createdAt: "desc",
       },
     })
   }),
@@ -198,7 +194,7 @@ const transactionRouter = t.router({
             where: { id: itemId },
           })
 
-          prisma.transaction.create({
+          await prisma.transaction.create({
             data: {
               itemId,
               message: `قام ${"كيرلس"} ${
@@ -230,7 +226,7 @@ const transactionRouter = t.router({
             where: { id: itemId },
           })
 
-          prisma.transaction.create({
+          await prisma.transaction.create({
             data: {
               itemId,
               message: `قام ${"كيرلس"} بتغيير اسم العنصر من (${oldVal}) الى (${newVal})`,
@@ -265,7 +261,7 @@ const transactionRouter = t.router({
             where: { id: itemId },
           })
 
-          prisma.transaction.create({
+          await prisma.transaction.create({
             data: {
               itemId,
               message: `قام ${"كيرلس"} ${

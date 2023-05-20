@@ -1,13 +1,16 @@
 import { FormEvent } from "react"
+import Button from "../Button"
 
 const Confirmation = ({
   cta,
   message,
   accept,
+  pending,
 }: {
   cta: string
   message: string
   accept: () => void
+  pending: boolean
 }) => {
   return (
     <>
@@ -21,7 +24,9 @@ const Confirmation = ({
         <p>{message}</p>
 
         <div className="col-span-2 flex justify-end">
-          <button className="btn mt-1">{cta}</button>
+          <Button type="submit" pending={pending}>
+            {cta}
+          </Button>
         </div>
       </form>
     </>

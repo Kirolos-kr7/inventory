@@ -11,7 +11,7 @@ const BagContent = ({
   done,
 }: {
   items: Item[] | undefined
-  done: () => void
+  done: () => Promise<void>
 }) => {
   const [pending, setPending] = useState(false)
   const [bagTransactions, setBagTransactions] = useState<
@@ -67,8 +67,8 @@ const BagContent = ({
     setPending(true)
 
     await bagMutation.mutateAsync(bagTransactions)
+    await done()
     setPending(false)
-    done()
   }
 
   const getPerBagDiff = (itemId: number, latestValue: number) => {

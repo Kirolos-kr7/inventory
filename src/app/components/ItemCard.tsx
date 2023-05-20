@@ -7,6 +7,7 @@ import Subrtact from "@iconify/icons-mdi/minus"
 import History from "@iconify/icons-mdi/history"
 import Remove from "@iconify/icons-mdi/delete"
 import { ChangeEvent } from "react"
+import Button from "./Button"
 
 const ItemCard: React.FC<{
   item: Item
@@ -22,6 +23,7 @@ const ItemCard: React.FC<{
   countChanged: boolean
   remove: (id: number) => void
   showHistory: (id: number) => void
+  pending: boolean
 }> = ({
   item,
   bags,
@@ -32,6 +34,7 @@ const ItemCard: React.FC<{
   countChanged,
   remove,
   showHistory,
+  pending,
 }) => {
   const { id, name, count, perBag } = item
   const PROGRESS = perBag * bags
@@ -58,6 +61,7 @@ const ItemCard: React.FC<{
               onChange={(e: ChangeEvent) =>
                 changeName(id, (e.target as HTMLInputElement).value)
               }
+              disabled={pending}
             />
           )}
         </div>
@@ -76,7 +80,7 @@ const ItemCard: React.FC<{
                 el.style.width = `${el.value.length}ch`
                 changeCount("custom", id, parseInt(el.value))
               }}
-              disabled={!isEditing && !isRemoving}
+              disabled={(!isEditing && !isRemoving) || pending}
             />
             {countChanged && "*"}
           </div>
@@ -102,18 +106,20 @@ const ItemCard: React.FC<{
 
         {isEditing && (
           <div className="flex items-stretch mt-2 gap-2">
-            <button
-              className="btn shrink btn-sm w-full"
+            <Button
+              className="shrink btn-sm w-full"
               onClick={() => count < 99 && changeCount("inc", id)}
+              disabled={pending}
             >
               <Icon icon={Add} width={24} />
-            </button>
-            <button
-              className="btn shrink btn-sm w-full"
+            </Button>
+            <Button
+              className="shrink btn-sm w-full"
               onClick={() => count > 0 && changeCount("dec", id)}
+              disabled={pending}
             >
               <Icon icon={Subrtact} width={24} />
-            </button>
+            </Button>
           </div>
         )}
       </div>

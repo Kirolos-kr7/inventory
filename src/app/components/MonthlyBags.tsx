@@ -10,7 +10,7 @@ const MonthlyBags = ({
   update,
 }: {
   bags: string
-  update: VoidFunction
+  update: () => Promise<void>
 }) => {
   const [mbs, setMbs] = useState<number>(0)
   const [isEditing, setIsEditing] = useState(false)
@@ -28,9 +28,9 @@ const MonthlyBags = ({
       value: String(mbs),
     })
 
+    await update()
     setPending(false)
     setIsEditing(false)
-    update()
   }
 
   return (

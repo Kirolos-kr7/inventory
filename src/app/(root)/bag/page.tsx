@@ -8,6 +8,7 @@ import Dialog from "../../components/Dialog"
 import BagContent from "../../components/dialogs/BagContent"
 import { useState } from "react"
 import Loading from "@/app/components/Loading"
+import Button from "@/app/components/Button"
 
 const Inventory: NextPage = () => {
   const { data, refetch, isLoading, isRefetching } = trpc.item.getAll.useQuery()
@@ -22,21 +23,24 @@ const Inventory: NextPage = () => {
     <div>
       <PageHeader title="الشنطة" subtitle="الشنطة دي فيها اييه!" />
 
-      {(isLoading || isRefetching || refetchingMbs) && <Loading page />}
+      {isLoading && <Loading page />}
 
-      {!isLoading && !isRefetching && !refetchingMbs && (
+      {!isLoading && (
         <div>
           <div className="mb-6">
-            <MonthlyBags bags={bags || "0"} update={() => refetchMbs()} />
+            <MonthlyBags
+              bags={bags || "0"}
+              update={() => refetchMbs() as Promise<any>}
+            />
           </div>
 
           <div>
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-2xl font-semibold">محتويات الشنطة</h3>
               {data && data?.length > 0 && (
-                <button className="btn btn-sm" onClick={() => setIsOpen(true)}>
+                <Button className="btn-sm" onClick={() => setIsOpen(true)}>
                   تعديل
-                </button>
+                </Button>
               )}
             </div>
 
@@ -63,8 +67,8 @@ const Inventory: NextPage = () => {
         body={
           <BagContent
             items={data}
-            done={() => {
-              refetch()
+            done={async () => {
+              await refetch()
               setIsOpen(false)
             }}
           />

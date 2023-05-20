@@ -1,8 +1,9 @@
 import { handleError } from "@/utils/handleError"
 import { trpc } from "@/utils/trpc"
 import { FormEvent, useState } from "react"
+import Button from "../Button"
 
-const AddItem = ({ done }: { done: () => void }) => {
+const AddItem = ({ done, pending }: { done: () => void; pending: boolean }) => {
   const [name, setName] = useState("")
   const mutation = trpc.item.add.useMutation()
 
@@ -38,7 +39,9 @@ const AddItem = ({ done }: { done: () => void }) => {
           onChange={(e) => setName(e.target.value)}
         />
         <div className="col-span-2 flex justify-end mt-3">
-          <button className="btn">حفظ</button>
+          <Button type="submit" pending={mutation.isLoading || pending}>
+            حفظ
+          </Button>
         </div>
       </form>
     </>

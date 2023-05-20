@@ -1,5 +1,5 @@
 import { NextPage } from "next"
-import PageHeader from "../components/PageHeader"
+import PageHeader from "../../components/PageHeader"
 import Link from "next/link"
 
 const Home: NextPage = () => {
