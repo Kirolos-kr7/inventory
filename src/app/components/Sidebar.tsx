@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import { Icon } from "@iconify/react"
 import Home from "@iconify/icons-mdi/home"
@@ -15,6 +15,7 @@ import { useStore } from "@/utils/store"
 
 const Sidebar = () => {
   const router = useRouter()
+  const pathname = usePathname()
   const { sbOpened, toggleSb } = useStore()
   const { user, setUser } = useStore()
   const [userName, setUserName] = useState<string | undefined>(undefined)
@@ -72,24 +73,29 @@ const Sidebar = () => {
   return (
     <aside
       className={`bg-base-100 !shrink-0 flex items-start flex-col fixed h-screen z-30 sm:static text-base-content transition-all ${
-        sideOpened ? "w-full sm:w-60 md:w-72" : "w-0 sm:w-24 overflow-hidden"
-      }`}
+        sideOpened ? "w-full sm:w-60 md:w-72" : "w-0 sm:w-24"
+      }
+       ${window && window.innerWidth < 640 && "overflow-hidden"}`}
     >
-      <ul className="menu gap-1 grow  p-2 pt-3 w-full">
-        {sidebarItems.map(({ name, to, icon }) => (
-          <li key={name}>
-            <Link
-              href={to}
-              className={`truncate ${!sideOpened && "mx-auto"}`}
-              prefetch={process.env.NODE_ENV == "production"}
-            >
-              <Icon icon={icon} width={28} />
-              {sideOpened && name}
-            </Link>
-          </li>
-        ))}
-      </ul>
-
+      <div className="grow w-full">
+        <ul className="menu gap-3 sm:gap-1 p-5 sm:p-2 sm:pt-3 grid sm:flex grid-cols-2 ">
+          {sidebarItems.map(({ name, to, icon }) => (
+            <li key={name}>
+              <Link
+                href={to}
+                onClick={() => setSideOpened(false)}
+                className={`flex flex-col sm:flex-row truncate border border-primary/20 sm:border-0 ${
+                  !sideOpened && "mx-auto"
+                } ${pathname == to ? "text-secondary" : ""}`}
+                prefetch={process.env.NODE_ENV == "production"}
+              >
+                <Icon icon={icon} width={28} />
+                {sideOpened && name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
       <div
         className={`flex gap-2 p-4 w-full justify-between items-center ${
           !sideOpened && "flex-col"
