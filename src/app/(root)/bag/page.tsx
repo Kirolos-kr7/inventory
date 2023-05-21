@@ -67,8 +67,8 @@ const Inventory: NextPage = () => {
         body={
           <BagContent
             items={data}
-            done={async () => {
-              await refetch()
+            done={async (isChanged: boolean) => {
+              isChanged && (await refetch())
               setIsOpen(false)
             }}
           />

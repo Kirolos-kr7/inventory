@@ -11,7 +11,7 @@ const BagContent = ({
   done,
 }: {
   items: Item[] | undefined
-  done: () => Promise<void>
+  done: (isChanged: boolean) => Promise<void>
 }) => {
   const [pending, setPending] = useState(false)
   const [bagTransactions, setBagTransactions] = useState<
@@ -64,10 +64,12 @@ const BagContent = ({
 
   const save = async (e: FormEvent) => {
     e.preventDefault()
-    setPending(true)
 
-    await bagMutation.mutateAsync(bagTransactions)
-    await done()
+    if (bagTransactions.length > 0) {
+      setPending(true)
+      await bagMutation.mutateAsync(bagTransactions)
+    }
+    await done(bagTransactions.length > 0)
     setPending(false)
   }
 
