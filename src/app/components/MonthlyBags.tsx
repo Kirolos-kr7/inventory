@@ -4,6 +4,8 @@ import { Icon } from "@iconify/react"
 import Add from "@iconify/icons-mdi/add"
 import Subrtact from "@iconify/icons-mdi/minus"
 import { trpc } from "@/utils/trpc"
+import { motion } from "framer-motion"
+import { fadeIn } from "@/utils/motion"
 
 const MonthlyBags = ({
   bags,
@@ -22,13 +24,16 @@ const MonthlyBags = ({
   }, [bags])
 
   const save = async () => {
-    setPending(true)
-    await monthlyBagsMutation.mutateAsync({
-      key: "monthlyBags",
-      value: String(mbs),
-    })
+    if (String(mbs) !== bags) {
+      setPending(true)
+      await monthlyBagsMutation.mutateAsync({
+        key: "monthlyBags",
+        value: String(mbs),
+      })
 
-    await update()
+      await update()
+    }
+
     setPending(false)
     setIsEditing(false)
   }
@@ -42,7 +47,11 @@ const MonthlyBags = ({
           <div className="flex gap-2">
             <Button
               className="btn-sm btn-error"
-              onClick={() => setIsEditing(false)}
+              disabled={pending}
+              onClick={() => {
+                setMbs(parseInt(bags))
+                setIsEditing(false)
+              }}
             >
               الغاء
             </Button>
@@ -57,10 +66,18 @@ const MonthlyBags = ({
         )}
       </div>
 
-      <div className="text-secondary text-3xl font-black">
+      <div className="text-secondary text-3xl font-black h-14">
         {isEditing ? (
-          <div className="flex border border-secondary rounded-md w-min">
-            <div className="px-2">
+          <motion.div
+            variants={fadeIn}
+            initial="hide"
+            animate="show"
+            className="flex border border-secondary rounded-md w-min"
+          >
+            <div className="px-1.5 flex">
+              {String(mbs) != bags && (
+                <span className="text-base font-medium text-white">*</span>
+              )}
               <input
                 type="number"
                 className="input !p-0 text-3xl !shrink-0 text-center ps-2"
@@ -75,21 +92,28 @@ const MonthlyBags = ({
             </div>
             <div className="flex flex-col">
               <Button
-                className="btn shrink btn-xs w-full rounded-r-none rounded-b-none"
+                className="btn rounded-md shrink btn-xs w-full rounded-r-none rounded-b-none"
                 onClick={() => mbs < 99 && setMbs((v) => (v += 1))}
               >
                 <Icon icon={Add} width={18} />
               </Button>
               <Button
-                className="btn shrink btn-xs w-full rounded-r-none rounded-t-none"
+                className="btn rounded-md shrink btn-xs w-full rounded-r-none rounded-t-none"
                 onClick={() => mbs > 0 && setMbs((v) => (v -= 1))}
               >
                 <Icon icon={Subrtact} width={18} />
               </Button>
             </div>
-          </div>
+          </motion.div>
         ) : (
-          <span>{bags}</span>
+          <motion.span
+            variants={fadeIn}
+            initial="hide"
+            animate="show"
+            className="my-1.5 inline-block"
+          >
+            {bags}
+          </motion.span>
         )}
       </div>
     </>
