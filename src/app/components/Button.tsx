@@ -18,9 +18,10 @@ const Button = ({
   return (
     <button
       type={type}
-      className={`btn ${className} ${pending && "loading"} ${
-        disabled && "btn-disabled"
+      className={`btn ${className || ""} ${pending ? "loading" : ""} ${
+        disabled ? "btn-disabled" : ""
       }`}
+      disabled={disabled}
       onClick={() => onClick?.()}
     >
       {!pending ? children : <span className="mr-2">جار التحميل</span>}

@@ -3,6 +3,7 @@
 import { handleError } from "@/utils/handleError"
 import { trpc } from "@/utils/trpc"
 import { FormEvent, useState } from "react"
+import Button from "../Button"
 
 const AddUser = ({ done }: { done: () => void }) => {
   const [userData, setUserData] = useState({
@@ -55,13 +56,13 @@ const AddUser = ({ done }: { done: () => void }) => {
         </div>
 
         <div className="flex flex-col">
-          <label className="label" htmlFor="new-password">
+          <label className="label" htmlFor="password">
             كلمة المرور
           </label>
           <input
             type="password"
             className="input bg-base-200"
-            name="new-password"
+            name="password"
             autoComplete="new-password"
             placeholder="اكتب هنا"
             value={userData?.password}
@@ -72,13 +73,13 @@ const AddUser = ({ done }: { done: () => void }) => {
         </div>
 
         <div className="flex flex-col">
-          <label className="label" htmlFor="new-password">
+          <label className="label" htmlFor="confirm-password">
             تأكيد كلمة المرور
           </label>
           <input
             type="password"
             className="input bg-base-200"
-            name="new-password"
+            name="confirm-password"
             autoComplete="new-password"
             placeholder="اكتب هنا"
             value={userData?.passwordConfirm}
@@ -89,7 +90,9 @@ const AddUser = ({ done }: { done: () => void }) => {
         </div>
 
         <div className="flex justify-end mt-3">
-          <button className="btn">اضافة</button>
+          <Button type="submit" pending={mutation.isLoading}>
+            اضافة
+          </Button>
         </div>
       </form>
     </>

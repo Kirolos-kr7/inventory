@@ -24,16 +24,13 @@ const MonthlyBags = ({
   }, [bags])
 
   const save = async () => {
-    if (String(mbs) !== bags) {
-      setPending(true)
-      await monthlyBagsMutation.mutateAsync({
-        key: "monthlyBags",
-        value: String(mbs),
-      })
+    setPending(true)
+    await monthlyBagsMutation.mutateAsync({
+      key: "monthlyBags",
+      value: String(mbs),
+    })
 
-      await update()
-    }
-
+    await update()
     setPending(false)
     setIsEditing(false)
   }
@@ -55,7 +52,12 @@ const MonthlyBags = ({
             >
               الغاء
             </Button>
-            <Button className="btn-sm" onClick={save} pending={pending}>
+            <Button
+              className="btn-sm"
+              onClick={save}
+              pending={pending}
+              disabled={String(mbs) === bags}
+            >
               حفظ
             </Button>
           </div>

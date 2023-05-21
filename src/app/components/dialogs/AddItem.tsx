@@ -20,7 +20,7 @@ const AddItem = ({ done, pending }: { done: () => void; pending: boolean }) => {
       setName("")
       done()
     } catch (err) {
-      handleError(err as any)
+      handleError(err)
     }
   }
 

@@ -104,8 +104,8 @@ const Sidebar = () => {
         <div className="dropdown dropdown-top">
           <label tabIndex={0}>
             <button
-              className={`btn btn-ghost focus:bg-transparent hover:bg-transparent ${
-                sideOpened ? "w-36" : "!w-16"
+              className={`btn btn-ghost px-0 focus:bg-transparent hover:bg-transparent ${
+                sideOpened ? "w-36 justify-start" : "!w-16"
               }`}
             >
               <div className="avatar flex items-center gap-2">

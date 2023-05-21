@@ -1,6 +1,6 @@
 import { toast } from "react-hot-toast"
 
-export const handleError = (err: { name: string; message: string }) => {
+export const handleError = (err: { name: string; message: string } | any) => {
   const { name, message } = err
   let errMessage = ""
 

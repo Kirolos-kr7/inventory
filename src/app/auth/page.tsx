@@ -34,7 +34,7 @@ const Auth: NextPage = () => {
       setUser(user)
       router.push("/")
     } catch (err: any) {
-      handleError(err as any)
+      handleError(err)
     }
     setPending(false)
   }
