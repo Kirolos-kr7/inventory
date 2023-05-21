@@ -52,23 +52,86 @@ const authRouter = t.router({
     }),
   add: t.procedure
     .input(
-      z
+      z.object({
+        name: z.string(),
+        password: z.string(),
+        passwordConfirm: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { name, password, passwordConfirm } = input as any
+
+      const user = await prisma.user.findUnique({
+        where: {
+          name,
+        },
+      })
+
+      if (user)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "اسم المستخدم مأخوذ, اختر اسم اخر",
+        })
+
+      await z
         .object({
           name: z
             .string()
-            .min(2, "يجب على اسم المستخدم ان يحتوي على الاقل على 6 أحرف")
-            .superRefine(async (name, ctx) => {
-              const user = await prisma.user.findUnique({
-                where: {
-                  name,
-                },
-              })
-              if (user)
-                ctx.addIssue({
-                  code: "custom",
-                  message: "اسم المستخدم مأخوذ, اختر اسم اخر",
-                })
-            }),
+            .min(2, "يجب على اسم المستخدم ان يحتوي على الاقل على 2 أحرف"),
+          password: z
+            .string()
+            .min(6, "يجب على كلمة المرور ان تحتوي على الاقل على 6 أحرف"),
+          passwordConfirm: z.string(),
+        })
+        .superRefine(async ({ password, passwordConfirm }, ctx) => {
+          if (password !== passwordConfirm)
+            ctx.addIssue({
+              code: "custom",
+              message: "كلمات المرور غير متطابقة",
+            })
+        })
+        .parseAsync({ name, password, passwordConfirm })
+
+      const salt = await genSalt(10)
+      const hashedPassword = await hash(password, salt)
+
+      await prisma.user.create({
+        data: { name, password: hashedPassword },
+      })
+    }),
+  remove: t.procedure.input(z.number()).mutation(async ({ input }) => {
+    await prisma.user.delete({
+      where: {
+        id: input,
+      },
+    })
+  }),
+  updateName: t.procedure
+    .input(
+      z.object({
+        id: z.number(),
+        name: z
+          .string()
+          .min(2, "يجب على اسم المستخدم ان يحتوي على الاقل على 2 أحرف"),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { id, name } = input
+
+      await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          name,
+        },
+      })
+    }),
+  updatePassword: t.procedure
+    .input(
+      z
+        .object({
+          id: z.number(),
           password: z
             .string()
             .min(6, "يجب على كلمة المرور ان تحتوي على الاقل على 6 أحرف"),
@@ -83,34 +146,16 @@ const authRouter = t.router({
         })
     )
     .mutation(async ({ input }) => {
-      const { name, password } = input
-
-      const user = await prisma.user.findFirst({
-        where: {
-          name,
-        },
-      })
-
-      if (user)
-        return new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "Name already taken",
-        })
+      const { id, password } = input
 
       const salt = await genSalt(10)
       const hashedPassword = await hash(password, salt)
 
-      await prisma.user.create({
-        data: { name, password: hashedPassword },
+      await prisma.user.update({
+        where: { id },
+        data: { password: hashedPassword },
       })
     }),
-  removeUser: t.procedure.input(z.number()).mutation(async ({ input }) => {
-    await prisma.user.delete({
-      where: {
-        id: input,
-      },
-    })
-  }),
 })
 
 const itemRouter = t.router({

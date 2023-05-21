@@ -8,35 +8,38 @@ import { Icon } from "@iconify/react/dist/offline"
 import Remove from "@iconify/icons-mdi/delete"
 import Edit from "@iconify/icons-mdi/edit"
 import Dialog from "@/app/components/Dialog"
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import AddUser from "@/app/components/dialogs/AddUser"
 import Loading from "@/app/components/Loading"
+import Confirmation from "@/app/components/dialogs/Confirmation"
+import Button from "@/app/components/Button"
+import UpdateUser from "@/app/components/dialogs/UpdateUser"
+import { User } from "@prisma/client"
 
 const Inventory: NextPage = () => {
   const { data, refetch, isLoading, isRefetching } = trpc.auth.getAll.useQuery()
+  const removeMutation = trpc.auth.remove.useMutation()
 
-  const [isAdding, setisAdding] = useState(false)
-
-  const pending = useMemo(
-    () => isLoading || isRefetching,
-    [isLoading, isRefetching]
-  )
+  const [isAdding, setIsAdding] = useState(false)
+  const [isEditing, setIsEditing] = useState(true)
+  const [isRemoving, setIsRemoving] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
   return (
     <div>
       <div className="flex justify-between items-start">
         <PageHeader title="المستخدمين" />
 
-        {!pending && (
-          <button className="btn" onClick={() => setisAdding(true)}>
+        {!isLoading && (
+          <button className="btn" onClick={() => setIsAdding(true)}>
             اضافة مستخدم
           </button>
         )}
       </div>
 
-      {pending && <Loading page />}
+      {isLoading && <Loading page />}
 
-      {!pending && (
+      {!isLoading && (
         <div className="overflow-x-auto">
           <table className="table w-full">
             <thead>
@@ -48,22 +51,32 @@ const Inventory: NextPage = () => {
               </tr>
             </thead>
             <tbody>
-              {data?.map(({ id, name, createdAt }, i) => (
+              {data?.map(({ id, name, createdAt }, i, user) => (
                 <tr key={id}>
                   <th>{i + 1}</th>
                   <td>{name}</td>
                   <td>{dayjs(createdAt).format("LLLL")}</td>
                   <td>
                     <div className="flex items-center gap-1 justify-end">
-                      <button className="btn p-2 text-green-600 rounded-full h-auto min-h-fit btn-ghost">
+                      <Button
+                        className="p-2 text-green-600 rounded-full h-auto min-h-fit btn-ghost"
+                        onClick={() => {
+                          setIsEditing(true)
+                          setSelectedUser(user[i])
+                        }}
+                      >
                         <Icon icon={Edit} width={18} />
-                      </button>
-                      <button
-                        className="btn p-2 rounded-full text-error h-auto min-h-fit btn-ghost"
+                      </Button>
+                      <Button
+                        className="p-2 rounded-full text-error h-auto min-h-fit btn-ghost"
                         disabled={data.length <= 1}
+                        onClick={() => {
+                          setIsRemoving(true)
+                          setSelectedUser(user[i])
+                        }}
                       >
                         <Icon icon={Remove} width={18} />
-                      </button>
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -80,11 +93,49 @@ const Inventory: NextPage = () => {
           <AddUser
             done={() => {
               refetch()
-              setisAdding(false)
+              setIsAdding(false)
             }}
           />
         }
-        close={() => setisAdding(false)}
+        close={() => setIsAdding(false)}
+      />
+
+      <Dialog
+        open={isRemoving && selectedUser != null}
+        header="حذف المستخدم"
+        body={
+          <Confirmation
+            accept={async () => {
+              if (!selectedUser) return
+
+              await removeMutation.mutateAsync(selectedUser.id)
+
+              await refetch()
+              setIsRemoving(false)
+              setSelectedUser(null)
+            }}
+            cta="حذف"
+            message="هل انت متأكد؟"
+            pending={removeMutation.isLoading || isRefetching}
+          />
+        }
+        close={() => setIsRemoving(false)}
+      />
+
+      <Dialog
+        open={isEditing && selectedUser != null}
+        header="تعديل المستخدم"
+        body={
+          <UpdateUser
+            user={selectedUser}
+            done={async () => {
+              await refetch()
+              setIsEditing(false)
+              setSelectedUser(null)
+            }}
+          />
+        }
+        close={() => setIsEditing(false)}
       />
     </div>
   )
