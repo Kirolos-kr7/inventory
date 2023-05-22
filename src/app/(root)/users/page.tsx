@@ -16,6 +16,7 @@ import Button from "@/app/components/Button"
 import UpdateUser from "@/app/components/dialogs/UpdateUser"
 import { User } from "@prisma/client"
 import { useStore } from "@/utils/store"
+import { CheckmarkIcon, ErrorIcon } from "react-hot-toast"
 
 const Inventory: NextPage = () => {
   const { data, refetch, isLoading, isRefetching } = trpc.auth.getAll.useQuery()
@@ -43,47 +44,53 @@ const Inventory: NextPage = () => {
 
       {!isLoading && (
         <div className="overflow-x-auto">
-          <table className="table w-full">
+          <table className="table w-full text-right">
             <thead>
               <tr>
                 <th className="w-8"></th>
                 <th>الاسم</th>
                 <th>منذ</th>
-                <th>العمليات</th>
+                <th>ادمن</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
-              {data?.map(({ id, name, createdAt }, i, u) => (
-                <tr key={id}>
-                  <th>{i + 1}</th>
-                  <td>{name}</td>
-                  <td>{dayjs(createdAt).format("LLLL")}</td>
-                  <td>
-                    <div className="flex items-center gap-1 justify-end">
-                      <Button
-                        className="p-2 text-green-600 rounded-full h-auto min-h-fit btn-ghost"
-                        disabled={user?.id !== id}
-                        onClick={() => {
-                          setIsEditing(true)
-                          setSelectedUser(u[i])
-                        }}
-                      >
-                        <Icon icon={Edit} width={18} />
-                      </Button>
-                      <Button
-                        className="p-2 rounded-full text-error h-auto min-h-fit btn-ghost"
-                        disabled={data.length <= 1}
-                        onClick={() => {
-                          setIsRemoving(true)
-                          setSelectedUser(u[i])
-                        }}
-                      >
-                        <Icon icon={Remove} width={18} />
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {data?.map(({ id, name, createdAt, isAdmin }, i, u) => {
+                const disabled = user?.id !== id && !user?.isAdmin
+
+                return (
+                  <tr key={id}>
+                    <th>{i + 1}</th>
+                    <td>{name}</td>
+                    <td>{dayjs(createdAt).format("LL")}</td>
+                    <td>{isAdmin ? <CheckmarkIcon /> : <ErrorIcon />}</td>
+                    <td>
+                      <div className="flex items-center gap-1 justify-end">
+                        <Button
+                          className="p-2 text-green-600 rounded-full h-auto min-h-fit btn-ghost"
+                          disabled={disabled}
+                          onClick={() => {
+                            setIsEditing(true)
+                            setSelectedUser(u[i])
+                          }}
+                        >
+                          <Icon icon={Edit} width={18} />
+                        </Button>
+                        <Button
+                          className="p-2 rounded-full text-error h-auto min-h-fit btn-ghost"
+                          disabled={disabled}
+                          onClick={() => {
+                            setIsRemoving(true)
+                            setSelectedUser(u[i])
+                          }}
+                        >
+                          <Icon icon={Remove} width={18} />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
@@ -138,7 +145,11 @@ const Inventory: NextPage = () => {
             }}
           />
         }
-        close={() => setIsEditing(false)}
+        close={async () => {
+          await refetch()
+          setIsEditing(false)
+          setSelectedUser(null)
+        }}
       />
     </div>
   )

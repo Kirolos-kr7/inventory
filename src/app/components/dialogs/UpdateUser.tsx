@@ -4,9 +4,10 @@ import { trpc } from "@/utils/trpc"
 import { User } from "@prisma/client"
 import { handleError } from "@/utils/handleError"
 import { useStore } from "@/utils/store"
+import { toast } from "react-hot-toast"
 
 enum TABS {
-  NAME,
+  INFO,
   PASSWORD,
 }
 
@@ -17,21 +18,24 @@ const UpdateUser = ({
   user: User | null
   done: () => Promise<void>
 }) => {
-  const [tab, setTab] = useState<TABS>(TABS.NAME)
+  const { user: authedUser, setUser } = useStore()
+  const { data: adminCount } = trpc.auth.getAdminCount.useQuery()
+  const nameMutation = trpc.auth.updateInfo.useMutation()
+  const passwordMutation = trpc.auth.updatePassword.useMutation()
+  const cannotChangeAdmin = user?.isAdmin && adminCount! <= 1
+
+  const [tab, setTab] = useState<TABS>(TABS.INFO)
   const [userData, setUserData] = useState({
     name: "",
     password: "",
     passwordConfirm: "",
+    isAdmin: false,
   })
 
   const tabs = [
-    { name: "الاسم", value: TABS.NAME },
+    { name: "الاسم", value: TABS.INFO },
     { name: "كلمة المرور", value: TABS.PASSWORD },
   ]
-
-  const { user: authedUser, setUser } = useStore()
-  const nameMutation = trpc.auth.updateName.useMutation()
-  const passwordMutation = trpc.auth.updatePassword.useMutation()
 
   useEffect(() => {
     setUserData((v) => ({ ...v, name: user?.name || "" }))
@@ -43,10 +47,10 @@ const UpdateUser = ({
     if (!user || !authedUser) return
 
     try {
-      if (tab == TABS.NAME) {
-        const { name } = userData
-        await nameMutation.mutateAsync({ id: user.id, name })
-        setUser({ ...authedUser, name })
+      if (tab == TABS.INFO) {
+        const { name, isAdmin } = userData
+        await nameMutation.mutateAsync({ id: user.id, name, isAdmin })
+        if (authedUser.id == user.id) setUser({ ...authedUser, name, isAdmin })
       }
 
       if (tab == TABS.PASSWORD) {
@@ -61,7 +65,7 @@ const UpdateUser = ({
       handleError(err)
     }
 
-    done()
+    toast.success("تم الحفظ")
   }
 
   return (
@@ -82,7 +86,7 @@ const UpdateUser = ({
 
       <div>
         <form onSubmit={save} className="w-full flex flex-col mt-5 gap-2">
-          {tab == TABS.NAME ? (
+          {tab == TABS.INFO && (
             <>
               <div className="flex flex-col">
                 <label className="label" htmlFor="name">
@@ -91,7 +95,7 @@ const UpdateUser = ({
                 <input
                   type="text"
                   className="input bg-base-200"
-                  name="name"
+                  id="name"
                   placeholder="اكتب هنا"
                   value={userData?.name}
                   onChange={(e) =>
@@ -99,8 +103,36 @@ const UpdateUser = ({
                   }
                 />
               </div>
+
+              <div className="flex gap-2 items-center my-2">
+                <label className="label" htmlFor="admin">
+                  ادمن
+                </label>
+                {typeof adminCount == "number" && (
+                  <input
+                    type="checkbox"
+                    id="admin"
+                    className={`toggle toggle-secondary ${
+                      cannotChangeAdmin
+                        ? "tooltip tooltip-open tooltip-left"
+                        : ""
+                    }`}
+                    data-tip={
+                      cannotChangeAdmin && "غير مسموح بوجود اقل من 1 ادمن"
+                    }
+                    disabled={cannotChangeAdmin || !authedUser?.isAdmin}
+                    onChange={(e) => {
+                      setUserData((v) => ({ ...v, isAdmin: e.target.checked }))
+                    }}
+                    defaultChecked={user?.isAdmin}
+                    value={userData.isAdmin ? "on" : "off"}
+                  />
+                )}
+              </div>
             </>
-          ) : (
+          )}
+
+          {tab == TABS.PASSWORD && (
             <>
               <div className="flex flex-col">
                 <label className="label" htmlFor="password">
@@ -109,7 +141,7 @@ const UpdateUser = ({
                 <input
                   type="password"
                   className="input bg-base-200"
-                  name="password"
+                  id="password"
                   autoComplete="new-password"
                   placeholder="اكتب هنا"
                   value={userData?.password}
@@ -126,7 +158,7 @@ const UpdateUser = ({
                 <input
                   type="password"
                   className="input bg-base-200"
-                  name="confirm-password"
+                  id="confirm-password"
                   autoComplete="new-password"
                   placeholder="اكتب هنا"
                   value={userData?.passwordConfirm}
@@ -140,10 +172,12 @@ const UpdateUser = ({
               </div>
             </>
           )}
+
           <div className="flex justify-end gap-2 mt-1">
             <Button
               className="btn-error"
               disabled={nameMutation.isLoading || passwordMutation.isLoading}
+              onClick={done}
             >
               خروج
             </Button>

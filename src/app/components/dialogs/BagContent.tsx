@@ -83,7 +83,7 @@ const BagContent = ({
       <form onSubmit={save} className="flex flex-col gap-3">
         {content?.map(({ id, name, perBag }) => (
           <div key={id} className="flex items-center justify-between gap-3">
-            <label>{name}</label>
+            <label htmlFor={name}>{name}</label>
             <div className="flex justify-end">
               <button
                 type="button"
@@ -96,6 +96,7 @@ const BagContent = ({
               </button>
               <input
                 type="number"
+                id={name}
                 className="input w-20 rounded-none text-center text-xl bg-base-200 input-sm"
                 value={perBag}
                 disabled

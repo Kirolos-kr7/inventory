@@ -5,7 +5,6 @@ import { prisma } from "@/utils/prisma"
 import { genJWT } from "@/utils/jwt"
 import { compare, hash, genSalt } from "bcrypt"
 import { Context } from "./[trpc]/context"
-import { setCookie } from "cookies-next"
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -13,7 +12,14 @@ const t = initTRPC.context<Context>().create({
 
 const authRouter = t.router({
   getAll: t.procedure.query(async () => {
-    return prisma.user.findMany()
+    return prisma.user.findMany({
+      where: {
+        isDeleted: false,
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+    })
   }),
   login: t.procedure
     .input(
@@ -100,23 +106,34 @@ const authRouter = t.router({
       })
     }),
   remove: t.procedure.input(z.number()).mutation(async ({ input }) => {
-    await prisma.user.delete({
+    await prisma.user.update({
       where: {
         id: input,
       },
+      data: {
+        isDeleted: true,
+      },
     })
   }),
-  updateName: t.procedure
+  getAdminCount: t.procedure.query(async () => {
+    return prisma.user.count({
+      where: {
+        isAdmin: true,
+      },
+    })
+  }),
+  updateInfo: t.procedure
     .input(
       z.object({
         id: z.number(),
         name: z
           .string()
           .min(2, "يجب على اسم المستخدم ان يحتوي على الاقل على 2 أحرف"),
+        isAdmin: z.boolean(),
       })
     )
     .mutation(async ({ input }) => {
-      const { id, name } = input
+      const { id, name, isAdmin } = input
 
       await prisma.user.update({
         where: {
@@ -124,6 +141,7 @@ const authRouter = t.router({
         },
         data: {
           name,
+          isAdmin,
         },
       })
     }),

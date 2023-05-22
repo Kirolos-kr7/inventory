@@ -32,7 +32,7 @@ const AddItem = ({ done, pending }: { done: () => void; pending: boolean }) => {
         </label>
         <input
           type="text"
-          name="name"
+          id="name"
           placeholder="اكتب هنا"
           className="input bg-base-200"
           value={name}

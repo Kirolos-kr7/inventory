@@ -19,7 +19,7 @@ const Button = ({
     <button
       type={type}
       className={`btn ${className || ""} ${pending ? "loading" : ""} ${
-        disabled ? "btn-disabled" : ""
+        disabled ? "btn-disabled !bg-transparent" : ""
       }`}
       disabled={disabled}
       onClick={() => onClick?.()}

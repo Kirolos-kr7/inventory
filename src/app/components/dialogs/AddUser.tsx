@@ -46,7 +46,7 @@ const AddUser = ({ done }: { done: () => void }) => {
           <input
             type="text"
             className="input bg-base-200"
-            name="name"
+            id="name"
             placeholder="اكتب هنا"
             value={userData?.name}
             onChange={(e) =>
@@ -62,7 +62,7 @@ const AddUser = ({ done }: { done: () => void }) => {
           <input
             type="password"
             className="input bg-base-200"
-            name="password"
+            id="password"
             autoComplete="new-password"
             placeholder="اكتب هنا"
             value={userData?.password}
@@ -79,7 +79,7 @@ const AddUser = ({ done }: { done: () => void }) => {
           <input
             type="password"
             className="input bg-base-200"
-            name="confirm-password"
+            id="confirm-password"
             autoComplete="new-password"
             placeholder="اكتب هنا"
             value={userData?.passwordConfirm}

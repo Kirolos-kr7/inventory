@@ -44,7 +44,7 @@ const Inventory: NextPage = () => {
               )}
             </div>
 
-            <div className="grid grid-cols-3 gap-3 md:gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-5">
               {data?.map(({ id, name, perBag }) => (
                 <div
                   className="bg-base-300 shadow-md gap-10 p-3 flex items-center justify-between"

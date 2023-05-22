@@ -52,7 +52,7 @@ const Auth: NextPage = () => {
             <input
               type="text"
               className="input"
-              name="name"
+              id="name"
               placeholder="اكتب هنا"
               value={userData?.name}
               onChange={(e) =>
@@ -68,7 +68,7 @@ const Auth: NextPage = () => {
             <input
               type="password"
               className="input"
-              name="new-password"
+              id="new-password"
               placeholder="اكتب هنا"
               value={userData?.password}
               onChange={(e) =>
