@@ -216,7 +216,7 @@ const Inventory: NextPage = () => {
         }
       />
 
-      {isLoading && <Loading page />}
+      {isLoading && <Loading />}
 
       {!isLoading && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">

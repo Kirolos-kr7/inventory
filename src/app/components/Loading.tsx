@@ -1,9 +1,8 @@
-const Loading = ({ page = false }: { page?: boolean }) => {
+const Loading = ({ offset = 150 }: { offset?: number }) => {
   return (
     <div
-      className={`w-full grid place-content-center ${
-        page ? "h-[500px]" : "h-40"
-      }`}
+      className={`w-full grid place-content-center`}
+      style={{ height: `calc(100vh - ${offset}px)` }}
     >
       <svg
         className="stroke-secondary"

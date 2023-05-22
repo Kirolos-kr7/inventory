@@ -15,10 +15,12 @@ import Confirmation from "@/app/components/dialogs/Confirmation"
 import Button from "@/app/components/Button"
 import UpdateUser from "@/app/components/dialogs/UpdateUser"
 import { User } from "@prisma/client"
+import { useStore } from "@/utils/store"
 
 const Inventory: NextPage = () => {
   const { data, refetch, isLoading, isRefetching } = trpc.auth.getAll.useQuery()
   const removeMutation = trpc.auth.remove.useMutation()
+  const { user } = useStore()
 
   const [isAdding, setIsAdding] = useState(false)
   const [isEditing, setIsEditing] = useState(true)
@@ -37,7 +39,7 @@ const Inventory: NextPage = () => {
         )}
       </div>
 
-      {isLoading && <Loading page />}
+      {isLoading && <Loading />}
 
       {!isLoading && (
         <div className="overflow-x-auto">
@@ -51,7 +53,7 @@ const Inventory: NextPage = () => {
               </tr>
             </thead>
             <tbody>
-              {data?.map(({ id, name, createdAt }, i, user) => (
+              {data?.map(({ id, name, createdAt }, i, u) => (
                 <tr key={id}>
                   <th>{i + 1}</th>
                   <td>{name}</td>
@@ -60,9 +62,10 @@ const Inventory: NextPage = () => {
                     <div className="flex items-center gap-1 justify-end">
                       <Button
                         className="p-2 text-green-600 rounded-full h-auto min-h-fit btn-ghost"
+                        disabled={user?.id !== id}
                         onClick={() => {
                           setIsEditing(true)
-                          setSelectedUser(user[i])
+                          setSelectedUser(u[i])
                         }}
                       >
                         <Icon icon={Edit} width={18} />
@@ -72,7 +75,7 @@ const Inventory: NextPage = () => {
                         disabled={data.length <= 1}
                         onClick={() => {
                           setIsRemoving(true)
-                          setSelectedUser(user[i])
+                          setSelectedUser(u[i])
                         }}
                       >
                         <Icon icon={Remove} width={18} />

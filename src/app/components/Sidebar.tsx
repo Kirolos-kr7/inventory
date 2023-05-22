@@ -75,7 +75,11 @@ const Sidebar = () => {
       className={`bg-base-100 !shrink-0 flex items-start flex-col fixed h-screen z-30 sm:static text-base-content transition-all ${
         sideOpened ? "w-full sm:w-60 md:w-72" : "w-0 sm:w-24"
       }
-       ${window && window.innerWidth < 640 && "overflow-hidden"}`}
+       ${
+         typeof window !== "undefined" &&
+         window.innerWidth < 640 &&
+         "overflow-hidden"
+       }`}
     >
       <div className="grow w-full">
         <ul className="menu gap-3 sm:gap-1 p-5 sm:p-2 sm:pt-3 grid sm:flex grid-cols-2 ">
