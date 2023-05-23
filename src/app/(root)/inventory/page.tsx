@@ -162,7 +162,7 @@ const Inventory: NextPage = () => {
               {isEditing && (
                 <>
                   <Button
-                    className="btn-error"
+                    className="btn-error btn-sm sm:btn-md"
                     onClick={() => {
                       setUpdatedData(structuredClone(data))
                       setCountTransactions([])
@@ -175,6 +175,7 @@ const Inventory: NextPage = () => {
                     الغاء
                   </Button>
                   <Button
+                    className="btn-sm sm:btn-md"
                     pending={pending}
                     onClick={() => save()}
                     disabled={
@@ -190,6 +191,7 @@ const Inventory: NextPage = () => {
               {isRemoving && (
                 <>
                   <Button
+                    className="btn-sm sm:btn-md"
                     onClick={() => {
                       setUpdatedData(structuredClone(data))
                       setIsRemoving(false)
@@ -202,9 +204,14 @@ const Inventory: NextPage = () => {
 
               {!isEditing && !isRemoving && (
                 <>
-                  <Button onClick={() => setIsEditing((v) => !v)}>تعديل</Button>
                   <Button
-                    className="btn-error"
+                    className="btn-sm sm:btn-md"
+                    onClick={() => setIsEditing((v) => !v)}
+                  >
+                    تعديل
+                  </Button>
+                  <Button
+                    className="btn-error btn-sm sm:btn-md"
                     onClick={() => setIsRemoving((v) => !v)}
                   >
                     حذف

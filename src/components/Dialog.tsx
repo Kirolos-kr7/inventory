@@ -26,7 +26,7 @@ const Dialog = ({
                 type: "spring",
                 duration: "0.5",
               }}
-              className="modal-box fixed top-1/2 left-1/2 w-full shadow-md md:min-w-[480px] z-40"
+              className="modal-box fixed top-1/2 left-1/2 w-full border border-base-300 shadow-md md:min-w-[480px] z-40"
             >
               <h3 className="text-2xl font-bold">{header}</h3>
               <div className="pt-4">{body}</div>

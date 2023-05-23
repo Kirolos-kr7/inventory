@@ -30,15 +30,19 @@ const Users: NextPage = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-start">
-        <PageHeader title="المستخدمين" />
-
-        {!isLoading && (
-          <button className="btn" onClick={() => setIsAdding(true)}>
-            اضافة مستخدم
-          </button>
-        )}
-      </div>
+      <PageHeader
+        title="المستخدمين"
+        actions={
+          !isLoading && (
+            <Button
+              className="btn-sm sm:btn-md"
+              onClick={() => setIsAdding(true)}
+            >
+              اضافة مستخدم
+            </Button>
+          )
+        }
+      />
 
       {isLoading && <Loading />}
 

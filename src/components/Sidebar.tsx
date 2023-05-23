@@ -72,14 +72,9 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`bg-base-100 !shrink-0 flex items-start flex-col fixed h-screen z-30 sm:static text-base-content transition-all ${
+      className={`bg-base-100 !shrink-0 flex items-start flex-col fixed h-screen z-30 sm:static text-base-content transition-all sb ${
         sideOpened ? "w-full sm:w-60 md:w-72" : "w-0 sm:w-24"
-      }
-       ${
-         typeof window !== "undefined" &&
-         window.innerWidth < 640 &&
-         "overflow-hidden"
-       }`}
+      }`}
     >
       <div className="grow w-full">
         <ul className="menu gap-3 sm:gap-1 p-5 sm:p-2 sm:pt-3 grid sm:flex grid-cols-2 ">
@@ -105,7 +100,7 @@ const Sidebar = () => {
           !sideOpened && "flex-col"
         }`}
       >
-        <div className="dropdown dropdown-top">
+        <div className="dropdown dropdown-top ">
           <label tabIndex={0}>
             <button
               className={`btn btn-ghost px-0 focus:bg-transparent hover:bg-transparent ${
@@ -127,7 +122,7 @@ const Sidebar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="dropdown-content bg-base-200 menu p-2 shadow mb-3 rounded-box w-52"
+            className="dropdown-content border border-base-300 bg-base-200 menu p-2 shadow-md mb-3 rounded-box w-52"
           >
             <li>
               <button onClick={logout}>تسجيل خروج</button>

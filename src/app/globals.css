@@ -11,3 +11,16 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+body {
+  opacity: 1;
+  background-image: linear-gradient(#2d333a 1.1px, transparent 1.1px),
+    linear-gradient(to right, #2d333a 1.1px, #242631 1.1px);
+  background-size: 22px 22px;
+}
+
+@media screen and (width <= 640px) {
+  .sb {
+    overflow-x: hidden;
+  }
+}
