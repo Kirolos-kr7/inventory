@@ -52,6 +52,7 @@ const AddUser = ({ done }: { done: () => void }) => {
             onChange={(e) =>
               setUserData((v) => ({ ...v, name: e.target.value }))
             }
+            autoFocus
           />
         </div>
 

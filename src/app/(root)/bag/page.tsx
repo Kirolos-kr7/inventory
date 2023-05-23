@@ -47,7 +47,7 @@ const Bag: NextPage = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-5">
               {data?.map(({ id, name, perBag }) => (
                 <div
-                  className="bg-base-300 shadow-md gap-10 p-3 flex items-center justify-between"
+                  className="bg-base-300/80 shadow-md gap-10 p-3 flex items-center rounded-md justify-between"
                   key={id}
                 >
                   <h3 className="text-2xl font-semibold">{name}</h3>

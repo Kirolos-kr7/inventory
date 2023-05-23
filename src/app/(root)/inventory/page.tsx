@@ -249,7 +249,7 @@ const Inventory: NextPage = () => {
           ))}
           {!isEditing && !isRemoving && (
             <button
-              className="btn btn-ghost hover:bg-base-300/80 h-full focus:bg-base-300/80 shadow-md min-h-16 flex items-center justify-center flex-col bg-base-300 relative rounded-md"
+              className="btn btn-ghost hover:bg-base-200/100 h-28 focus:bg-base-300 shadow-md min-h-16 flex items-center justify-center flex-col bg-base-300/80 relative rounded-md focus:ring-secondary-focus/80 focus:ring-offset-2 focus:ring-offset-base-100/20 focus:ring-4 focus:outline-none"
               onClick={() => setIsAdding(true)}
             >
               <Icon icon={Add} width={20} />

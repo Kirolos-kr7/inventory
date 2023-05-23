@@ -40,7 +40,7 @@ const ItemCard: React.FC<{
   const PROGRESS = perBag * bags
 
   return (
-    <div className="shadow-md bg-base-300 flex flex-col relative rounded-md">
+    <div className="shadow-md bg-base-300/80 flex flex-col relative rounded-md">
       <div className="tooltip -my-2.5" data-tip={"المطلوب " + PROGRESS}>
         <progress
           className="progress progress-primary w-full"

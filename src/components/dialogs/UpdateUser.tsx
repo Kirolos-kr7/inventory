@@ -114,6 +114,7 @@ const UpdateUser = ({
                   onChange={(e) =>
                     setUserData((v) => ({ ...v, name: e.target.value }))
                   }
+                  autoFocus
                 />
               </div>
 
@@ -161,6 +162,7 @@ const UpdateUser = ({
                   onChange={(e) =>
                     setUserData((v) => ({ ...v, password: e.target.value }))
                   }
+                  autoFocus
                 />
               </div>
 

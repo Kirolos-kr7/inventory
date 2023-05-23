@@ -58,6 +58,7 @@ const Auth: NextPage = () => {
               onChange={(e) =>
                 setUserData((v) => ({ ...v, name: e.target.value }))
               }
+              autoFocus
             />
           </div>
 

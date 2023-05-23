@@ -37,6 +37,7 @@ const AddItem = ({ done, pending }: { done: () => void; pending: boolean }) => {
           className="input bg-base-200"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          autoFocus
         />
         <div className="col-span-2 flex justify-end mt-3">
           <Button type="submit" pending={mutation.isLoading || pending}>
