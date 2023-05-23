@@ -16,7 +16,7 @@ const UpdateUser = ({
   done,
 }: {
   user: User | null
-  done: () => Promise<void>
+  done: (close?: boolean) => Promise<void>
 }) => {
   const { user: authedUser, setUser } = useStore()
   const { data: adminCount } = trpc.auth.getAdminCount.useQuery()
@@ -38,7 +38,11 @@ const UpdateUser = ({
   ]
 
   useEffect(() => {
-    setUserData((v) => ({ ...v, name: user?.name || "" }))
+    setUserData((v) => ({
+      ...v,
+      name: user?.name || "",
+      isAdmin: user?.isAdmin!,
+    }))
   }, [user])
 
   const save = async (e: FormEvent) => {
@@ -49,8 +53,16 @@ const UpdateUser = ({
     try {
       if (tab == TABS.INFO) {
         const { name, isAdmin } = userData
-        await nameMutation.mutateAsync({ id: user.id, name, isAdmin })
-        if (authedUser.id == user.id) setUser({ ...authedUser, name, isAdmin })
+
+        if (name != user.name || isAdmin != user.isAdmin) {
+          await nameMutation.mutateAsync({ id: user.id, name, isAdmin })
+          if (authedUser.id == user.id)
+            setUser({ ...authedUser, name, isAdmin })
+
+          done()
+        }
+
+        toast.success("تم الحفظ")
       }
 
       if (tab == TABS.PASSWORD) {
@@ -60,12 +72,13 @@ const UpdateUser = ({
           password,
           passwordConfirm,
         })
+
+        toast.success("تم الحفظ")
+        done()
       }
     } catch (err) {
       handleError(err)
     }
-
-    toast.success("تم الحفظ")
   }
 
   return (
@@ -177,15 +190,22 @@ const UpdateUser = ({
             <Button
               className="btn-error"
               disabled={nameMutation.isLoading || passwordMutation.isLoading}
-              onClick={done}
+              onClick={() => done(true)}
             >
               خروج
             </Button>
             <Button
+              disabled={
+                (tab == TABS.INFO &&
+                  (userData.name == "" || userData.name == user?.name) &&
+                  userData.isAdmin == user?.isAdmin) ||
+                (tab == TABS.PASSWORD && userData.password == "") ||
+                userData.passwordConfirm == ""
+              }
               type="submit"
               pending={nameMutation.isLoading || passwordMutation.isLoading}
             >
-              حفظ
+              {tab == TABS.INFO ? "حفظ" : "تغيير"}
             </Button>
           </div>
         </form>
