@@ -6,12 +6,29 @@ import { genJWT } from "@/utils/jwt"
 import { compare, hash, genSalt } from "bcrypt"
 import { Context } from "./[trpc]/context"
 
-const t = initTRPC.context<Context>().create({
+export const t = initTRPC.context<Context>().create({
   transformer: superjson,
 })
 
+export const isAuthed = t.middleware((opts) => {
+  const {
+    ctx: { user },
+  } = opts
+  if (!user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" })
+  }
+  return opts.next({
+    ctx: {
+      user,
+    },
+  })
+})
+
+const publicProcedure = t.procedure
+const protectedProcedure = publicProcedure.use(isAuthed)
+
 const authRouter = t.router({
-  getAll: t.procedure.query(async () => {
+  getAll: protectedProcedure.query(async () => {
     return prisma.user.findMany({
       where: {
         isDeleted: false,
@@ -21,7 +38,7 @@ const authRouter = t.router({
       },
     })
   }),
-  login: t.procedure
+  login: publicProcedure
     .input(
       z.object({
         name: z.string().toLowerCase(),
@@ -56,7 +73,7 @@ const authRouter = t.router({
 
       return { token, user }
     }),
-  add: t.procedure
+  add: protectedProcedure
     .input(
       z.object({
         name: z.string(),
@@ -105,7 +122,7 @@ const authRouter = t.router({
         data: { name, password: hashedPassword },
       })
     }),
-  remove: t.procedure.input(z.number()).mutation(async ({ input }) => {
+  remove: protectedProcedure.input(z.number()).mutation(async ({ input }) => {
     await prisma.user.update({
       where: {
         id: input,
@@ -115,14 +132,14 @@ const authRouter = t.router({
       },
     })
   }),
-  getAdminCount: t.procedure.query(async () => {
+  getAdminCount: protectedProcedure.query(async () => {
     return prisma.user.count({
       where: {
         isAdmin: true,
       },
     })
   }),
-  updateInfo: t.procedure
+  updateInfo: protectedProcedure
     .input(
       z.object({
         id: z.number(),
@@ -145,7 +162,7 @@ const authRouter = t.router({
         },
       })
     }),
-  updatePassword: t.procedure
+  updatePassword: protectedProcedure
     .input(
       z
         .object({
@@ -177,14 +194,14 @@ const authRouter = t.router({
 })
 
 const itemRouter = t.router({
-  getAll: t.procedure.query(async () => {
+  getAll: protectedProcedure.query(async () => {
     return prisma.item.findMany({
       orderBy: {
         createdAt: "asc",
       },
     })
   }),
-  add: t.procedure
+  add: protectedProcedure
     .input(
       z.object({
         name: z.string().min(2),
@@ -192,7 +209,7 @@ const itemRouter = t.router({
         perBag: z.number(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx: { user } }) => {
       const { name, count = 0 } = input
 
       const item = await prisma.item.create({
@@ -204,13 +221,13 @@ const itemRouter = t.router({
 
       await prisma.transaction.create({
         data: {
-          userId: 1,
+          userId: user?.id!,
           itemId: item.id,
-          message: `قام ${"كيرلس"} باضافة هذا العنصر`,
+          message: `قام ##### باضافة هذا العنصر`,
         },
       })
     }),
-  remove: t.procedure.input(z.number()).mutation(async ({ input }) => {
+  remove: protectedProcedure.input(z.number()).mutation(async ({ input }) => {
     await prisma.item.delete({
       where: {
         id: input,
@@ -219,20 +236,28 @@ const itemRouter = t.router({
   }),
 })
 
-// user validation required
 const transactionRouter = t.router({
-  getAll: t.procedure.input(z.number().nullable()).query(async ({ input }) => {
-    const where: { itemId?: number } = {}
-    if (input) where.itemId = input
+  getAll: protectedProcedure
+    .input(z.number().nullable())
+    .query(async ({ input }) => {
+      const where: { itemId?: number } = {}
+      if (input) where.itemId = input
 
-    return prisma.transaction.findMany({
-      where,
-      orderBy: {
-        createdAt: "desc",
-      },
-    })
-  }),
-  updateCounts: t.procedure
+      const transactions = await prisma.transaction.findMany({
+        where,
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          by: true,
+        },
+      })
+
+      return transactions.map(({ message, id, createdAt, by }) => {
+        return { message: message.replace("#####", by.name), id, createdAt }
+      })
+    }),
+  updateCounts: protectedProcedure
     .input(
       z.array(
         z.object({
@@ -242,7 +267,7 @@ const transactionRouter = t.router({
         })
       )
     )
-    .mutation(async ({ input: transactions }) => {
+    .mutation(async ({ input: transactions, ctx: { user } }) => {
       await Promise.all(
         transactions.map(async ({ itemId, type, by }) => {
           const operation: { increment?: number; decrement?: number } = {}
@@ -260,16 +285,16 @@ const transactionRouter = t.router({
           await prisma.transaction.create({
             data: {
               itemId,
-              message: `قام ${"كيرلس"} ${
+              message: `قام ##### ${
                 type == "inc" ? "بزيادة المخزون" : "بالخصم من المخزون"
               } بمقدار ${by}`,
-              userId: 1,
+              userId: user?.id!,
             },
           })
         })
       )
     }),
-  updateNames: t.procedure
+  updateNames: protectedProcedure
     .input(
       z.array(
         z.object({
@@ -279,7 +304,7 @@ const transactionRouter = t.router({
         })
       )
     )
-    .mutation(async ({ input: transactions }) => {
+    .mutation(async ({ input: transactions, ctx: { user } }) => {
       await Promise.all(
         transactions.map(async ({ itemId, newVal, oldVal }) => {
           await prisma.item.update({
@@ -292,14 +317,14 @@ const transactionRouter = t.router({
           await prisma.transaction.create({
             data: {
               itemId,
-              message: `قام ${"كيرلس"} بتغيير اسم العنصر من (${oldVal}) الى (${newVal})`,
-              userId: 1,
+              message: `قام ##### بتغيير اسم العنصر من (${oldVal}) الى (${newVal})`,
+              userId: user?.id!,
             },
           })
         })
       )
     }),
-  updateBag: t.procedure
+  updateBag: protectedProcedure
     .input(
       z.array(
         z.object({
@@ -309,7 +334,7 @@ const transactionRouter = t.router({
         })
       )
     )
-    .mutation(async ({ input: transactions }) => {
+    .mutation(async ({ input: transactions, ctx: { user } }) => {
       await Promise.all(
         transactions.map(async ({ itemId, type, by }) => {
           const operation: { increment?: number; decrement?: number } = {}
@@ -327,10 +352,10 @@ const transactionRouter = t.router({
           await prisma.transaction.create({
             data: {
               itemId,
-              message: `قام ${"كيرلس"} ${
+              message: `قام ##### ${
                 type == "inc" ? "بزيادة العدد الشهري" : "بالخصم من العدد الشهري"
               } بمقدار ${by}`,
-              userId: 1,
+              userId: user?.id!,
             },
           })
         })
@@ -339,7 +364,7 @@ const transactionRouter = t.router({
 })
 
 const metaRouter = t.router({
-  get: t.procedure.input(z.string()).query(async ({ input }) => {
+  get: protectedProcedure.input(z.string()).query(async ({ input }) => {
     return (
       (
         await prisma.meta.findUnique({
@@ -350,7 +375,7 @@ const metaRouter = t.router({
       )?.value || 0
     )
   }),
-  set: t.procedure
+  set: protectedProcedure
     .input(
       z.object({
         key: z.string(),

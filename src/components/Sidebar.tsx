@@ -82,7 +82,9 @@ const Sidebar = () => {
             <li key={name}>
               <Link
                 href={to}
-                onClick={() => setSideOpened(false)}
+                onClick={() => {
+                  window.innerWidth <= 640 && setSideOpened(false)
+                }}
                 className={`flex flex-col sm:flex-row truncate border border-primary/20 sm:border-0 ${
                   !sideOpened && "mx-auto"
                 } ${pathname == to ? "text-secondary" : ""}`}
