@@ -3,6 +3,10 @@ import "./globals.css"
 import { TrpcProvider } from "@/utils/trpc-provider"
 import { Toaster } from "react-hot-toast"
 
+export const metadata = {
+  title: "Inventory STK",
+}
+
 const CAIRO = Cairo({
   subsets: ["arabic", "latin"],
   display: "swap",
