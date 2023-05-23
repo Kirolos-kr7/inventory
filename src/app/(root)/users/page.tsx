@@ -1,24 +1,24 @@
 "use client"
 
-import { NextPage } from "next"
-import PageHeader from "../../components/PageHeader"
-import { trpc } from "@/utils/trpc"
+import Button from "@/components/Button"
+import Dialog from "@/components/Dialog"
+import Loading from "@/components/Loading"
+import PageHeader from "@/components/PageHeader"
+import AddUser from "@/components/dialogs/AddUser"
+import Confirmation from "@/components/dialogs/Confirmation"
+import UpdateUser from "@/components/dialogs/UpdateUser"
 import dayjs from "@/utils/dayjs"
-import { Icon } from "@iconify/react/dist/offline"
+import { useStore } from "@/utils/store"
+import { trpc } from "@/utils/trpc"
 import Remove from "@iconify/icons-mdi/delete"
 import Edit from "@iconify/icons-mdi/edit"
-import Dialog from "@/app/components/Dialog"
-import { useState } from "react"
-import AddUser from "@/app/components/dialogs/AddUser"
-import Loading from "@/app/components/Loading"
-import Confirmation from "@/app/components/dialogs/Confirmation"
-import Button from "@/app/components/Button"
-import UpdateUser from "@/app/components/dialogs/UpdateUser"
+import { Icon } from "@iconify/react/dist/offline"
 import { User } from "@prisma/client"
-import { useStore } from "@/utils/store"
+import { NextPage } from "next"
+import { useState } from "react"
 import { CheckmarkIcon, ErrorIcon } from "react-hot-toast"
 
-const Inventory: NextPage = () => {
+const Users: NextPage = () => {
   const { data, refetch, isLoading, isRefetching } = trpc.auth.getAll.useQuery()
   const removeMutation = trpc.auth.remove.useMutation()
   const { user } = useStore()
@@ -138,10 +138,18 @@ const Inventory: NextPage = () => {
         body={
           <UpdateUser
             user={selectedUser}
-            done={async () => {
+            done={async (close = false) => {
               await refetch()
-              setIsEditing(false)
-              setSelectedUser(null)
+              if (close) {
+                setIsEditing(false)
+                setSelectedUser(null)
+              } else {
+                setSelectedUser((v) => {
+                  const u = data?.find(({ id }: { id: number }) => v?.id == id)
+                  if (u) return u
+                  return null
+                })
+              }
             }}
           />
         }
@@ -155,4 +163,4 @@ const Inventory: NextPage = () => {
   )
 }
 
-export default Inventory
+export default Users

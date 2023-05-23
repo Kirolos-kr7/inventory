@@ -1,13 +1,13 @@
 "use client"
 
+import Button from "@/components/Button"
 import { handleError } from "@/utils/handleError"
+import { useStore } from "@/utils/store"
 import { trpc } from "@/utils/trpc"
 import { setCookie } from "cookies-next"
 import { NextPage } from "next"
-import { FormEvent, useState } from "react"
 import { useRouter } from "next/navigation"
-import Button from "../components/Button"
-import { useStore } from "@/utils/store"
+import { FormEvent, useState } from "react"
 
 const Auth: NextPage = () => {
   const router = useRouter()

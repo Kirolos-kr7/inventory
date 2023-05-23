@@ -1,10 +1,10 @@
 "use client"
 
-import { Icon } from "@iconify/react"
-import Menu from "@iconify/icons-mdi/menu"
-import Button from "../components/Button"
+import Button from "@/components/Button"
+import Sidebar from "@/components/Sidebar"
 import { useStore } from "@/utils/store"
-import Sidebar from "../components/Sidebar"
+import Menu from "@iconify/icons-mdi/menu"
+import { Icon } from "@iconify/react"
 
 export default function MainLayout({
   children,
@@ -18,6 +18,7 @@ export default function MainLayout({
       <Sidebar />
 
       <main className="w-full sm:w-[stretch] p-5">{children}</main>
+
       <Button
         className="btn-ghost absolute right-5 top-7 btn-sm !px-2 sm:hidden block"
         onClick={toggleSb}

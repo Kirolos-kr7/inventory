@@ -1,17 +1,17 @@
 "use client"
 
-import { NextPage } from "next"
-import PageHeader from "../../components/PageHeader"
+import Button from "@/components/Button"
+import Dialog from "@/components/Dialog"
+import Loading from "@/components/Loading"
+import MonthlyBags from "@/components/MonthlyBags"
+import PageHeader from "@/components/PageHeader"
+import BagContent from "@/components/dialogs/BagContent"
 import { trpc } from "@/utils/trpc"
-import MonthlyBags from "../../components/MonthlyBags"
-import Dialog from "../../components/Dialog"
-import BagContent from "../../components/dialogs/BagContent"
+import { NextPage } from "next"
 import { useState } from "react"
-import Loading from "@/app/components/Loading"
-import Button from "@/app/components/Button"
 
-const Inventory: NextPage = () => {
-  const { data, refetch, isLoading, isRefetching } = trpc.item.getAll.useQuery()
+const Bag: NextPage = () => {
+  const { data, refetch, isLoading } = trpc.item.getAll.useQuery()
   const {
     data: bags,
     refetch: refetchMbs,
@@ -44,7 +44,7 @@ const Inventory: NextPage = () => {
               )}
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-5">
               {data?.map(({ id, name, perBag }) => (
                 <div
                   className="bg-base-300 shadow-md gap-10 p-3 flex items-center justify-between"
@@ -79,4 +79,4 @@ const Inventory: NextPage = () => {
   )
 }
 
-export default Inventory
+export default Bag
