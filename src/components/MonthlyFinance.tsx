@@ -1,24 +1,27 @@
 import Button from "@/components/Button"
 import { trpc } from "@/utils/trpc"
-import { incomeWithSrc } from "@/utils/types"
+import { type FinanceWithSrc } from "@/utils/types"
+import { FinanceType } from "@prisma/client"
 import { SetStateAction, useState } from "react"
 
-const MonthlyIncome = ({
-  income,
-  setIncome,
-  incomeChanged,
+const MonthlyFinance = ({
+  type,
+  finance,
+  setFinance,
+  financeChanged,
   done,
 }: {
-  income: incomeWithSrc[] | undefined
-  setIncome: (value: SetStateAction<incomeWithSrc[] | undefined>) => void
-  incomeChanged: () => incomeWithSrc[] | undefined
+  type: FinanceType
+  finance: FinanceWithSrc[] | undefined
+  setFinance: (value: SetStateAction<FinanceWithSrc[] | undefined>) => void
+  financeChanged: () => FinanceWithSrc[] | undefined
   done: VoidFunction
 }) => {
-  const updateMutation = trpc.income.updateIncome.useMutation()
+  const updateMutation = trpc.finance.updateFinance.useMutation()
   const [isEditing, setIsEditing] = useState(false)
 
   const save = async () => {
-    const changed = incomeChanged()
+    const changed = financeChanged()
     changed && (await updateMutation.mutateAsync(changed))
 
     done()
@@ -28,8 +31,10 @@ const MonthlyIncome = ({
   return (
     <div>
       <div className="flex justify-between items-start mb-4">
-        <h3 className="text-2xl font-semibold">الدخل الشهري</h3>
-        {income && income?.length > 0 && (
+        <h3 className="text-2xl font-semibold">
+          {type == "income" ? "الدخل الشهري" : "المصاريف الشهرية"}
+        </h3>
+        {finance && finance?.length > 0 && (
           <>
             {isEditing ? (
               <div className="flex gap-2">
@@ -59,7 +64,7 @@ const MonthlyIncome = ({
 
       {
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-5">
-          {income?.map(({ price: p, src }) => {
+          {finance?.map(({ price: p, src }) => {
             const price = String(p)
 
             return (
@@ -77,7 +82,7 @@ const MonthlyIncome = ({
                     onChange={(e) => {
                       const el = e.target
                       el.style.width = `${el.value.length}ch`
-                      setIncome((v) =>
+                      setFinance((v) =>
                         v?.map((inc) => {
                           if (src.id == inc.src.id)
                             inc.price = parseFloat(el.value)
@@ -98,4 +103,4 @@ const MonthlyIncome = ({
   )
 }
 
-export default MonthlyIncome
+export default MonthlyFinance

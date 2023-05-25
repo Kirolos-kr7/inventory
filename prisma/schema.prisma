@@ -28,36 +28,27 @@ model Item {
   transactions Transaction[]
 }
 
-model incomeList {
-  id     Int      @id @default(autoincrement())
-  name   String   @unique
-  Income Income[]
+enum FinanceType {
+  income
+  expense
 }
 
-model Income {
-  srcId Int
-  month String
-  year  String
-  price Float      @default(0)
-  src   incomeList @relation(fields: [srcId], references: [id])
-
-  @@id([srcId, month, year])
+model FinanceList {
+  id      Int         @id @default(autoincrement())
+  name    String      @unique
+  type    FinanceType
+  Finance Finance[]
 }
 
-model expenseList {
-  id      Int       @id @default(autoincrement())
-  name    String    @unique
-  Expense Expense[]
-}
-
-model Expense {
+model Finance {
+  type  FinanceType
   srcId Int
   month String
   year  String
   price Float       @default(0)
-  src   expenseList @relation(fields: [srcId], references: [id])
+  src   FinanceList @relation(fields: [srcId], references: [id])
 
-  @@id([srcId, month, year])
+  @@id([srcId, month, year, type])
 }
 
 model Transaction {

@@ -1,14 +1,14 @@
-import Button from "@/components/Button"
 import { MONTHS, currMonth, currYear } from "@/utils/dayjs"
-import { dataList, dataWithSrc } from "@/utils/types"
+import { type FinanceWithSrc } from "@/utils/types"
+import { type FinanceList } from "@prisma/client"
 
-const MonthlyIncome = ({
+const YearlyTable = ({
   data,
-  dataList,
+  financeList,
   year,
 }: {
-  data: dataWithSrc[] | undefined
-  dataList: dataList[] | undefined
+  data: FinanceWithSrc[] | undefined
+  financeList: FinanceList[] | undefined
   year: string
 }) => {
   const getCellData = (label: string, m: string) => {
@@ -35,7 +35,7 @@ const MonthlyIncome = ({
         <thead>
           <tr>
             <th className="px-1.5 text-base w-1/3">الشهر</th>
-            {dataList?.map(({ name: label }, i) => (
+            {financeList?.map(({ name: label }, i) => (
               <th key={i} className="px-1.5 text-sm">
                 {label}
               </th>
@@ -51,7 +51,7 @@ const MonthlyIncome = ({
               }`}
             >
               <th>{m}</th>
-              {dataList?.map(({ name: label }, i) => (
+              {financeList?.map(({ name: label }, i) => (
                 <td key={i}>{getCellData(label, m)}</td>
               ))}
             </tr>
@@ -59,7 +59,7 @@ const MonthlyIncome = ({
 
           <tr className="bg-base-300 border-t-2 border-primary">
             <th className="bg-transparent">الاجمالي</th>
-            {dataList?.map(({ name: label }, i) => (
+            {financeList?.map(({ name: label }, i) => (
               <td key={i} className="px-1.5 bg-transparent text-sm">
                 {getCellTotal(label)}
               </td>
@@ -71,4 +71,4 @@ const MonthlyIncome = ({
   )
 }
 
-export default MonthlyIncome
+export default YearlyTable

@@ -363,23 +363,28 @@ const transactionRouter = t.router({
     }),
 })
 
-const incomeRouter = t.router({
+const financeType = z.enum(["income", "expense"])
+
+const financeRouter = t.router({
   getByMix: protectedProcedure
     .input(
       z.object({
+        type: financeType,
         month: z.string(),
         year: z.string(),
       })
     )
-    .query(async ({ input: { month, year } }) => {
-      const incomeList = await prisma.incomeList.findMany()
+    .query(async ({ input: { month, year, type } }) => {
+      const financeList = await prisma.financeList.findMany({
+        where: { type },
+      })
 
       try {
         return await Promise.all(
-          incomeList?.map(async ({ id: srcId }) => {
-            return await prisma.income.upsert({
-              where: { srcId_month_year: { srcId, month, year } },
-              create: { srcId, month, year },
+          financeList?.map(async ({ id: srcId }) => {
+            return await prisma.finance.upsert({
+              where: { srcId_month_year_type: { srcId, month, year, type } },
+              create: { srcId, month, year, type },
               update: {},
               include: { src: true },
             })
@@ -389,24 +394,26 @@ const incomeRouter = t.router({
         console.log(err)
       }
     }),
-  getIncomeList: protectedProcedure.query(
-    async () => await prisma.incomeList.findMany()
-  ),
-  getIncomeTableData: protectedProcedure
+  getFinanceList: protectedProcedure
+    .input(z.object({ type: financeType }))
+    .query(
+      async ({ input: { type } }) =>
+        await prisma.financeList.findMany({ where: { type } })
+    ),
+  getFinanceTableData: protectedProcedure
     .input(
       z.object({
+        type: financeType,
         year: z.string(),
       })
     )
-    .query(async ({ input: { year } }) => {
-      return await prisma.income.findMany({
-        where: {
-          year,
-        },
+    .query(async ({ input: { year, type } }) => {
+      return await prisma.finance.findMany({
+        where: { year, type },
         include: { src: true },
       })
     }),
-  updateIncome: protectedProcedure
+  updateFinance: protectedProcedure
     .input(
       z.array(
         z.object({
@@ -417,85 +424,17 @@ const incomeRouter = t.router({
           month: z.string(),
           year: z.string(),
           price: z.number(),
-        })
-      )
-    )
-    .mutation(async ({ input: income }) => {
-      await Promise.all(
-        income.map(async ({ src, month, year, price }) => {
-          await prisma.income.update({
-            where: { srcId_month_year: { srcId: src.id, month, year } },
-            data: {
-              price,
-            },
-          })
-        })
-      )
-    }),
-})
-
-const expenseRouter = t.router({
-  getByMix: protectedProcedure
-    .input(
-      z.object({
-        month: z.string(),
-        year: z.string(),
-      })
-    )
-    .query(async ({ input: { month, year } }) => {
-      const expenseList = await prisma.expenseList.findMany()
-
-      try {
-        return await Promise.all(
-          expenseList?.map(async ({ id: srcId }) => {
-            return await prisma.expense.upsert({
-              where: { srcId_month_year: { srcId, month, year } },
-              create: { srcId, month, year },
-              update: {},
-              include: { src: true },
-            })
-          })
-        )
-      } catch (err) {
-        console.log(err)
-      }
-    }),
-  getExpenseList: protectedProcedure.query(
-    async () => await prisma.expenseList.findMany()
-  ),
-  getExpenseTableData: protectedProcedure
-    .input(
-      z.object({
-        year: z.string(),
-      })
-    )
-    .query(async ({ input: { year } }) => {
-      return await prisma.expense.findMany({
-        where: {
-          year,
-        },
-        include: { src: true },
-      })
-    }),
-  updateExpense: protectedProcedure
-    .input(
-      z.array(
-        z.object({
-          src: z.object({
-            id: z.number(),
-            name: z.string(),
-          }),
-          month: z.string(),
-          year: z.string(),
-          price: z.number(),
+          type: financeType,
         })
       )
     )
     .mutation(async ({ input: expense }) => {
       await Promise.all(
-        expense.map(async ({ src, month, year, price }) => {
-          await prisma.expense.update({
-            where: { srcId_month_year: { srcId: src.id, month, year } },
+        expense.map(async ({ src, month, year, price, type }) => {
+          await prisma.finance.update({
+            where: {
+              srcId_month_year_type: { srcId: src.id, month, year, type },
+            },
             data: {
               price,
             },
@@ -546,8 +485,7 @@ export const appRouter = t.router({
   auth: authRouter,
   item: itemRouter,
   transaction: transactionRouter,
-  income: incomeRouter,
-  expense: expenseRouter,
+  finance: financeRouter,
   meta: metaRouter,
 })
 

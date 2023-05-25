@@ -33,29 +33,18 @@ const main = async () => {
     })
   }
 
-  await prisma.incomeList.createMany({
+  await prisma.financeList.createMany({
     data: [
-      {
-        name: "اشتراكات",
-      },
-      {
-        name: "تبرعات",
-      },
-      {
-        name: "مبيعات",
-      },
-    ],
-  })
-
-  await prisma.expenseList.createMany({
-    data: [
-      { name: "ايجار" },
-      { name: "مرتبات" },
-      { name: "كهرباء" },
-      { name: "مياه" },
-      { name: "غاز" },
-      { name: "طعام" },
-      { name: "ورق" },
+      { type: "income", name: "اشتراكات" },
+      { type: "income", name: "تبرعات" },
+      { type: "income", name: "مبيعات" },
+      { type: "expense", name: "ايجار" },
+      { type: "expense", name: "مرتبات" },
+      { type: "expense", name: "كهرباء" },
+      { type: "expense", name: "مياه" },
+      { type: "expense", name: "غاز" },
+      { type: "expense", name: "طعام" },
+      { type: "expense", name: "ورق" },
     ],
   })
 }
