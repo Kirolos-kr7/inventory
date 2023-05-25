@@ -8,6 +8,9 @@ import Home from "@iconify/icons-mdi/home"
 import Inventory from "@iconify/icons-mdi/package-variant"
 import Bag from "@iconify/icons-mdi/bag-checked"
 import Users from "@iconify/icons-mdi/users"
+import Income from "@iconify/icons-mdi/arrow-left-bold-box"
+import Expense from "@iconify/icons-mdi/arrow-right-bold-box"
+import Stats from "@iconify/icons-mdi/table-large"
 import Menu from "@iconify/icons-mdi/chevron-double-left"
 import { deleteCookie } from "cookies-next"
 import Image from "next/image"
@@ -56,6 +59,21 @@ const Sidebar = () => {
       name: "الشنطة",
       to: "/bag",
       icon: Bag,
+    },
+    {
+      name: "الدخل",
+      to: "/income",
+      icon: Income,
+    },
+    {
+      name: "المصاريف",
+      to: "/expense",
+      icon: Expense,
+    },
+    {
+      name: "الجدول",
+      to: "/stats",
+      icon: Stats,
     },
     {
       name: "المستخدمين",

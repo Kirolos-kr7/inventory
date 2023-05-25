@@ -3,10 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider          = "postgresql"
-  url               = env("POSTGRES_PRISMA_URL")
-  directUrl         = env("POSTGRES_URL_NON_POOLING")
-  shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
 }
 
 model User {
@@ -28,6 +26,38 @@ model Item {
   createdAt DateTime @default(now())
 
   transactions Transaction[]
+}
+
+model incomeList {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  Income Income[]
+}
+
+model Income {
+  srcId Int
+  month String
+  year  String
+  price Float      @default(0)
+  src   incomeList @relation(fields: [srcId], references: [id])
+
+  @@id([srcId, month, year])
+}
+
+model expenseList {
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  Expense Expense[]
+}
+
+model Expense {
+  srcId Int
+  month String
+  year  String
+  price Float       @default(0)
+  src   expenseList @relation(fields: [srcId], references: [id])
+
+  @@id([srcId, month, year])
 }
 
 model Transaction {
