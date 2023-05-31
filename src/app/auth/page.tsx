@@ -40,7 +40,7 @@ const Auth: NextPage = () => {
   }
 
   return (
-    <div className="min-h-screen grid place-content-center">
+    <div className="min-h-[100lvh] grid place-content-center">
       <main className="flex flex-col gap-5 bg-base-300 rounded-lg w-96 sm:w-[480px] shadow-lg p-4">
         <h1 className="text-2xl font-semibold text-center">تسجيل الدخول</h1>
 

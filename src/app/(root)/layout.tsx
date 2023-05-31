@@ -14,7 +14,7 @@ export default function MainLayout({
   const { toggleSb } = useStore()
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-[100lvh]">
       <Sidebar />
 
       <main className="w-full sm:w-[stretch] p-5">{children}</main>

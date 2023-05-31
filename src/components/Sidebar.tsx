@@ -90,78 +90,81 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`bg-base-100 !shrink-0 flex items-start flex-col fixed h-screen z-30 sm:static text-base-content transition-all sb ${
+      className={`!shrink-0 fixed min-h-[100lvh] z-30 sm:static text-base-content transition-all sb ${
         sideOpened ? "w-full sm:w-60 md:w-72" : "w-0 sm:w-24"
       }`}
     >
-      <div className="grow w-full">
-        <ul className="menu gap-3 sm:gap-1 p-5 sm:p-2 sm:pt-3 grid sm:flex grid-cols-2 ">
-          {sidebarItems.map(({ name, to, icon }) => (
-            <li key={name}>
-              <Link
-                href={to}
-                onClick={() => {
-                  window.innerWidth <= 640 && setSideOpened(false)
-                }}
-                className={`flex flex-col sm:flex-row truncate border border-primary/20 sm:border-0 ${
-                  !sideOpened && "mx-auto"
-                } ${pathname == to ? "text-secondary" : ""}`}
-                prefetch={process.env.NODE_ENV == "production"}
-              >
-                <Icon icon={icon} width={28} />
-                {sideOpened && name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div
-        className={`flex gap-2 p-4 w-full justify-between items-center ${
-          !sideOpened && "flex-col"
-        }`}
-      >
-        <div className="dropdown dropdown-top ">
-          <label tabIndex={0}>
-            <button
-              className={`btn btn-ghost px-0 focus:bg-transparent hover:bg-transparent ${
-                sideOpened ? "w-36 justify-start" : "!w-16"
-              }`}
-            >
-              <div className="avatar flex items-center gap-2">
-                <div className="w-12 rounded-full">
-                  <Image
-                    src="/user.jpg"
-                    width={48}
-                    height={48}
-                    alt="user image"
-                  />
-                </div>
-                {sideOpened && userName}
-              </div>
-            </button>
-          </label>
-          <ul
-            tabIndex={0}
-            className="dropdown-content border border-base-300 bg-base-200 menu p-2 shadow-md mb-3 rounded-box w-52"
-          >
-            <li>
-              <button onClick={logout}>تسجيل خروج</button>
-            </li>
+      <div className="md:fixed bg-base-100 min-h-[100lvh] flex items-start flex-col justify-between">
+        {" "}
+        <div className="grow w-full">
+          <ul className="menu gap-3 sm:gap-1 p-5 sm:p-2 sm:pt-3 grid sm:flex grid-cols-2 ">
+            {sidebarItems.map(({ name, to, icon }) => (
+              <li key={name}>
+                <Link
+                  href={to}
+                  onClick={() => {
+                    window.innerWidth <= 640 && setSideOpened(false)
+                  }}
+                  className={`flex flex-col sm:flex-row truncate border border-primary/20 sm:border-0 ${
+                    !sideOpened && "mx-auto"
+                  } ${pathname == to ? "text-secondary" : ""}`}
+                  prefetch={process.env.NODE_ENV == "production"}
+                >
+                  <Icon icon={icon} width={28} />
+                  {sideOpened && name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
-
-        <button
-          className={`btn mb-2 ${sideOpened ? "" : "btn-sm"}`}
-          onClick={() => toggleSb()}
+        <div
+          className={`flex gap-2 p-4 w-full justify-between items-center ${
+            !sideOpened && "flex-col"
+          }`}
         >
-          <Icon
-            className={`transition-all ${
-              !sideOpened ? "rotate-0" : "rotate-180"
-            }`}
-            icon={Menu}
-            width={28}
-          />
-        </button>
+          <div className="dropdown dropdown-top ">
+            <label tabIndex={0}>
+              <button
+                className={`btn btn-ghost px-0 focus:bg-transparent hover:bg-transparent ${
+                  sideOpened ? "w-36 justify-start" : "!w-16"
+                }`}
+              >
+                <div className="avatar flex items-center gap-2">
+                  <div className="w-12 rounded-full">
+                    <Image
+                      src="/user.jpg"
+                      width={48}
+                      height={48}
+                      alt="user image"
+                    />
+                  </div>
+                  {sideOpened && userName}
+                </div>
+              </button>
+            </label>
+            <ul
+              tabIndex={0}
+              className="dropdown-content border border-base-300 bg-base-200 menu p-2 shadow-md mb-3 rounded-box w-52"
+            >
+              <li>
+                <button onClick={logout}>تسجيل خروج</button>
+              </li>
+            </ul>
+          </div>
+
+          <button
+            className={`btn mb-2 ${sideOpened ? "" : "btn-sm"}`}
+            onClick={() => toggleSb()}
+          >
+            <Icon
+              className={`transition-all ${
+                !sideOpened ? "rotate-0" : "rotate-180"
+              }`}
+              icon={Menu}
+              width={28}
+            />
+          </button>
+        </div>
       </div>
     </aside>
   )
