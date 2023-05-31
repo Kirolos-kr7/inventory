@@ -13,6 +13,20 @@ export const currYear = dayjs().format("YY")
 export const currDateShort = `${currMonth}  ${currYear}`
 
 export const MONTHS = dayjs.months()
+export const FINANCIAL_MONTHS = [
+  "يوليو",
+  "أغسطس",
+  "سبتمبر",
+  "أكتوبر",
+  "نوفمبر",
+  "ديسمبر",
+  "يناير",
+  "فبراير",
+  "مارس",
+  "أبريل",
+  "مايو",
+  "يونيو",
+]
 export const YEARS = [
   String(parseInt(currYear) - 1),
   currYear,

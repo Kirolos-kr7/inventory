@@ -6,12 +6,16 @@ import PageHeader from "@/components/PageHeader"
 import { YEARS } from "@/utils/dayjs"
 import { trpc } from "@/utils/trpc"
 import { NextPage } from "next"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FinanceType } from "@prisma/client"
+import { useSearchParams, useRouter, usePathname } from "next/navigation"
 
 const Stats: NextPage = () => {
   const [year, setYear] = useState("23")
   const [type, setType] = useState<FinanceType>("income")
+  const router = useRouter()
+  const pathname = usePathname()
+  const params = useSearchParams()
 
   const { data, isLoading } = trpc.finance.getFinanceTableData.useQuery({
     year,
@@ -20,6 +24,18 @@ const Stats: NextPage = () => {
   const { data: financeList } = trpc.finance.getFinanceList.useQuery({
     type,
   })
+
+  useEffect(() => {
+    const view = params.get("view")
+    if (view && (view == "income" || view == "expense")) {
+      setType(view)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    router.replace(`${pathname}?view=${type}`)
+  }, [type, router, pathname])
 
   return (
     <>

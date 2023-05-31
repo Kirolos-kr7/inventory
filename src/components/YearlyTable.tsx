@@ -1,4 +1,4 @@
-import { MONTHS, currMonth, currYear } from "@/utils/dayjs"
+import { FINANCIAL_MONTHS, currMonth, currYear } from "@/utils/dayjs"
 import { type FinanceWithSrc } from "@/utils/types"
 import { type FinanceList } from "@prisma/client"
 
@@ -43,7 +43,7 @@ const YearlyTable = ({
           </tr>
         </thead>
         <tbody>
-          {MONTHS.map((m) => (
+          {FINANCIAL_MONTHS.map((m) => (
             <tr
               key={m}
               className={`table-compact ${
