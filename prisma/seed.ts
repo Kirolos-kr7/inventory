@@ -44,7 +44,7 @@ const main = async () => {
       { type: "expense", name: "مياه" },
       { type: "expense", name: "غاز" },
       { type: "expense", name: "طعام" },
-      { type: "expense", name: "ورق" },
+      { type: "expense", name: "نثريات" },
     ],
   })
 }
