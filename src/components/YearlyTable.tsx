@@ -34,7 +34,7 @@ const YearlyTable = ({
       <table className="table w-full text-right">
         <thead>
           <tr>
-            <th className="px-1.5 text-base w-1/3">الشهر</th>
+            <th className="px-1.5 text-base w-1/5">الشهر</th>
             {financeList?.map(({ name: label }, i) => (
               <th key={i} className="px-1.5 text-sm">
                 {label}
