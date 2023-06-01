@@ -6,11 +6,13 @@ import { useState, useEffect } from "react"
 import { Icon } from "@iconify/react"
 import Home from "@iconify/icons-mdi/home"
 import Inventory from "@iconify/icons-mdi/package-variant"
+import InventoryAdd from "@iconify/icons-mdi/package-variant-add"
 import Bag from "@iconify/icons-mdi/bag-checked"
 import Users from "@iconify/icons-mdi/users"
 import Income from "@iconify/icons-mdi/arrow-left-bold-box"
 import Expense from "@iconify/icons-mdi/arrow-right-bold-box"
-import Stats from "@iconify/icons-mdi/table-large"
+import Stats from "@iconify/icons-mdi/finance"
+import Supply from "@iconify/icons-mdi/table"
 import Menu from "@iconify/icons-mdi/chevron-double-left"
 import { deleteCookie } from "cookies-next"
 import Image from "next/image"
@@ -56,6 +58,11 @@ const Sidebar = () => {
       icon: Inventory,
     },
     {
+      name: "اضافة للمخزون",
+      to: "/inventory-add",
+      icon: InventoryAdd,
+    },
+    {
       name: "الشنطة",
       to: "/bag",
       icon: Bag,
@@ -71,9 +78,14 @@ const Sidebar = () => {
       icon: Expense,
     },
     {
-      name: "الجدول",
+      name: "المالية",
       to: "/stats",
       icon: Stats,
+    },
+    {
+      name: "التموين",
+      to: "/supply",
+      icon: Supply,
     },
     {
       name: "المستخدمين",
@@ -94,7 +106,7 @@ const Sidebar = () => {
         sideOpened ? "w-full sm:w-60 md:w-72" : "w-0 sm:w-24"
       }`}
     >
-      <div className="md:fixed bg-base-100 min-h-[100lvh] flex items-start flex-col justify-between">
+      <div className="md:fixed bg-base-100 min-h-[100lvh] w-[inherit] flex items-start flex-col justify-between">
         {" "}
         <div className="grow w-full">
           <ul className="menu gap-3 sm:gap-1 p-5 sm:p-2 sm:pt-3 grid sm:flex grid-cols-2 ">

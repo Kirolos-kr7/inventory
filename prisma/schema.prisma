@@ -26,6 +26,7 @@ model Item {
   createdAt DateTime @default(now())
 
   transactions Transaction[]
+  Supply       Supply[]
 }
 
 enum FinanceType {
@@ -49,6 +50,16 @@ model Finance {
   src   FinanceList @relation(fields: [srcId], references: [id])
 
   @@id([srcId, month, year, type])
+}
+
+model Supply {
+  id    Int    @id @default(autoincrement())
+  srcId Int
+  month String
+  year  String
+  price Float  @default(0)
+  count Int    @default(0)
+  src   Item   @relation(fields: [srcId], references: [id])
 }
 
 model Transaction {

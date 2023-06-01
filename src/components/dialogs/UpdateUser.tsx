@@ -128,7 +128,7 @@ const UpdateUser = ({
                     id="admin"
                     className={`toggle toggle-secondary ${
                       cannotChangeAdmin
-                        ? "tooltip tooltip-open tooltip-left"
+                        ? "tooltip tooltip-open tooltip-right"
                         : ""
                     }`}
                     data-tip={

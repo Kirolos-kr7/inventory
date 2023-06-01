@@ -16,7 +16,7 @@ const YearlyTable = ({
       ({ src: { name }, month }) => name == label && month == m
     )?.price
 
-    return typeof value == "number" ? String(value) : "-"
+    return typeof value == "number" && value > 0 ? String(value) : "-"
   }
 
   const getCellTotal = (label: string) => {

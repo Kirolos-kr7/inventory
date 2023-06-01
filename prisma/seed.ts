@@ -14,12 +14,17 @@ const main = async () => {
 
   await prisma.item.createMany({
     data: [
-      {
-        name: "رز",
-      },
-      {
-        name: "سمنة",
-      },
+      { id: 1, name: "رز", perBag: 2 },
+      { id: 2, name: "سكر", perBag: 2 },
+      { id: 3, name: "مكرونة", perBag: 2 },
+      { id: 4, name: "فراخ / لحمة", perBag: 1 },
+      { id: 5, name: "شاي", perBag: 2 },
+      { id: 6, name: "ملح", perBag: 2 },
+      { id: 7, name: "زيت", perBag: 0 },
+      { id: 8, name: "عدس", perBag: 1 },
+      { id: 9, name: "سمنة", perBag: 1 },
+      { id: 10, name: "لبن", perBag: 1 },
+      { id: 11, name: "جبنة", perBag: 1 },
     ],
   })
 
@@ -46,6 +51,13 @@ const main = async () => {
       { type: "expense", name: "طعام" },
       { type: "expense", name: "نثريات" },
     ],
+  })
+
+  await prisma.meta.create({
+    data: {
+      key: "monthlyBags",
+      value: "35",
+    },
   })
 }
 

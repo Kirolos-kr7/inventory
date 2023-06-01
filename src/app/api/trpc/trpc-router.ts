@@ -444,6 +444,106 @@ const financeRouter = t.router({
     }),
 })
 
+const supplyRouter = t.router({
+  // getByMix: protectedProcedure
+  //   .input(
+  //     z.object({
+  //       type: financeType,
+  //       month: z.string(),
+  //       year: z.string(),
+  //     })
+  //   )
+  //   .query(async ({ input: { month, year, type } }) => {
+  //     const financeList = await prisma.financeList.findMany({
+  //       where: { type },
+  //     })
+
+  //     try {
+  //       return await Promise.all(
+  //         financeList?.map(async ({ id: srcId }) => {
+  //           return await prisma.finance.upsert({
+  //             where: { srcId_month_year_type: { srcId, month, year, type } },
+  //             create: { srcId, month, year, type },
+  //             update: {},
+  //             include: { src: true },
+  //           })
+  //         })
+  //       )
+  //     } catch (err) {
+  //       console.log(err)
+  //     }
+  //   }),
+  getSupplyList: protectedProcedure.query(
+    async () => await prisma.item.findMany({ select: { id: true, name: true } })
+  ),
+  getSupplyTableData: protectedProcedure
+    .input(
+      z.object({
+        year: z.string(),
+      })
+    )
+    .query(async ({ input: { year } }) => {
+      return await prisma.supply.findMany({
+        where: { year },
+        include: { src: true },
+      })
+    }),
+  addToSupply: protectedProcedure
+    .input(
+      z.object({
+        supply: z.array(
+          z.object({
+            src: z.object({
+              id: z.number(),
+              name: z.string(),
+            }),
+
+            count: z
+              .number({
+                invalid_type_error: "قيمة غير صالحة",
+              })
+              .gt(0, "غير مسموج بقيمة اقل من 1"),
+            pricePerUnit: z.number(),
+          })
+        ),
+        month: z.string(),
+        year: z.string(),
+      })
+    )
+    .mutation(async ({ input: { supply, month, year }, ctx: { user } }) => {
+      await Promise.all(
+        supply.map(async ({ src, count, pricePerUnit }) => {
+          await prisma.supply.create({
+            data: {
+              month,
+              year,
+              srcId: src.id,
+              count,
+              price: pricePerUnit,
+            },
+          })
+
+          await prisma.item.update({
+            where: { id: src.id },
+            data: {
+              count: {
+                increment: count,
+              },
+            },
+          })
+
+          await prisma.transaction.create({
+            data: {
+              itemId: src.id,
+              message: `قام ##### بالاضافة للمخزون بمقدار ${count}`,
+              userId: user?.id!,
+            },
+          })
+        })
+      )
+    }),
+})
+
 const metaRouter = t.router({
   get: protectedProcedure.input(z.string()).query(async ({ input }) => {
     return (
@@ -486,6 +586,7 @@ export const appRouter = t.router({
   item: itemRouter,
   transaction: transactionRouter,
   finance: financeRouter,
+  supply: supplyRouter,
   meta: metaRouter,
 })
 

@@ -13,6 +13,7 @@ module.exports = {
   },
   plugins: [require("daisyui")],
   daisyui: {
+    rtl: true,
     themes: [
       {
         dracula: {
