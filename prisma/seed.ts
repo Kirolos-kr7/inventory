@@ -28,7 +28,7 @@ const main = async () => {
     ],
   })
 
-  for (const itemId of [1, 2]) {
+  for (const itemId of [1, 11]) {
     await prisma.transaction.create({
       data: {
         userId: user?.id,
