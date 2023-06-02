@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast"
 
 export const metadata = {
   title: "Inventory STK",
+  manifest: "/site.webmanifest",
 }
 
 const CAIRO = Cairo({
