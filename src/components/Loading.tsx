@@ -2,7 +2,7 @@ const Loading = ({ offset = 150 }: { offset?: number }) => {
   return (
     <div
       className={`w-full grid place-content-center`}
-      style={{ height: `calc(100vh - ${offset}px)` }}
+      style={{ height: `calc(100lvh - ${offset}px)` }}
     >
       <svg
         className="stroke-secondary"
