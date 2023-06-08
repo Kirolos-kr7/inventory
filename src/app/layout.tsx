@@ -4,7 +4,7 @@ import { TrpcProvider } from "@/utils/trpc-provider"
 import { Toaster } from "react-hot-toast"
 
 export const metadata = {
-  title: "Inventory STK",
+  title: "St. Kriakos Coptic Orthozox Org",
   manifest: "/site.webmanifest",
 }
 

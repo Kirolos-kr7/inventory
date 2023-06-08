@@ -67,7 +67,7 @@ const Auth: NextPage = () => {
             initial="off"
             animate="on"
             exit="off"
-            className="flex flex-col gap-5 bg-base-300/80 rounded-lg w-96 sm:w-[480px] shadow-lg p-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            className="flex flex-col gap-5 bg-base-300/80 rounded-lg w-[calc(100%-24px)] sm:w-[480px] shadow-lg p-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
           >
             <h1 className="text-2xl font-semibold text-center">تسجيل الدخول</h1>
 
