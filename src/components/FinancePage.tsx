@@ -50,7 +50,7 @@ const FinancePage = ({ type }: { type: FinanceType }) => {
               </label>
               <ul
                 tabIndex={0}
-                className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-52"
+                className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-28 sm:w-52"
               >
                 {yearList().map((n) => (
                   <li key={n}>
@@ -70,7 +70,7 @@ const FinancePage = ({ type }: { type: FinanceType }) => {
               </label>
               <ul
                 tabIndex={0}
-                className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-52"
+                className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-28 sm:w-52"
                 dir="rtl"
               >
                 {MONTHS.map((n) => (

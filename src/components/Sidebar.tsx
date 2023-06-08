@@ -109,7 +109,7 @@ const Sidebar = () => {
       <div className="md:fixed bg-base-100 min-h-[100lvh] w-[inherit] flex items-start flex-col justify-between">
         {" "}
         <div className="grow w-full">
-          <ul className="menu gap-3 sm:gap-1 p-5 sm:p-2 sm:pt-3 grid sm:flex grid-cols-2 ">
+          <ul className="menu gap-3 sm:gap-1 p-3 sm:p-2 sm:pt-3 grid sm:flex grid-cols-2 ">
             {sidebarItems.map(({ name, to, icon }) => (
               <li key={name}>
                 <Link
@@ -130,7 +130,7 @@ const Sidebar = () => {
           </ul>
         </div>
         <div
-          className={`flex gap-2 p-4 w-full justify-between items-center ${
+          className={`flex gap-2 p-3 w-full justify-between items-center ${
             !sideOpened && "flex-col"
           }`}
         >

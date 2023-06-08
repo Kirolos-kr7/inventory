@@ -17,13 +17,15 @@ export default function MainLayout({
     <div className="flex min-h-[100lvh]">
       <Sidebar />
 
-      <main className="w-full sm:w-[stretch] p-5">{children}</main>
+      <main className="w-full sm:w-[stretch] p-3 sm:p-5 pb-20 sm:pb-5">
+        {children}
+      </main>
 
       <Button
-        className="btn-ghost absolute right-5 top-7 btn-sm !px-2 sm:hidden block"
+        className="btn-secondary flex items-center z-[29] rounded-full w-10 h-10 fixed shadow-xl right-5 bottom-5 btn-xs !p-1 sm:hidden"
         onClick={toggleSb}
       >
-        <Icon icon={Menu} width={28} />
+        <Icon icon={Menu} width={24} />
       </Button>
     </div>
   )
