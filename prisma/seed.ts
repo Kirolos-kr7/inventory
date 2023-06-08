@@ -53,11 +53,17 @@ const main = async () => {
     ],
   })
 
-  await prisma.meta.create({
-    data: {
-      key: "monthlyBags",
-      value: "35",
-    },
+  await prisma.meta.createMany({
+    data: [
+      {
+        key: "monthlyBags",
+        value: "35",
+      },
+      {
+        key: "initYear",
+        value: "22",
+      },
+    ],
   })
 }
 

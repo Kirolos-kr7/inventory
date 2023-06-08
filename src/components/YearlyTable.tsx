@@ -1,4 +1,9 @@
-import { FINANCIAL_MONTHS, currMonth, currYear } from "@/utils/dayjs"
+import {
+  currFinancialYear,
+  currMonth,
+  currYear,
+  getFinancialMonths,
+} from "@/utils/dayjs"
 import { type FinanceWithSrc } from "@/utils/types"
 import { type FinanceList } from "@prisma/client"
 
@@ -11,9 +16,10 @@ const YearlyTable = ({
   financeList: FinanceList[] | undefined
   year: string
 }) => {
-  const getCellData = (label: string, m: string) => {
+  const getCellData = (label: string, m: string, yr: string) => {
     const value = data?.find(
-      ({ src: { name }, month }) => name == label && month == m
+      ({ src: { name }, month, year: itemYear }) =>
+        name == label && month == m && itemYear == yr
     )?.price
 
     return typeof value == "number" && value > 0 ? String(value) : "-"
@@ -43,16 +49,25 @@ const YearlyTable = ({
           </tr>
         </thead>
         <tbody>
-          {FINANCIAL_MONTHS.map((m) => (
+          {getFinancialMonths(year).map(({ month, year: yr }) => (
             <tr
-              key={m}
+              key={month}
               className={`table-compact ${
-                m == currMonth && year == currYear ? "active" : ""
+                month == currMonth && `${yr}-${yr + 1}` == currFinancialYear
+                  ? "active"
+                  : ""
               }`}
             >
-              <th>{m}</th>
+              <th>
+                <div className="flex items-end gap-1">
+                  {month}
+                  <span className="text-gray-400 font-normal text-xs -mb-px">
+                    {yr}
+                  </span>
+                </div>
+              </th>
               {financeList?.map(({ name: label }, i) => (
-                <td key={i}>{getCellData(label, m)}</td>
+                <td key={i}>{getCellData(label, month, String(yr))}</td>
               ))}
             </tr>
           ))}

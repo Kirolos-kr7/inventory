@@ -3,15 +3,20 @@
 import YearlyTable from "@/components/YearlyTable"
 import Loading from "@/components/Loading"
 import PageHeader from "@/components/PageHeader"
-import { YEARS } from "@/utils/dayjs"
+import { MONTHS, currFinancialYear, currMonth } from "@/utils/dayjs"
 import { trpc } from "@/utils/trpc"
 import { NextPage } from "next"
 import { useEffect, useState } from "react"
 import { FinanceType } from "@prisma/client"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
+import { yearList } from "@/utils/helpers"
 
 const Stats: NextPage = () => {
-  const [year, setYear] = useState("23")
+  const [year, setYear] = useState(() => {
+    if (MONTHS.slice(0, 6).includes(currMonth))
+      return `${parseInt(currFinancialYear) - 1}-${parseInt(currFinancialYear)}`
+    else return currFinancialYear
+  })
   const [type, setType] = useState<FinanceType>("income")
   const router = useRouter()
   const pathname = usePathname()
@@ -51,15 +56,14 @@ const Stats: NextPage = () => {
               <ul
                 tabIndex={0}
                 className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-52"
-                dir="rtl"
               >
-                {YEARS.map((n) => (
-                  <li key={n}>
+                {yearList(true).map((y) => (
+                  <li key={y}>
                     <a
-                      className={n == year ? "active" : ""}
-                      onClick={() => setYear(n)}
+                      className={y == year ? "active" : ""}
+                      onClick={() => setYear(y)}
                     >
-                      {n}
+                      {y}
                     </a>
                   </li>
                 ))}

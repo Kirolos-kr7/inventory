@@ -1,4 +1,4 @@
-import { FINANCIAL_MONTHS, currMonth, currYear } from "@/utils/dayjs"
+import { currFinancialYear, currMonth, getFinancialMonths } from "@/utils/dayjs"
 import { type SupplyWithSrc } from "@/utils/types"
 import { Fragment } from "react"
 
@@ -13,9 +13,10 @@ const SupplyTable = ({
   year: string
   showDetails: boolean
 }) => {
-  const getCellData = (label: string, m: string) => {
+  const getCellData = (label: string, m: string, yr: string) => {
     const items = data?.filter(
-      ({ src: { name }, month }) => name == label && month == m
+      ({ src: { name }, month, year: itemYear }) =>
+        name == label && month == m && itemYear == yr
     )
 
     if (items && items.length > 0) {
@@ -52,11 +53,11 @@ const SupplyTable = ({
     return typeof total == "number" ? total : "-"
   }
 
-  const getMonthlyTotal = (label: string) => {
+  const getMonthlyTotal = (label: string, yr: string) => {
     let total = 0
 
-    data?.forEach(({ month, price, count }) => {
-      if (month == label) total += price * count
+    data?.forEach(({ month, price, count, year: itemYear }) => {
+      if (month == label && itemYear == yr) total += price * count
     })
 
     return total || "-"
@@ -77,20 +78,29 @@ const SupplyTable = ({
           </tr>
         </thead>
         <tbody>
-          {FINANCIAL_MONTHS.map((m) => (
+          {getFinancialMonths(year).map(({ month, year: yr }) => (
             <tr
-              key={m}
+              key={month}
               className={`table-compact ${
-                m == currMonth && year == currYear ? "active" : ""
+                month == currMonth && `${yr}-${yr + 1}` == currFinancialYear
+                  ? "active"
+                  : ""
               }`}
             >
-              <th>{m}</th>
+              <th>
+                <div className="flex items-end gap-1">
+                  {month}
+                  <span className="text-gray-400 font-normal text-xs -mb-px">
+                    {yr}
+                  </span>
+                </div>
+              </th>
               {supplyList?.map(({ name: label }, i) => (
                 <td key={i} className="p-0">
-                  {getCellData(label, m)}
+                  {getCellData(label, month, String(yr))}
                 </td>
               ))}
-              <td>{getMonthlyTotal(m)}</td>
+              <td>{getMonthlyTotal(month, String(yr))}</td>
             </tr>
           ))}
 

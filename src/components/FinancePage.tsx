@@ -3,11 +3,12 @@
 import MonthlyFinance from "@/components/MonthlyFinance"
 import Loading from "@/components/Loading"
 import PageHeader from "@/components/PageHeader"
-import { MONTHS, YEARS, currMonth, currYear } from "@/utils/dayjs"
+import { MONTHS, currMonth, currYear } from "@/utils/dayjs"
 import { trpc } from "@/utils/trpc"
 import { useEffect, useState } from "react"
 import { type FinanceWithSrc } from "@/utils/types"
 import { FinanceType } from "@prisma/client"
+import { yearList } from "@/utils/helpers"
 
 const FinancePage = ({ type }: { type: FinanceType }) => {
   const [month, setMonth] = useState(currMonth)
@@ -50,9 +51,8 @@ const FinancePage = ({ type }: { type: FinanceType }) => {
               <ul
                 tabIndex={0}
                 className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-52"
-                dir="rtl"
               >
-                {YEARS.map((n) => (
+                {yearList().map((n) => (
                   <li key={n}>
                     <a
                       className={n == year ? "active" : ""}

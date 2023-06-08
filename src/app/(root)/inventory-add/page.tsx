@@ -8,10 +8,11 @@ import { Icon } from "@iconify/react/dist/offline"
 import Add from "@iconify/icons-mdi/add"
 import Remove from "@iconify/icons-mdi/remove"
 import { NextPage } from "next"
-import { Fragment, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { handleError } from "@/utils/handleError"
-import { MONTHS, YEARS, currMonth, currYear } from "@/utils/dayjs"
+import { MONTHS, currMonth, currYear } from "@/utils/dayjs"
 import { toast } from "react-hot-toast"
+import { yearList } from "@/utils/helpers"
 
 type src = { id: number; name: string }
 
@@ -105,9 +106,8 @@ const InventoryAdd: NextPage = () => {
               <ul
                 tabIndex={0}
                 className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-52"
-                dir="rtl"
               >
-                {YEARS.map((n) => (
+                {yearList().map((n) => (
                   <li key={n}>
                     <a
                       className={n == year ? "active" : ""}

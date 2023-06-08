@@ -5,6 +5,7 @@ import { prisma } from "@/utils/prisma"
 import { genJWT } from "@/utils/jwt"
 import { compare, hash, genSalt } from "bcrypt"
 import { Context } from "./[trpc]/context"
+import { MONTHS } from "@/utils/dayjs"
 
 export const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -408,10 +409,23 @@ const financeRouter = t.router({
       })
     )
     .query(async ({ input: { year, type } }) => {
-      return await prisma.finance.findMany({
-        where: { year, type },
-        include: { src: true },
-      })
+      const years = year.split("-")
+
+      const [x, y] = await Promise.all(
+        years.map(
+          async (y) =>
+            await prisma.finance.findMany({
+              where: { year: y, type },
+              include: { src: true },
+            })
+        )
+      )
+
+      return [...x, ...y].filter(
+        ({ year, month }) =>
+          (year == years[0] && MONTHS.slice(7, 12).includes(month)) ||
+          (year == years[1] && MONTHS.slice(0, 6).includes(month))
+      )
     }),
   updateFinance: protectedProcedure
     .input(
@@ -445,34 +459,6 @@ const financeRouter = t.router({
 })
 
 const supplyRouter = t.router({
-  // getByMix: protectedProcedure
-  //   .input(
-  //     z.object({
-  //       type: financeType,
-  //       month: z.string(),
-  //       year: z.string(),
-  //     })
-  //   )
-  //   .query(async ({ input: { month, year, type } }) => {
-  //     const financeList = await prisma.financeList.findMany({
-  //       where: { type },
-  //     })
-
-  //     try {
-  //       return await Promise.all(
-  //         financeList?.map(async ({ id: srcId }) => {
-  //           return await prisma.finance.upsert({
-  //             where: { srcId_month_year_type: { srcId, month, year, type } },
-  //             create: { srcId, month, year, type },
-  //             update: {},
-  //             include: { src: true },
-  //           })
-  //         })
-  //       )
-  //     } catch (err) {
-  //       console.log(err)
-  //     }
-  //   }),
   getSupplyList: protectedProcedure.query(
     async () => await prisma.item.findMany({ select: { id: true, name: true } })
   ),
@@ -483,10 +469,23 @@ const supplyRouter = t.router({
       })
     )
     .query(async ({ input: { year } }) => {
-      return await prisma.supply.findMany({
-        where: { year },
-        include: { src: true },
-      })
+      const years = year.split("-")
+
+      const [x, y] = await Promise.all(
+        years.map(
+          async (y) =>
+            await prisma.supply.findMany({
+              where: { year: y },
+              include: { src: true },
+            })
+        )
+      )
+
+      return [...x, ...y].filter(
+        ({ year, month }) =>
+          (year == years[0] && MONTHS.slice(7, 12).includes(month)) ||
+          (year == years[1] && MONTHS.slice(0, 6).includes(month))
+      )
     }),
   addToSupply: protectedProcedure
     .input(
