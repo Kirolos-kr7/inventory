@@ -72,10 +72,10 @@ const YearlyTable = ({
             </tr>
           ))}
 
-          <tr className="bg-base-300 border-t-2 border-primary">
-            <th className="bg-transparent">الاجمالي</th>
+          <tr className="bg-base-300 border-t-2 border-primary [&>*]:bg-inherit">
+            <th>الاجمالي</th>
             {financeList?.map(({ name: label }, i) => (
-              <td key={i} className="px-1.5 bg-transparent text-sm">
+              <td key={i} className="px-1.5 text-sm">
                 {getCellTotal(label)}
               </td>
             ))}

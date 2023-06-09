@@ -104,14 +104,14 @@ const SupplyTable = ({
             </tr>
           ))}
 
-          <tr className="bg-base-300 border-t-2 border-primary">
-            <th className="bg-transparent">اجمالي العنصر</th>
+          <tr className="bg-base-300 border-t-2 border-primary [&>*]:bg-inherit">
+            <th>اجمالي العنصر</th>
             {supplyList?.map(({ name: label }, i) => (
-              <td key={i} className="px-1.5 bg-transparent text-sm">
+              <td key={i} className="px-1.5 text-sm">
                 {getItemTotal(label)}
               </td>
             ))}
-            <td className="px-1.5 bg-transparent text-sm">-</td>
+            <td className="px-1.5 text-sm">-</td>
           </tr>
         </tbody>
       </table>

@@ -147,7 +147,10 @@ const InventoryAdd: NextPage = () => {
       {isLoading && <Loading />}
 
       {!isLoading && (
-        <form onSubmit={save} className="flex flex-col gap-5">
+        <form
+          onSubmit={save}
+          className="flex flex-col gap-5 w-full overflow-x-auto py-2"
+        >
           {supply.map(({ src, count, pricePerUnit }, i) => (
             <div className="flex gap-5 items-center" key={i}>
               <Button
