@@ -65,6 +65,25 @@ const main = async () => {
       },
     ],
   })
+
+  await prisma.serviceArea.createMany({
+    data: [
+      { name: "عين شمس" },
+      { name: "عزبة النخل" },
+      { name: "المرج" },
+      { name: "المنوفية" },
+    ],
+  })
+
+  await prisma.donee.createMany({
+    data: [
+      { name: "مخدوم x", locationId: 1 },
+      { name: "مخدوم y", locationId: 1 },
+      { name: "مخدوم z", locationId: 1 },
+      { name: "مخدوم a", locationId: 2 },
+      { name: "مخدوم b", locationId: 2 },
+    ],
+  })
 }
 
 main()

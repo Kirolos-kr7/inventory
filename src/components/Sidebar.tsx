@@ -7,12 +7,14 @@ import { Icon } from "@iconify/react"
 import Home from "@iconify/icons-mdi/home"
 import Inventory from "@iconify/icons-mdi/package-variant"
 import InventoryAdd from "@iconify/icons-mdi/package-variant-add"
+import Checkout from "@iconify/icons-mdi/package-variant-minus"
 import Bag from "@iconify/icons-mdi/bag-checked"
-import Users from "@iconify/icons-mdi/users"
 import Income from "@iconify/icons-mdi/arrow-left-bold-box"
 import Expense from "@iconify/icons-mdi/arrow-right-bold-box"
 import Stats from "@iconify/icons-mdi/finance"
 import Supply from "@iconify/icons-mdi/table"
+import Donee from "@iconify/icons-mdi/account-cash"
+import Users from "@iconify/icons-mdi/users"
 import Menu from "@iconify/icons-mdi/chevron-double-left"
 import { deleteCookie } from "cookies-next"
 import Image from "next/image"
@@ -63,6 +65,11 @@ const Sidebar = () => {
       icon: InventoryAdd,
     },
     {
+      name: "الصرف",
+      to: "/checkout",
+      icon: Checkout,
+    },
+    {
       name: "الشنطة",
       to: "/bag",
       icon: Bag,
@@ -88,6 +95,11 @@ const Sidebar = () => {
       icon: Supply,
     },
     {
+      name: "المخدومين",
+      to: "/donee",
+      icon: Donee,
+    },
+    {
       name: "المستخدمين",
       to: "/users",
       icon: Users,
@@ -106,9 +118,8 @@ const Sidebar = () => {
         sideOpened ? "w-full sm:w-60 md:w-72" : "w-0 sm:w-24"
       }`}
     >
-      <div className="md:fixed bg-base-100 min-h-[100lvh] w-[inherit] flex items-start flex-col justify-between">
-        {" "}
-        <div className="grow w-full">
+      <div className="sm:fixed bg-base-100 h-[100lvh] w-[inherit] flex items-start flex-col justify-between">
+        <div className="grow w-full overflow-y-auto">
           <ul className="menu gap-3 sm:gap-1 p-3 sm:p-2 sm:pt-3 grid sm:flex grid-cols-2 ">
             {sidebarItems.map(({ name, to, icon }) => (
               <li key={name}>
@@ -130,7 +141,7 @@ const Sidebar = () => {
           </ul>
         </div>
         <div
-          className={`flex gap-2 p-3 w-full justify-between items-center ${
+          className={`flex flex-1 gap-2 p-3 w-full justify-between items-center ${
             !sideOpened && "flex-col"
           }`}
         >

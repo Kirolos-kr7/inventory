@@ -18,6 +18,20 @@ model User {
   Transactions Transaction[]
 }
 
+model ServiceArea {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  Donee Donee[]
+}
+
+model Donee {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  location   ServiceArea @relation(fields: [locationId], references: [id])
+  createdAt  DateTime    @default(now())
+  locationId Int
+}
+
 model Item {
   id        Int      @id @default(autoincrement())
   name      String

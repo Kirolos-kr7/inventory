@@ -580,6 +580,72 @@ const metaRouter = t.router({
     }),
 })
 
+const doneeRouter = t.router({
+  getAll: protectedProcedure.query(async () => {
+    return await prisma.donee.findMany({
+      include: { location: true },
+    })
+  }),
+  getLocations: protectedProcedure.query(async () => {
+    return await prisma.serviceArea.findMany()
+  }),
+  add: protectedProcedure
+    .input(
+      z.object({
+        name: z
+          .string()
+          .min(2, "يجب على اسم المخدوم ان يحتوي على الاقل على 2 أحرف")
+          .trim(),
+        location: z.number(),
+      })
+    )
+    .mutation(async ({ input: { name, location } }) => {
+      const donee = await prisma.donee.findUnique({
+        where: {
+          name,
+        },
+      })
+
+      if (donee)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "اسم المخدوم مأخوذ, اختر اسم اخر",
+        })
+
+      await prisma.donee.create({
+        data: { name, locationId: location },
+      })
+    }),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        name: z
+          .string()
+          .min(2, "يجب على اسم المخدوم ان يحتوي على الاقل على 2 أحرف"),
+        location: z.number(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { id, name, location } = input
+
+      await prisma.donee.update({
+        where: {
+          id,
+        },
+        data: {
+          name,
+          locationId: location,
+        },
+      })
+    }),
+  remove: protectedProcedure.input(z.number()).mutation(async ({ input }) => {
+    await prisma.donee.delete({
+      where: { id: input },
+    })
+  }),
+})
+
 export const appRouter = t.router({
   auth: authRouter,
   item: itemRouter,
@@ -587,6 +653,7 @@ export const appRouter = t.router({
   finance: financeRouter,
   supply: supplyRouter,
   meta: metaRouter,
+  donee: doneeRouter,
 })
 
 export type AppRouter = typeof appRouter
