@@ -696,18 +696,23 @@ const checkoutRouter = t.router({
     .mutation(async ({ input: { changes, month, year } }) => {
       await Promise.all(
         changes.map(async ({ doneeId, itemId, amount, diff }) => {
-          await prisma.checkout.upsert({
-            where: {
-              doneeId_itemId_month_year: { doneeId, itemId, month, year },
-            },
-            create: { doneeId, itemId, month, year, amount },
-            update: { amount },
-          })
+          if (amount == 0)
+            await prisma.checkout.delete({
+              where: {
+                doneeId_itemId_month_year: { doneeId, itemId, month, year },
+              },
+            })
+          else
+            await prisma.checkout.upsert({
+              where: {
+                doneeId_itemId_month_year: { doneeId, itemId, month, year },
+              },
+              create: { doneeId, itemId, month, year, amount },
+              update: { amount },
+            })
 
           const operation: { increment?: number; decrement?: number } =
             diff < 0 ? { increment: Math.abs(diff) } : { decrement: diff }
-
-          console.log(operation)
 
           await prisma.item.update({
             where: { id: itemId },
