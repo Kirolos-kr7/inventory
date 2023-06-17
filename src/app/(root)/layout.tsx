@@ -22,10 +22,10 @@ export default function MainLayout({
       </main>
 
       <Button
-        className="btn-secondary flex items-center z-[29] rounded-full w-10 h-10 fixed shadow-xl right-5 bottom-5 btn-xs !p-1 sm:hidden"
+        className="btn-secondary btn-square flex items-center z-[29] rounded-full w-12 h-12 fixed shadow-xl right-5 bottom-5 btn-xs !p-1 sm:hidden"
         onClick={toggleSb}
       >
-        <Icon icon={Menu} width={24} />
+        <Icon icon={Menu} width={26} />
       </Button>
     </div>
   )
