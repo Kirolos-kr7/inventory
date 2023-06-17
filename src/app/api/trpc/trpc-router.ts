@@ -661,6 +661,23 @@ const checkoutRouter = t.router({
           where: { month, year },
         })
     ),
+  progress: protectedProcedure
+    .input(z.object({ month: z.string(), year: z.string() }))
+    .query(async ({ input: { month, year } }) => {
+      const donees = await prisma.donee.findMany()
+      const locations = await prisma.serviceArea.findMany()
+
+      const progress = await Promise.all(
+        donees.map(async ({ id, locationId }) => ({
+          location: locationId,
+          value: await prisma.checkout.findFirst({
+            where: { month, year, doneeId: id, amount: { gt: 0 } },
+          }),
+        }))
+      )
+
+      return { progress, locations }
+    }),
   update: protectedProcedure
     .input(
       z.object({
