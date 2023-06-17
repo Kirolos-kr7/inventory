@@ -646,6 +646,60 @@ const doneeRouter = t.router({
   }),
 })
 
+const checkoutRouter = t.router({
+  getByMix: protectedProcedure
+    .input(
+      z.object({
+        month: z.string(),
+        year: z.string(),
+      })
+    )
+    .query(
+      async ({ input: { month, year } }) =>
+        await prisma.checkout.findMany({
+          where: { month, year },
+        })
+    ),
+  update: protectedProcedure
+    .input(
+      z.object({
+        changes: z.array(
+          z.object({
+            doneeId: z.number(),
+            itemId: z.number(),
+            amount: z.number(),
+            diff: z.number(),
+          })
+        ),
+        month: z.string(),
+        year: z.string(),
+      })
+    )
+    .mutation(async ({ input: { changes, month, year } }) => {
+      await Promise.all(
+        changes.map(async ({ doneeId, itemId, amount, diff }) => {
+          await prisma.checkout.upsert({
+            where: {
+              doneeId_itemId_month_year: { doneeId, itemId, month, year },
+            },
+            create: { doneeId, itemId, month, year, amount },
+            update: { amount },
+          })
+
+          const operation: { increment?: number; decrement?: number } =
+            diff < 0 ? { increment: Math.abs(diff) } : { decrement: diff }
+
+          console.log(operation)
+
+          await prisma.item.update({
+            where: { id: itemId },
+            data: { count: operation },
+          })
+        })
+      )
+    }),
+})
+
 export const appRouter = t.router({
   auth: authRouter,
   item: itemRouter,
@@ -654,6 +708,7 @@ export const appRouter = t.router({
   supply: supplyRouter,
   meta: metaRouter,
   donee: doneeRouter,
+  checkout: checkoutRouter,
 })
 
 export type AppRouter = typeof appRouter

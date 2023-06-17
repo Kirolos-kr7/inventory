@@ -12,3 +12,10 @@ export interface SupplyItem {
 export interface SupplyWithSrc extends Supply {
   src: SupplyItem
 }
+
+export interface CheckoutChange {
+  doneeId: number
+  itemId: number
+  amount: number
+  diff: number
+}

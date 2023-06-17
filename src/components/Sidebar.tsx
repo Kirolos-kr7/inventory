@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react"
 import Home from "@iconify/icons-mdi/home"
 import Inventory from "@iconify/icons-mdi/package-variant"
 import InventoryAdd from "@iconify/icons-mdi/package-variant-add"
-import Checkout from "@iconify/icons-mdi/package-variant-minus"
+import Checkout from "@iconify/icons-mdi/money"
 import Bag from "@iconify/icons-mdi/bag-checked"
 import Income from "@iconify/icons-mdi/arrow-left-bold-box"
 import Expense from "@iconify/icons-mdi/arrow-right-bold-box"
@@ -37,8 +37,7 @@ const Sidebar = () => {
     window.addEventListener("resize", handleResize)
 
     return window.addEventListener("resize", handleResize)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [toggleSb])
 
   useEffect(() => {
     setSideOpened(sbOpened)
@@ -141,8 +140,8 @@ const Sidebar = () => {
           </ul>
         </div>
         <div
-          className={`flex flex-1 gap-2 p-3 w-full justify-between items-center ${
-            !sideOpened && "flex-col"
+          className={`flex flex-1 gap-2 p-3 w-full items-center ${
+            !sideOpened ? "flex-col justify-end" : "justify-between"
           }`}
         >
           <div className="dropdown dropdown-top ">

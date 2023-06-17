@@ -30,6 +30,7 @@ model Donee {
   location   ServiceArea @relation(fields: [locationId], references: [id])
   createdAt  DateTime    @default(now())
   locationId Int
+  Checkout   Checkout[]
 }
 
 model Item {
@@ -41,6 +42,7 @@ model Item {
 
   transactions Transaction[]
   Supply       Supply[]
+  Checkout     Checkout[]
 }
 
 enum FinanceType {
@@ -74,6 +76,18 @@ model Supply {
   price Float  @default(0)
   count Int    @default(0)
   src   Item   @relation(fields: [srcId], references: [id])
+}
+
+model Checkout {
+  month   String
+  year    String
+  amount  Int
+  doneeId Int
+  Donee   Donee  @relation(fields: [doneeId], references: [id])
+  itemId  Int
+  Item    Item   @relation(fields: [itemId], references: [id])
+
+  @@id([doneeId, itemId, month, year])
 }
 
 model Transaction {
