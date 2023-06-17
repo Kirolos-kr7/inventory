@@ -76,21 +76,20 @@ const MonthlyFinance = ({
                 <div className="flex items-start">
                   <input
                     type="number"
-                    className={`bg-base-300 text-secondary text-3xl font-black self-end`}
+                    className={`bg-base-300 text-secondary text-3xl text-center font-black self-end`}
                     value={price}
-                    style={{ width: `${String(price).length}ch` }}
-                    onChange={(e) => {
-                      const el = e.target
-                      el.style.width = `${el.value.length}ch`
+                    style={{ width: `${String(price).length}.3ch` }}
+                    onChange={({ target: { value } }) => {
                       setFinance((v) =>
                         v?.map((inc) => {
                           if (src.id == inc.src.id)
-                            inc.price = parseFloat(el.value)
+                            inc.price = parseFloat(value)
 
                           return inc
                         })
                       )
                     }}
+                    onFocus={({ target }) => target.select()}
                     disabled={!isEditing}
                   />
                 </div>

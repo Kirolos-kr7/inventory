@@ -6,10 +6,10 @@ import Add from "@iconify/icons-mdi/add"
 import Subrtact from "@iconify/icons-mdi/minus"
 import History from "@iconify/icons-mdi/history"
 import Remove from "@iconify/icons-mdi/delete"
-import { ChangeEvent } from "react"
+import { ChangeEvent, FC } from "react"
 import Button from "./Button"
 
-const ItemCard: React.FC<{
+interface ItemCardProps {
   item: Item
   bags: number
   isEditing: boolean
@@ -24,7 +24,9 @@ const ItemCard: React.FC<{
   remove: (id: number) => void
   showHistory: (id: number) => void
   pending: boolean
-}> = ({
+}
+
+const ItemCard: FC<ItemCardProps> = ({
   item,
   bags,
   isEditing,
@@ -83,6 +85,9 @@ const ItemCard: React.FC<{
               disabled={(!isEditing && !isRemoving) || pending}
             />
             {countChanged && "*"}
+            <span className="ms-1 self-end text-gray-400">
+              / {perBag * bags}
+            </span>
           </div>
 
           {!isEditing && !isRemoving && (
@@ -108,7 +113,7 @@ const ItemCard: React.FC<{
           <div className="flex items-stretch mt-2 gap-2">
             <Button
               className="shrink btn-sm w-full"
-              onClick={() => count < 99 && changeCount("inc", id)}
+              onClick={() => changeCount("inc", id)}
               disabled={pending}
             >
               <Icon icon={Add} width={24} />

@@ -17,7 +17,7 @@ export default function MainLayout({
     <div className="flex min-h-[100lvh]">
       <Sidebar />
 
-      <main className="w-full sm:w-[stretch] p-3 sm:p-5 pb-20 sm:pb-5">
+      <main className="w-full overflow-x-auto sm:w-[stretch] p-3 sm:p-5 pb-20 sm:pb-5">
         {children}
       </main>
 

@@ -37,37 +37,6 @@ const MonthlyBags = ({
 
   return (
     <>
-      <div className="flex justify-between">
-        <h3 className="text-2xl font-semibold mb-4">عدد الشنط الشهرية</h3>
-
-        {isEditing ? (
-          <div className="flex gap-2">
-            <Button
-              className="btn-sm btn-error"
-              disabled={pending}
-              onClick={() => {
-                setMbs(parseInt(bags))
-                setIsEditing(false)
-              }}
-            >
-              الغاء
-            </Button>
-            <Button
-              className="btn-sm"
-              onClick={save}
-              pending={pending}
-              disabled={String(mbs) === bags}
-            >
-              حفظ
-            </Button>
-          </div>
-        ) : (
-          <Button className="btn-sm" onClick={() => setIsEditing(true)}>
-            تعديل
-          </Button>
-        )}
-      </div>
-
       <div className="text-secondary text-3xl font-black h-14">
         {isEditing ? (
           <motion.div

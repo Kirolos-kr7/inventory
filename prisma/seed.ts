@@ -4,7 +4,9 @@ const prisma = new PrismaClient({
 })
 
 const main = async () => {
-  const user = await prisma.user.create({
+  console.time("Seed finished in")
+
+  await prisma.user.create({
     data: {
       name: "كيرلس",
       password: "$2a$10$.edjaS/EsDN4xT13QRwY9.TCpEzkT6izf78Fg0KxB8.itqW5UHmOG",
@@ -14,29 +16,20 @@ const main = async () => {
 
   await prisma.item.createMany({
     data: [
-      { id: 1, name: "رز", perBag: 2 },
-      { id: 2, name: "سكر", perBag: 2 },
-      { id: 3, name: "مكرونة", perBag: 2 },
-      { id: 4, name: "فراخ / لحمة", perBag: 1 },
-      { id: 5, name: "شاي", perBag: 2 },
-      { id: 6, name: "ملح", perBag: 2 },
-      { id: 7, name: "زيت", perBag: 0 },
-      { id: 8, name: "عدس", perBag: 1 },
-      { id: 9, name: "سمنة", perBag: 1 },
-      { id: 10, name: "لبن", perBag: 1 },
-      { id: 11, name: "جبنة", perBag: 1 },
+      { name: "رز", perBag: 2, count: 107 },
+      { name: "سكر", perBag: 2, count: 79 },
+      { name: "مكرونة", perBag: 2, count: 123 },
+      { name: "شاي", perBag: 2, count: 6 },
+      { name: "زيت", perBag: 0, count: 23 },
+      { name: "فراخ", perBag: 1, count: 0 },
+      { name: "لحمة", perBag: 1, count: 0 },
+      { name: "ملح", perBag: 0, count: 28 },
+      { name: "عدس", perBag: 1, count: 17 },
+      { name: "سمنة", perBag: 1, count: 40 },
+      { name: "لبن", perBag: 1, count: 0 },
+      { name: "جبنة", perBag: 1, count: 0 },
     ],
   })
-
-  for (const itemId of [1, 11]) {
-    await prisma.transaction.create({
-      data: {
-        userId: user?.id,
-        itemId: itemId,
-        message: `قام ##### باضافة هذا العنصر`,
-      },
-    })
-  }
 
   await prisma.financeList.createMany({
     data: [
@@ -56,12 +49,8 @@ const main = async () => {
   await prisma.meta.createMany({
     data: [
       {
-        key: "monthlyBags",
-        value: "35",
-      },
-      {
         key: "initYear",
-        value: "22",
+        value: "23",
       },
     ],
   })
@@ -77,13 +66,49 @@ const main = async () => {
 
   await prisma.donee.createMany({
     data: [
-      { name: "مخدوم x", locationId: 1 },
-      { name: "مخدوم y", locationId: 1 },
-      { name: "مخدوم z", locationId: 1 },
-      { name: "مخدوم a", locationId: 2 },
-      { name: "مخدوم b", locationId: 2 },
+      // عين شمس
+      { name: "ماري ذكي", locationId: 1 },
+      { name: "سعاد ناشد جرجس عطية", locationId: 1 },
+      { name: "انعام عبدالله اخنوخ دميان", locationId: 1 },
+      { name: "مريم جمال بديع بخيت", locationId: 1 },
+      { name: "نانا فوزي عياد جرجس", locationId: 1 },
+      { name: "عاطف لمعي زكي ميخائيل", locationId: 1 },
+      { name: "ايناس عدلي مجلي هندي", locationId: 1 },
+      { name: "عايدة رفعت جبرة", locationId: 1 },
+      { name: "سلوى عطية عطوان مفتاح", locationId: 1 },
+      { name: "ماجدة راجي عبد السيد", locationId: 1 },
+      // عزبة النخل
+      { name: "روماني فلى حنين حنا", locationId: 2 },
+      { name: "فكري وليم إبراهيم جرجس", locationId: 2 },
+      { name: "وجدي درنير يونان ميخائيل", locationId: 2 },
+      //المرج
+      { name: "اكرم شمشوم زكي داود", locationId: 3 },
+      { name: "ايمن رمزي ثابت حرز", locationId: 3 },
+      { name: "كوثر فارس عبدالملك يوسف", locationId: 3 },
+      { name: "جميل سليمان سدره بخيت", locationId: 3 },
+      { name: "هند فضل ملك إبراهيم", locationId: 3 },
+      { name: "نيفين فتحي شوقي زكي ", locationId: 3 },
+      { name: "كميلة ولسن عوض تاوضروس", locationId: 3 },
+      { name: "لمعي وجيه عطالله عبدالشهيد", locationId: 3 },
+      { name: "سعاد عبدالمسيح جرس جرجس", locationId: 3 },
+      { name: "وجيه نصيف إبراهيم بشاي", locationId: 3 },
+      { name: "عايدة إبراهيم يوسف إبراهيم", locationId: 3 },
+      { name: "فرجه فريج نجيب عطوان", locationId: 3 },
+      { name: "اسحق ميخائيل عبد المسيح", locationId: 3 },
+      // المنوفية
+      { name: "سامي كامل غالي", locationId: 4 },
+      { name: "هاني كامل عبد المسيح", locationId: 4 },
+      { name: "عبد السيد كامل غالي", locationId: 4 },
+      { name: "فايزة يوسف غالي", locationId: 4 },
+      { name: "مريم فهمي مرقص", locationId: 4 },
+      { name: "نادية بشارة يوسف", locationId: 4 },
+      { name: "فايزة وهبة برسوم", locationId: 4 },
+      { name: "ماهر كامل اسعد عوض الله", locationId: 4 },
+      { name: "إيهاب مهني عبد الشهيد", locationId: 4 },
     ],
   })
+
+  console.timeEnd("Seed finished in")
 }
 
 main()

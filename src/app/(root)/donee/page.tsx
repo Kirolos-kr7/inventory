@@ -50,7 +50,7 @@ const Users: NextPage = () => {
             <div className="flex items-center gap-2">
               <div className="dropdown dropdown-end">
                 <label tabIndex={0} className="btn m-1 btn-sm sm:btn-md">
-                  المناطق
+                  المنطقة
                 </label>
                 <ul
                   tabIndex={0}

@@ -105,7 +105,7 @@ const SupplyTable = ({
           ))}
 
           <tr className="bg-base-300 border-t-2 border-primary [&>*]:bg-inherit">
-            <th>اجمالي العنصر</th>
+            <th className="px-1.5 text-base w-1/5">اجمالي العنصر</th>
             {supplyList?.map(({ name: label }, i) => (
               <td key={i} className="px-1.5 text-sm">
                 {getItemTotal(label)}

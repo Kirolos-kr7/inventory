@@ -27,13 +27,6 @@ const Bag: NextPage = () => {
 
       {!isLoading && (
         <div>
-          <div className="mb-6">
-            <MonthlyBags
-              bags={bags || "0"}
-              update={() => refetchMbs() as Promise<any>}
-            />
-          </div>
-
           <div>
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-2xl font-semibold">محتويات الشنطة</h3>

@@ -165,7 +165,6 @@ const InventoryAdd: NextPage = () => {
                   العنصر
                 </label>
                 <select
-                  dir="ltr"
                   className="select select-sm select-secondary w-[6rem]"
                   id={`item_${i}`}
                   onChange={(e) => handleChange("src", e.target.value, i)}

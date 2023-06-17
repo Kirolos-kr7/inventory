@@ -35,7 +35,7 @@ const Inventory: NextPage = () => {
   const countMutation = trpc.transaction.updateCounts.useMutation()
   const nameMutation = trpc.transaction.updateNames.useMutation()
   const { data, refetch, isLoading, isRefetching } = trpc.item.getAll.useQuery()
-  const { data: bags } = trpc.meta.get.useQuery("monthlyBags")
+  const { data: bags } = trpc.donee.getCount.useQuery()
 
   const [isAdding, setIsAdding] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -231,7 +231,7 @@ const Inventory: NextPage = () => {
             <div key={item.id}>
               <ItemCard
                 item={item}
-                bags={bags ? parseInt(bags) : 0}
+                bags={bags || 0}
                 isEditing={isEditing}
                 isRemoving={isRemoving}
                 changeCount={changeCount}

@@ -198,7 +198,7 @@ const itemRouter = t.router({
   getAll: protectedProcedure.query(async () => {
     return prisma.item.findMany({
       orderBy: {
-        createdAt: "asc",
+        id: "asc",
       },
     })
   }),
@@ -586,6 +586,7 @@ const doneeRouter = t.router({
       include: { location: true },
     })
   }),
+  getCount: protectedProcedure.query(async () => await prisma.donee.count()),
   getLocations: protectedProcedure.query(async () => {
     return await prisma.serviceArea.findMany()
   }),
