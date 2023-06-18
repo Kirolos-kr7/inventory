@@ -4,12 +4,15 @@ import { currMonth, currYear } from "@/utils/dayjs"
 import { trpc } from "@/utils/trpc"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
-import Loading from "./Loading"
+import Loading from "../Loading"
+import { useDateStore } from "@/utils/store"
 
 const BagProgress = () => {
-  const { data, isLoading } = trpc.checkout.progress.useQuery({
-    month: currMonth,
-    year: currYear,
+  const { month, year } = useDateStore()
+
+  const { data, isLoading, isRefetching } = trpc.checkout.progress.useQuery({
+    month,
+    year,
   })
 
   const [progress, setProgress] =
@@ -49,7 +52,7 @@ const BagProgress = () => {
   }, [data])
 
   return (
-    <div className="card col-span-2 bg-base-300/80 p-4">
+    <div className="card col-span-2">
       <div className="flex justify-between mb-5">
         <h2 className="text-lg font-bold">الشنط الشهرية</h2>
 
@@ -66,28 +69,30 @@ const BagProgress = () => {
 
       {isLoading && <Loading offset={480} />}
 
-      <div className="flex flex-col gap-2">
-        {progress?.map(({ id, name, from, progress }, i: number) => (
-          <motion.div
-            initial={{ opacity: 0, translateX: "50px" }}
-            animate={{ opacity: 1, translateX: "0px" }}
-            transition={{ delay: i * 0.2 }}
-            key={id}
-          >
-            <label className="label -mb-2 text-gray-300 flex items-center justify-between">
-              <span>{name}</span>
-              <span className="text-secondary">
-                {progress} / {from}
-              </span>
-            </label>
-            <progress
-              className="progress progress-secondary"
-              max={from}
-              value={progress}
-            />
-          </motion.div>
-        ))}
-      </div>
+      {!isLoading && (
+        <div className="flex flex-col gap-2">
+          {progress?.map(({ id, name, from, progress }, i: number) => (
+            <motion.div
+              initial={{ opacity: 0, translateX: "50px" }}
+              animate={{ opacity: 1, translateX: "0px" }}
+              transition={{ delay: i * 0.2 }}
+              key={id}
+            >
+              <label className="label -mb-2 text-gray-300 flex items-center justify-between">
+                <span>{name}</span>
+                <span className="text-secondary">
+                  {progress} / {from}
+                </span>
+              </label>
+              <progress
+                className="progress progress-secondary"
+                max={from}
+                value={progress}
+              />
+            </motion.div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

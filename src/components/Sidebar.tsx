@@ -15,9 +15,9 @@ import Stats from "@iconify/icons-mdi/finance"
 import Supply from "@iconify/icons-mdi/table"
 import Donee from "@iconify/icons-mdi/account-cash"
 import Users from "@iconify/icons-mdi/users"
+import User from "@iconify/icons-mdi/user"
 import Menu from "@iconify/icons-mdi/chevron-double-left"
 import { deleteCookie } from "cookies-next"
-import Image from "next/image"
 import { useStore } from "@/utils/store"
 
 const Sidebar = () => {
@@ -152,13 +152,8 @@ const Sidebar = () => {
                 }`}
               >
                 <div className="avatar flex items-center gap-2">
-                  <div className="w-12 rounded-full">
-                    <Image
-                      src="/user.jpg"
-                      width={48}
-                      height={48}
-                      alt="user image"
-                    />
+                  <div className="rounded-full bg-white text-base-100/90 p-1">
+                    <Icon icon={User} width={38} height={38} />
                   </div>
                   {sideOpened && userName}
                 </div>
