@@ -6,6 +6,7 @@ import { genJWT } from "@/utils/jwt"
 import { compare, hash, genSalt } from "bcrypt"
 import { Context } from "./[trpc]/context"
 import { MONTHS } from "@/utils/dayjs"
+import { Finance } from "@prisma/client"
 
 export const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -367,6 +368,31 @@ const transactionRouter = t.router({
 const financeType = z.enum(["income", "expense"])
 
 const financeRouter = t.router({
+  getHomeData: protectedProcedure
+    .input(
+      z.object({
+        month: z.string(),
+        year: z.string(),
+      })
+    )
+    .query(async ({ input: { month, year } }) => {
+      let income = 0
+      let expense = 0
+
+      const data = await prisma.finance.findMany({
+        where: { month, year },
+      })
+
+      data.forEach(({ type, price }) => {
+        if (type == "income") income += price
+        if (type == "expense") expense += price
+      })
+
+      return {
+        income,
+        expense,
+      }
+    }),
   getByMix: protectedProcedure
     .input(
       z.object({
@@ -459,6 +485,24 @@ const financeRouter = t.router({
 })
 
 const supplyRouter = t.router({
+  getHomeData: protectedProcedure
+    .input(
+      z.object({
+        month: z.string(),
+        year: z.string(),
+      })
+    )
+    .query(async ({ input: { month, year } }) => {
+      const data = await prisma.supply.findMany({
+        where: { month, year },
+      })
+
+      return {
+        supply: data
+          .map(({ price, count }) => price * count)
+          .reduce((acc, curr) => (acc += curr)),
+      }
+    }),
   getSupplyList: protectedProcedure.query(
     async () => await prisma.item.findMany({ select: { id: true, name: true } })
   ),
