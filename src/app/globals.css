@@ -41,6 +41,10 @@ body {
   background-color: rgb(107 114 128 / var(--tw-bg-opacity));
 }
 
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 @layer components {
   .select {
     background-position: 25px, 21px !important;

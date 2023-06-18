@@ -2,6 +2,7 @@ import { CheckoutChange } from "@/utils/types"
 import { Donee, Checkout, Item } from "@prisma/client"
 import { Icon } from "@iconify/react/dist/offline"
 import Filter from "@iconify/icons-mdi/filter-list"
+import { useCallback, useEffect, useState } from "react"
 
 const CheckoutTable = ({
   data,
@@ -18,6 +19,16 @@ const CheckoutTable = ({
   update: (doneeId: number, itemId: number, amount: number) => void
   openFilter: () => void
 }) => {
+  const [isMobile, setIsMobile] = useState(false)
+
+  const handleResize = () => setIsMobile(window.innerWidth < 600)
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize)
+
+    return () => window.addEventListener("resize", handleResize)
+  }, [])
+
   const getCell = (dId: number, iId: number) => {
     const item = data?.find(
       ({ doneeId, itemId }) => dId == doneeId && itemId == iId
@@ -55,17 +66,23 @@ const CheckoutTable = ({
     return total
   }
 
+  const getName = useCallback(
+    (name: string) =>
+      isMobile ? name.split(" ").splice(0, 2).join(" ") : name,
+    [isMobile]
+  )
+
   return (
     <>
       <div
-        className={`overflow-x-auto ${
+        className={`overflow-auto max-h-[calc(80lvh)] ${
           changes && changes?.length > 0 ? "mb-[4.6rem]" : "mb-2"
         }`}
       >
         <table className="table w-full text-right">
           <thead>
-            <tr>
-              <th className="text-base w-1/5">
+            <tr className="[&>*]:first-of-type:rounded-t-none [&>*]:last-of-type:rounded-t-none sticky top-0 shadow-sm z-[12]">
+              <th className="text-base">
                 <div className="flex items-center gap-1 justify-between">
                   <span>المخدوم</span>
                   <button
@@ -98,9 +115,7 @@ const CheckoutTable = ({
           <tbody>
             {donees?.map(({ id: doneeId, name }) => (
               <tr key={doneeId}>
-                <th>
-                  <div className="flex items-end gap-1">{name}</div>
-                </th>
+                <th>{getName(name)}</th>
 
                 {items?.map(({ id: itemId }, i) => (
                   <td className="px-2" key={i}>
