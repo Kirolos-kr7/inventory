@@ -17,3 +17,12 @@ export const fadeIn = {
     opacity: 1,
   },
 }
+
+export const slideDown = {
+  hide: {
+    transform: "translate(-50%,-500px)",
+  },
+  show: {
+    transform: "translate(-50%,0)",
+  },
+}

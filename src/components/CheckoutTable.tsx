@@ -75,7 +75,7 @@ const CheckoutTable = ({
   return (
     <>
       <div
-        className={`overflow-auto max-h-[calc(80lvh)] ${
+        className={`overflow-auto max-h-[calc(79lvh)] ${
           changes && changes?.length > 0 ? "mb-[4.6rem]" : "mb-2"
         }`}
       >

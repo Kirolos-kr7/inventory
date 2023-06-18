@@ -2,25 +2,24 @@
 
 import Button from "@/components/Button"
 import CheckoutTable from "@/components/CheckoutTable"
+import DateSelector from "@/components/DateSelector"
+import Dialog from "@/components/Dialog"
 import Loading from "@/components/Loading"
 import PageHeader from "@/components/PageHeader"
-import { MONTHS, currMonth, currYear } from "@/utils/dayjs"
+import FilterCheckoutItems from "@/components/dialogs/filterCheckoutItems"
 import { handleError } from "@/utils/handleError"
-import { yearList } from "@/utils/helpers"
+import { useDateStore } from "@/utils/store"
 import { trpc } from "@/utils/trpc"
+import { CheckoutChange } from "@/utils/types"
 import Check from "@iconify/icons-mdi/check"
 import { Icon } from "@iconify/react"
-import { NextPage } from "next"
-import { motion, AnimatePresence } from "framer-motion"
-import { useEffect, useMemo, useState } from "react"
 import { Checkout, Item } from "@prisma/client"
-import { CheckoutChange } from "@/utils/types"
-import Dialog from "@/components/Dialog"
-import FilterCheckoutItems from "@/components/dialogs/filterCheckoutItems"
+import { AnimatePresence, motion } from "framer-motion"
+import { NextPage } from "next"
+import { useEffect, useMemo, useState } from "react"
 
 const Checkout: NextPage = () => {
-  const [month, setMonth] = useState(currMonth)
-  const [year, setYear] = useState(currYear)
+  const { month, year } = useDateStore()
   const [checkouts, setCheckouts] = useState<Checkout[]>([])
   const [filterOpened, setFilterOpened] = useState(false)
   const [items, setItems] = useState<(Item & { isActive: boolean })[]>([])
@@ -139,51 +138,10 @@ const Checkout: NextPage = () => {
     <div>
       <PageHeader
         title="الصرف"
-        subtitle={`${month} ${year}`}
+        subtitle={<DateSelector />}
         actions={
           <div className="flex gap-2 items-center" dir="ltr">
-            <div className="dropdown">
-              <label tabIndex={0} className="btn m-1 btn-sm sm:btn-md">
-                السنة
-              </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-28 sm:w-52"
-              >
-                {yearList().map((n) => (
-                  <li key={n}>
-                    <a
-                      className={n == year ? "active" : ""}
-                      onClick={() => setYear(n)}
-                    >
-                      {n}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="dropdown">
-              <label tabIndex={0} className="btn m-1 btn-sm sm:btn-md">
-                الشهر
-              </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-28 sm:w-52"
-                dir="rtl"
-              >
-                {MONTHS.map((n) => (
-                  <li key={n}>
-                    <a
-                      className={n == month ? "active" : ""}
-                      onClick={() => setMonth(n)}
-                    >
-                      {n}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="dropdown" dir="rtl">
+            <div className="dropdown dropdown-end" dir="rtl">
               <label tabIndex={0} className="btn m-1 btn-sm sm:btn-md">
                 المنطقة
               </label>

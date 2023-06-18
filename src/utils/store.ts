@@ -1,6 +1,7 @@
 import { User } from "@prisma/client"
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
+import { currMonth, currYear } from "./dayjs"
 
 type Store = {
   user: User | null
@@ -21,10 +22,24 @@ const useStore = create<Store>()(
         })),
     }),
     {
-      name: "user",
+      name: "store",
       storage: createJSONStorage(() => localStorage),
     }
   )
 )
 
-export { useStore }
+type MonthStore = {
+  month: string
+  setMonth: (v?: string) => void
+  year: string
+  setYear: (v?: string) => void
+}
+
+const useDateStore = create<MonthStore>((set) => ({
+  month: currMonth,
+  setMonth: (month) => set(() => ({ month })),
+  year: currYear,
+  setYear: (year) => set(() => ({ year })),
+}))
+
+export { useStore, useDateStore }

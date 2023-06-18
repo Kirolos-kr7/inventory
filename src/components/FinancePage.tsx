@@ -1,18 +1,17 @@
 "use client"
 
-import MonthlyFinance from "@/components/MonthlyFinance"
+import DateSelector from "@/components/DateSelector"
 import Loading from "@/components/Loading"
+import MonthlyFinance from "@/components/MonthlyFinance"
 import PageHeader from "@/components/PageHeader"
-import { MONTHS, currMonth, currYear } from "@/utils/dayjs"
+import { useDateStore } from "@/utils/store"
 import { trpc } from "@/utils/trpc"
-import { useEffect, useState } from "react"
 import { type FinanceWithSrc } from "@/utils/types"
 import { FinanceType } from "@prisma/client"
-import { yearList } from "@/utils/helpers"
+import { useEffect, useState } from "react"
 
 const FinancePage = ({ type }: { type: FinanceType }) => {
-  const [month, setMonth] = useState(currMonth)
-  const [year, setYear] = useState(currYear)
+  const { month, year } = useDateStore()
   const [finance, setFinance] = useState<FinanceWithSrc[]>()
 
   const { data, isLoading, refetch } = trpc.finance.getByMix.useQuery({
@@ -41,52 +40,7 @@ const FinancePage = ({ type }: { type: FinanceType }) => {
     <>
       <PageHeader
         title={type == "income" ? "الدخل" : "المصاريف"}
-        subtitle={`${month} ${year}`}
-        actions={
-          <div className="flex gap-2 items-center" dir="ltr">
-            <div className="dropdown">
-              <label tabIndex={0} className="btn m-1 btn-sm sm:btn-md">
-                السنة
-              </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-28 sm:w-52"
-              >
-                {yearList().map((n) => (
-                  <li key={n}>
-                    <a
-                      className={n == year ? "active" : ""}
-                      onClick={() => setYear(n)}
-                    >
-                      {n}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="dropdown">
-              <label tabIndex={0} className="btn m-1 btn-sm sm:btn-md">
-                الشهر
-              </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-28 sm:w-52"
-                dir="rtl"
-              >
-                {MONTHS.map((n) => (
-                  <li key={n}>
-                    <a
-                      className={n == month ? "active" : ""}
-                      onClick={() => setMonth(n)}
-                    >
-                      {n}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        }
+        subtitle={<DateSelector />}
       />
 
       {isLoading && <Loading />}
