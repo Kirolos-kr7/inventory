@@ -1,4 +1,4 @@
-const Loader = ({ width = 50 }: { width: number }) => {
+const Loader = ({ width = 50 }: { width?: number }) => {
   return (
     <svg
       className="stroke-secondary"
