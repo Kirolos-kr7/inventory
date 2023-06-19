@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation"
 import { FormEvent, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Loading from "@/components/Loading"
+import { toast } from "react-hot-toast"
 
 const loginAnimation = {
   on: {
@@ -52,6 +53,9 @@ const Auth: NextPage = () => {
       setDone(true)
       setUser(user)
       router.push("/")
+      toast("مرحبًا بعودتك", {
+        icon: "👋",
+      })
     } catch (err: any) {
       handleError(err)
     }
