@@ -24,6 +24,7 @@ const CheckoutTable = ({
   const handleResize = () => setIsMobile(window.innerWidth < 600)
 
   useEffect(() => {
+    handleResize()
     window.addEventListener("resize", handleResize)
 
     return () => window.addEventListener("resize", handleResize)
