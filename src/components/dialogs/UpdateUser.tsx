@@ -196,19 +196,33 @@ const UpdateUser = ({
             >
               خروج
             </Button>
-            <Button
-              disabled={
-                (tab == TABS.INFO &&
-                  (userData.name == "" || userData.name == user?.name) &&
-                  userData.isAdmin == user?.isAdmin) ||
-                (tab == TABS.PASSWORD && userData.password == "") ||
-                userData.passwordConfirm == ""
-              }
-              type="submit"
-              pending={nameMutation.isLoading || passwordMutation.isLoading}
-            >
-              {tab == TABS.INFO ? "حفظ" : "تغيير"}
-            </Button>
+
+            {tab == TABS.INFO && (
+              <Button
+                disabled={
+                  (userData.name.trim() == "" ||
+                    userData.name.trim() == user?.name) &&
+                  userData.isAdmin == user?.isAdmin
+                }
+                type="submit"
+                pending={nameMutation.isLoading || passwordMutation.isLoading}
+              >
+                حفظ
+              </Button>
+            )}
+
+            {tab == TABS.PASSWORD && (
+              <Button
+                disabled={
+                  userData.password.trim() == "" ||
+                  userData.passwordConfirm.trim() == ""
+                }
+                type="submit"
+                pending={nameMutation.isLoading || passwordMutation.isLoading}
+              >
+                تغيير
+              </Button>
+            )}
           </div>
         </form>
       </div>
