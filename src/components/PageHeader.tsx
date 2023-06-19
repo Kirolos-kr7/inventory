@@ -8,7 +8,7 @@ const PageHeader: React.FC<{
   return (
     <div className="mb-8 pt-1.5 sm:pt-0 flex justify-between items-start">
       <div className="flex flex-col gap-0.5">
-        <h2 className="font-bold text-2xl sm:text-3xl">{title}</h2>
+        <h2 className="font-bold text-3xl sm:text-4xl">{title}</h2>
         {typeof subtitle != "string" ? (
           subtitle
         ) : (
