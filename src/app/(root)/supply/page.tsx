@@ -1,24 +1,23 @@
 "use client"
 
-import SupplyTable from "@/components/SupplyTable"
+import DateSelector from "@/components/DateSelector"
 import Loading from "@/components/Loading"
 import PageHeader from "@/components/PageHeader"
-import { MONTHS, currFinancialYear, currMonth } from "@/utils/dayjs"
+import SupplyTable from "@/components/SupplyTable"
+import { getFinancialYear } from "@/utils/dayjs"
+import { useDateStore } from "@/utils/store"
 import { trpc } from "@/utils/trpc"
 import { NextPage } from "next"
 import { useState } from "react"
-import { yearList } from "@/utils/helpers"
 
 const Stats: NextPage = () => {
-  const [year, setYear] = useState(() => {
-    if (MONTHS.slice(0, 6).includes(currMonth))
-      return `${parseInt(currFinancialYear) - 1}-${parseInt(currFinancialYear)}`
-    else return currFinancialYear
-  })
+  const { month, year } = useDateStore()
+  const financialYear = getFinancialYear(month, year)
+
   const [showDetails, setShowDetails] = useState(true)
 
   const { data, isLoading } = trpc.supply.getSupplyTableData.useQuery({
-    year,
+    year: financialYear,
   })
   const { data: supplyList } = trpc.supply.getSupplyList.useQuery()
 
@@ -26,29 +25,9 @@ const Stats: NextPage = () => {
     <>
       <PageHeader
         title="جدول التموين"
-        subtitle={`لسنة ${year}`}
+        subtitle={<DateSelector onlyYear />}
         actions={
           <div className="flex gap-2 items-center" dir="ltr">
-            <div className="dropdown">
-              <label tabIndex={0} className="btn m-1 btn-sm sm:btn-md">
-                السنة
-              </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-28 sm:w-52"
-              >
-                {yearList(true).map((y) => (
-                  <li key={y}>
-                    <a
-                      className={y == year ? "active" : ""}
-                      onClick={() => setYear(y)}
-                    >
-                      {y}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
             <div className="dropdown">
               <label tabIndex={0} className="btn m-1 btn-sm sm:btn-md">
                 عرض التفاصيل
@@ -84,7 +63,7 @@ const Stats: NextPage = () => {
         <SupplyTable
           data={data}
           supplyList={supplyList}
-          year={year}
+          year={financialYear}
           showDetails={showDetails}
         />
       )}

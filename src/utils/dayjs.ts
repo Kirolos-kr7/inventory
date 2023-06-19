@@ -1,7 +1,7 @@
 import dayjs from "dayjs"
-import localizedFormat from "dayjs/plugin/localizedFormat"
-import localeData from "dayjs/plugin/localeData"
 import "dayjs/locale/ar"
+import localeData from "dayjs/plugin/localeData"
+import localizedFormat from "dayjs/plugin/localizedFormat"
 dayjs.extend(localizedFormat)
 dayjs.extend(localeData)
 dayjs.locale("ar")
@@ -34,3 +34,9 @@ export const getFinancialMonths = (year: string) => [
   { month: "مايو", year: parseInt(year) + 1 },
   { month: "يونيو", year: parseInt(year) + 1 },
 ]
+
+export const getFinancialYear = (month: string, year: string) => {
+  if (MONTHS.slice(0, 6).includes(month))
+    return `${parseInt(year) - 1}-${parseInt(year)}`
+  else return `${parseInt(year)}-${parseInt(year) + 1}`
+}

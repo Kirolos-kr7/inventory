@@ -1,5 +1,6 @@
 "use client"
 
+import { getFinancialYear } from "@/utils/dayjs"
 import { fadeIn, slideDown } from "@/utils/motion"
 import { useDateStore } from "@/utils/store"
 import Edit from "@iconify/icons-mdi/calendar-edit"
@@ -9,7 +10,7 @@ import { useState } from "react"
 import Button from "./Button"
 import DateDialog from "./dialogs/DateDialog"
 
-const DateSelector = () => {
+const DateSelector = ({ onlyYear = false }: { onlyYear?: boolean }) => {
   const { month, year } = useDateStore()
   const [dateEdit, setDateEdit] = useState(false)
 
@@ -18,7 +19,8 @@ const DateSelector = () => {
       <div>
         <div className="flex gap-2 mt-1">
           <p className="text-gray-400 ">
-            {month} {year}
+            {onlyYear && `لسنة ${getFinancialYear(month, year)}`}
+            {!onlyYear && `${month} ${year}`}
           </p>
           <Button className="btn-xs" onClick={() => setDateEdit(true)}>
             <Icon icon={Edit} />
@@ -38,7 +40,7 @@ const DateSelector = () => {
             >
               <h3 className="text-2xl font-bold">اختر التاريخ</h3>
 
-              <DateDialog />
+              <DateDialog onlyYear={onlyYear} />
             </motion.div>
 
             <motion.div

@@ -1,9 +1,4 @@
-import {
-  currFinancialYear,
-  currMonth,
-  currYear,
-  getFinancialMonths,
-} from "@/utils/dayjs"
+import { currFinancialYear, currMonth, getFinancialMonths } from "@/utils/dayjs"
 import { type FinanceWithSrc } from "@/utils/types"
 import { type FinanceList } from "@prisma/client"
 

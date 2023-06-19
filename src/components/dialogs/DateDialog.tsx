@@ -4,7 +4,7 @@ import { MONTHS } from "@/utils/dayjs"
 import { yearList } from "@/utils/helpers"
 import { useDateStore } from "@/utils/store"
 
-const DateDialog = () => {
+const DateDialog = ({ onlyYear = false }: { onlyYear: boolean }) => {
   const { month, year, setMonth, setYear } = useDateStore()
 
   return (
@@ -12,36 +12,38 @@ const DateDialog = () => {
       <div className="flex gap-3 w-full">
         <label className="label">السنة</label>
         <ul className="compact menu w-full max-h-20 gap-2 p-2 shadow bg-base-200 rounded-box">
-          {yearList().map((n) => (
-            <li key={n}>
+          {yearList(onlyYear).map(({ name, value }) => (
+            <li key={value}>
               <a
-                className={`justify-center ${n == year ? "active" : ""}`}
-                onClick={() => setYear(n)}
+                className={`justify-center ${value == year ? "active" : ""}`}
+                onClick={() => setYear(value)}
               >
-                {n}
+                {name}
               </a>
             </li>
           ))}
         </ul>
       </div>
-      <div className="flex gap-3 w-full">
-        <label className="label">الشهر</label>
-        <ul
-          className="compact menu w-full max-h-40 gap-2 p-2 shadow bg-base-200 rounded-box"
-          dir="rtl"
-        >
-          {MONTHS.map((n) => (
-            <li key={n}>
-              <a
-                className={`justify-center ${n == month ? "active" : ""}`}
-                onClick={() => setMonth(n)}
-              >
-                {n}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {!onlyYear && (
+        <div className="flex gap-3 w-full">
+          <label className="label">الشهر</label>
+          <ul
+            className="compact menu w-full max-h-40 gap-2 p-2 shadow bg-base-200 rounded-box"
+            dir="rtl"
+          >
+            {MONTHS.map((n) => (
+              <li key={n}>
+                <a
+                  className={`justify-center ${n == month ? "active" : ""}`}
+                  onClick={() => setMonth(n)}
+                >
+                  {n}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   )
 }
