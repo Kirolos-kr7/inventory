@@ -26,3 +26,12 @@ export const slideDown = {
     transform: "translate(-50%,0)",
   },
 }
+
+export const slideUp = {
+  hide: {
+    transform: "translate(0,50px)",
+  },
+  show: {
+    transform: "translate(0,0)",
+  },
+}

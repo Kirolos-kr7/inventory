@@ -3,20 +3,20 @@
 import { useDateStore } from "@/utils/store"
 import { trpc } from "@/utils/trpc"
 import InfoBox from "./InfoBox"
+import Loader from "../Loader"
 
 const TopBoxes = () => {
   const { month, year } = useDateStore()
-  const { data: xData, isLoading: xLoading } =
+  const { data: finance, isLoading: fLoading } =
     trpc.finance.getHomeData.useQuery({ month, year })
-  const { data: yData, isLoading: yLoading } = trpc.supply.getHomeData.useQuery(
-    { month, year }
-  )
+  const { data: supply, isLoading: sLoading } =
+    trpc.supply.getHomeData.useQuery({ month, year })
 
   return (
     <>
-      <InfoBox name="الدخل" value={xLoading ? "..." : xData?.income || 0} />
-      <InfoBox name="المصاريف" value={xLoading ? "..." : xData?.expense || 0} />
-      <InfoBox name="التموين" value={xLoading ? "..." : yData?.supply || 0} />
+      <InfoBox name="الدخل" value={finance?.income} isLoading={fLoading} />
+      <InfoBox name="المصاريف" value={finance?.expense} isLoading={fLoading} />
+      <InfoBox name="التموين" value={supply?.supply} isLoading={sLoading} />
     </>
   )
 }
