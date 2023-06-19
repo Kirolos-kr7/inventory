@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className="bg-base-200">
         <TrpcProvider>{children}</TrpcProvider>
 
-        <Toaster />
+        <Toaster toastOptions={{ className: "!bg-slate-600 !text-white" }} />
       </body>
     </html>
   )
