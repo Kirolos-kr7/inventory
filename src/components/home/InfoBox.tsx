@@ -27,7 +27,7 @@ const InfoBox = ({
           exit="hide"
           className="text-secondary text-3xl font-black"
         >
-          {typeof value == "number" ? value || 0 : value}
+          {value || 0}
         </motion.h4>
       )}
     </div>

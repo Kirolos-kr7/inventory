@@ -498,9 +498,12 @@ const supplyRouter = t.router({
       })
 
       return {
-        supply: data
-          .map(({ price, count }) => price * count)
-          .reduce((acc, curr) => (acc += curr)),
+        supply:
+          data.length > 0
+            ? data
+                .map(({ price, count }) => price * count)
+                .reduce((acc, curr) => (acc += curr))
+            : 0,
       }
     }),
   getSupplyList: protectedProcedure.query(
