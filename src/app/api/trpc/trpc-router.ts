@@ -457,27 +457,23 @@ const financeRouter = t.router({
     .input(
       z.array(
         z.object({
-          src: z.object({
-            id: z.number(),
-            name: z.string(),
-          }),
+          type: financeType,
+          srcId: z.number(),
           month: z.string(),
           year: z.string(),
           price: z.number(),
-          type: financeType,
         })
       )
     )
-    .mutation(async ({ input: expense }) => {
+    .mutation(async ({ input }) => {
       await Promise.all(
-        expense.map(async ({ src, month, year, price, type }) => {
-          await prisma.finance.update({
+        input.map(async ({ type, srcId, month, year, price }) => {
+          await prisma.finance.upsert({
             where: {
-              srcId_month_year_type: { srcId: src.id, month, year, type },
+              srcId_month_year_type: { srcId, month, year, type },
             },
-            data: {
-              price,
-            },
+            create: { type, srcId, month, year, price },
+            update: { price },
           })
         })
       )

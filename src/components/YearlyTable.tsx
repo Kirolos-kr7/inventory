@@ -1,23 +1,44 @@
 import { currFinancialYear, currMonth, getFinancialMonths } from "@/utils/dayjs"
-import { type FinanceWithSrc } from "@/utils/types"
+import { FinanceChange, type FinanceWithSrc } from "@/utils/types"
 import { type FinanceList } from "@prisma/client"
 
 const YearlyTable = ({
   data,
+  changes,
   financeList,
   year,
+  update,
 }: {
   data: FinanceWithSrc[] | undefined
+  changes: FinanceChange[] | undefined
   financeList: FinanceList[] | undefined
   year: string
+  update: (sId: number, month: string, val: number) => void
 }) => {
-  const getCellData = (label: string, m: string, yr: string) => {
-    const value = data?.find(
-      ({ src: { name }, month, year: itemYear }) =>
-        name == label && month == m && itemYear == yr
-    )?.price
+  const getCell = (sId: number, month: string) => {
+    const item = data?.find(
+      ({ srcId, month: mth }) => sId == srcId && month == mth
+    )
+    const changedItem = changes?.find(
+      ({ srcId, month: mth }) => srcId == sId && month == mth
+    )
 
-    return typeof value == "number" && value > 0 ? String(value) : "-"
+    return (
+      <input
+        type="number"
+        className={`bg-transparent w-8 rounded-md text-center focus-within:bg-slate-600 ${
+          changedItem ? "!bg-pink-900" : ""
+        }`}
+        value={item?.price || 0}
+        onChange={({ target }) => {
+          const val = parseInt(target.value) || 0
+          update(sId, month, val)
+          target.value = String(val)
+        }}
+        onFocus={(e) => e.target.select()}
+        onWheel={(e) => (e.target as HTMLInputElement).blur()}
+      />
+    )
   }
 
   const getCellTotal = (label: string) => {
@@ -61,8 +82,8 @@ const YearlyTable = ({
                   </span>
                 </div>
               </th>
-              {financeList?.map(({ name: label }, i) => (
-                <td key={i}>{getCellData(label, month, String(yr))}</td>
+              {financeList?.map(({ id }, i) => (
+                <td key={i}>{getCell(id, month)}</td>
               ))}
             </tr>
           ))}

@@ -1,4 +1,4 @@
-import { Finance, FinanceList, Supply } from "@prisma/client"
+import { Finance, FinanceList, FinanceType, Supply } from "@prisma/client"
 
 export interface FinanceWithSrc extends Finance {
   src: FinanceList
@@ -18,4 +18,12 @@ export interface CheckoutChange {
   itemId: number
   amount: number
   diff: number
+}
+
+export interface FinanceChange {
+  srcId: number
+  month: string
+  year: string
+  price: number
+  type: FinanceType
 }
