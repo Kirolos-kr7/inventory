@@ -2,15 +2,13 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, Fragment } from "react"
 import { Icon } from "@iconify/react"
 import Home from "@iconify/icons-mdi/home"
 import Inventory from "@iconify/icons-mdi/package-variant"
 import InventoryAdd from "@iconify/icons-mdi/package-variant-add"
 import Checkout from "@iconify/icons-mdi/money"
 import Bag from "@iconify/icons-mdi/bag-checked"
-import Income from "@iconify/icons-mdi/arrow-left-bold-box"
-import Expense from "@iconify/icons-mdi/arrow-right-bold-box"
 import Stats from "@iconify/icons-mdi/finance"
 import Supply from "@iconify/icons-mdi/table"
 import Donee from "@iconify/icons-mdi/account-cash"
@@ -29,22 +27,11 @@ const Sidebar = () => {
   const [sideOpened, setSideOpened] = useState(false)
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 640) toggleSb(false)
-    }
-
-    handleResize()
-    window.addEventListener("resize", handleResize)
-
-    return window.addEventListener("resize", handleResize)
-  }, [toggleSb])
-
-  useEffect(() => {
     setSideOpened(sbOpened)
   }, [sbOpened])
 
   useEffect(() => {
-    setUserName(user?.name)
+    if (user) setUserName(user.name)
   }, [user])
 
   const sidebarItems = [
@@ -54,19 +41,15 @@ const Sidebar = () => {
       icon: Home,
     },
     {
-      name: "المخزون",
+      group: "المخزون",
+      name: "إدارة",
       to: "/inventory",
       icon: Inventory,
     },
     {
-      name: "اضافة للمخزون",
+      name: "إضافة",
       to: "/inventory-add",
       icon: InventoryAdd,
-    },
-    {
-      name: "الصرف",
-      to: "/checkout",
-      icon: Checkout,
     },
     {
       name: "الشنطة",
@@ -74,14 +57,10 @@ const Sidebar = () => {
       icon: Bag,
     },
     {
-      name: "الدخل",
-      to: "/income",
-      icon: Income,
-    },
-    {
-      name: "المصاريف",
-      to: "/expense",
-      icon: Expense,
+      group: "الجداول",
+      name: "الصرف",
+      to: "/checkout",
+      icon: Checkout,
     },
     {
       name: "المالية",
@@ -94,6 +73,7 @@ const Sidebar = () => {
       icon: Supply,
     },
     {
+      group: "إدارة الاشخاص",
       name: "المخدومين",
       to: "/donee",
       icon: Donee,
@@ -120,27 +100,39 @@ const Sidebar = () => {
       <div className="sm:fixed bg-base-100 h-[100lvh] w-[inherit] flex items-start flex-col justify-between">
         <div className="grow w-full overflow-y-auto">
           <ul className="menu gap-3 sm:gap-1 p-3 sm:p-2 sm:pt-3 grid sm:flex grid-cols-2 ">
-            {sidebarItems.map(({ name, to, icon }) => (
-              <li key={name}>
-                <Link
-                  href={to}
-                  onClick={() => {
-                    window.innerWidth <= 640 && setSideOpened(false)
-                  }}
-                  className={`flex flex-col sm:flex-row truncate border border-primary/20 sm:border-0 ${
-                    !sideOpened && "mx-auto"
-                  } ${pathname == to ? "text-secondary" : ""}`}
-                  prefetch={process.env.NODE_ENV == "production"}
-                >
-                  <Icon icon={icon} width={28} />
-                  {sideOpened && name}
-                </Link>
-              </li>
+            {sidebarItems.map(({ name, to, icon, group }) => (
+              <Fragment key={name}>
+                {group && (
+                  <>
+                    {sideOpened ? (
+                      <li className="text-gray-400 px-3 mt-2.5 mb-1 hidden sm:flex">
+                        {group}
+                      </li>
+                    ) : (
+                      <li />
+                    )}
+                  </>
+                )}
+                <li>
+                  <Link
+                    href={to}
+                    onClick={() => {
+                      window.innerWidth <= 640 && setSideOpened(false)
+                    }}
+                    className={`flex flex-col sm:flex-row truncate border border-primary/20 sm:border-0 ${
+                      !sideOpened && "mx-auto"
+                    } ${pathname == to ? "text-secondary" : ""}`}
+                  >
+                    <Icon icon={icon} width={28} />
+                    {sideOpened && name}
+                  </Link>
+                </li>
+              </Fragment>
             ))}
           </ul>
         </div>
         <div
-          className={`flex flex-1 gap-2 p-3 w-full items-center ${
+          className={`flex gap-2 p-3 w-full items-center ${
             !sideOpened ? "flex-col justify-end" : "justify-between"
           }`}
         >
@@ -170,7 +162,7 @@ const Sidebar = () => {
           </div>
 
           <button
-            className={`btn mb-2 ${sideOpened ? "" : "btn-sm"}`}
+            className={`btn ${sideOpened ? "" : "btn-sm"}`}
             onClick={() => toggleSb()}
           >
             <Icon
