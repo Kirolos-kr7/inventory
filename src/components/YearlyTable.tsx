@@ -26,7 +26,7 @@ const YearlyTable = ({
     return (
       <input
         type="number"
-        className={`bg-transparent w-8 rounded-md text-center focus-within:bg-slate-600 ${
+        className={`bg-transparent w-10 rounded-md text-center focus-within:bg-slate-600 ${
           changedItem ? "!bg-pink-900" : ""
         }`}
         value={item?.price || 0}
@@ -91,7 +91,7 @@ const YearlyTable = ({
           <tr className="bg-base-300 border-t-2 border-primary [&>*]:bg-inherit">
             <th className="px-1.5 text-base w-1/5">الاجمالي</th>
             {financeList?.map(({ name: label }, i) => (
-              <td key={i} className="px-1.5 text-sm">
+              <td key={i} className="px-5 text-sm">
                 {getCellTotal(label)}
               </td>
             ))}
