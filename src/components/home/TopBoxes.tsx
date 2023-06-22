@@ -13,11 +13,26 @@ const TopBoxes = () => {
     trpc.supply.getHomeData.useQuery({ month, year })
 
   return (
-    <>
-      <InfoBox name="الدخل" value={finance?.income} isLoading={fLoading} />
-      <InfoBox name="المصاريف" value={finance?.expense} isLoading={fLoading} />
-      <InfoBox name="التموين" value={supply?.supply} isLoading={sLoading} />
-    </>
+    <div className="flex flex-col gap-2">
+      <InfoBox
+        name="الدخل"
+        value={finance?.income}
+        isLoading={fLoading}
+        index={1}
+      />
+      <InfoBox
+        name="المصاريف"
+        value={finance?.expense}
+        isLoading={fLoading}
+        index={2}
+      />
+      <InfoBox
+        name="التموين"
+        value={supply?.supply}
+        isLoading={sLoading}
+        index={3}
+      />
+    </div>
   )
 }
 

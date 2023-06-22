@@ -52,7 +52,7 @@ const BagProgress = () => {
   }, [data])
 
   return (
-    <div className="card col-span-2">
+    <section className="col-span-2">
       <div className="flex justify-between mb-5">
         <h2 className="text-lg font-bold">الشنط الشهرية</h2>
 
@@ -93,7 +93,7 @@ const BagProgress = () => {
           ))}
         </div>
       )}
-    </div>
+    </section>
   )
 }
 

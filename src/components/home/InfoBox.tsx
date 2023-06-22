@@ -7,10 +7,12 @@ const InfoBox = ({
   name,
   value,
   isLoading,
+  index = 1,
 }: {
   name: string
   value: string | number | ReactElement | undefined
   isLoading: boolean
+  index?: number
 }) => {
   return (
     <div className="bg-base-300/80 shadow-md p-3 flex rounded-md !flex-row justify-between items-center gap-5 col-span-2 sm:col-span-1 overflow-hidden">
@@ -25,6 +27,7 @@ const InfoBox = ({
           initial="hide"
           animate="show"
           exit="hide"
+          transition={{ delay: index * 0.05 }}
           className="text-secondary text-3xl font-black"
         >
           {value || 0}
