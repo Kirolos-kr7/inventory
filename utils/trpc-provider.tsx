@@ -1,12 +1,12 @@
 'use client'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { httpBatchLink, getFetch } from '@trpc/client'
-import { useState } from 'react'
+import { getFetch, httpBatchLink } from '@trpc/client'
+import { ReactNode, useState } from 'react'
 import superjson from 'superjson'
 import { trpc } from './trpc'
 
-export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
+export const TrpcProvider: React.FC<{ children: ReactNode }> = ({
   children
 }) => {
   const [queryClient] = useState(

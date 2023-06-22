@@ -5,12 +5,9 @@ import Sidebar from '@/components/sidebar'
 import { useStore } from '@/utils/store'
 import Menu from '@iconify/icons-mdi/menu'
 import { Icon } from '@iconify/react'
+import { ReactNode } from 'react'
 
-export default function MainLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
+export default function MainLayout({ children }: { children: ReactNode }) {
   const { toggleSb } = useStore()
 
   return (
