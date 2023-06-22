@@ -15,7 +15,7 @@ const InfoBox = ({
   index?: number
 }) => {
   return (
-    <div className="bg-base-300/80 shadow-md p-3 flex rounded-md !flex-row justify-between items-center gap-5 col-span-2 sm:col-span-1 overflow-hidden">
+    <div className="bg-base-300/80 shadow-md p-3 flex rounded-md !flex-row justify-between items-center gap-5 overflow-hidden">
       <h3 className="text-lg font-semibold">{name}</h3>
       {isLoading ? (
         <div className="translate-x-1 translate-y-1 -my-0.5">
