@@ -27,6 +27,7 @@ const Sidebar = () => {
   const [sideOpened, setSideOpened] = useState(false)
 
   useEffect(() => {
+    if (window.innerWidth < 640) return setSideOpened(false)
     setSideOpened(sbOpened)
   }, [sbOpened])
 
