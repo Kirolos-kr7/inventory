@@ -14,7 +14,7 @@ const Stats: NextPage = () => {
   const { month, year } = useDateStore()
   const financialYear = getFinancialYear(month, year)
 
-  const [showDetails, setShowDetails] = useState(true)
+  const [showDetails, setShowDetails] = useState(false)
 
   const { data, isLoading } = trpc.supply.getSupplyTableData.useQuery({
     year: financialYear,
@@ -28,31 +28,16 @@ const Stats: NextPage = () => {
         subtitle={<DateSelector onlyYear />}
         actions={
           <div className="flex gap-2 items-center" dir="ltr">
-            <div className="dropdown">
-              <label tabIndex={0} className="btn m-1 btn-sm sm:btn-md">
-                عرض التفاصيل
-              </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-28 sm:w-52"
-                dir="rtl"
-              >
-                <li>
-                  <a
-                    className={showDetails ? "active" : ""}
-                    onClick={() => setShowDetails(true)}
-                  >
-                    عرض
-                  </a>
-                  <a
-                    className={!showDetails ? "active" : ""}
-                    onClick={() => setShowDetails(false)}
-                  >
-                    اخفاء
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <input
+              id="details"
+              type="checkbox"
+              className="toggle toggle-md toggle-secondary"
+              checked={showDetails}
+              onChange={() => setShowDetails((v) => !v)}
+            />
+            <label className="label text-sm" htmlFor="details">
+              التفاصيل
+            </label>
           </div>
         }
       />
