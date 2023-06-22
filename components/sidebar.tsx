@@ -25,10 +25,17 @@ const Sidebar = () => {
   const { user, setUser } = useStore()
   const [userName, setUserName] = useState<string | undefined>(undefined)
   const [sideOpened, setSideOpened] = useState(false)
+  const [initail, setInitail] = useState(true)
 
   useEffect(() => {
-    if (window.innerWidth < 640) return setSideOpened(false)
+    if (window.innerWidth < 640) toggleSb(false)
+    setInitail(false)
+  }, [toggleSb])
+
+  useEffect(() => {
+    if (initail && window.innerWidth < 640) return
     setSideOpened(sbOpened)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sbOpened])
 
   useEffect(() => {
