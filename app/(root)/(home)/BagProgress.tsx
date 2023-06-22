@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react'
 const BagProgress = () => {
   const { month, year } = useDateStore()
 
-  const { data, isLoading, isRefetching } = trpc.checkout.progress.useQuery({
+  const { data, isLoading } = trpc.checkout.progress.useQuery({
     month,
     year
   })
