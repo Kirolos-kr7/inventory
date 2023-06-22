@@ -1,6 +1,6 @@
 import { MONTHS } from '@/utils/dayjs'
 import { genJWT } from '@/utils/jwt'
-import { prisma } from '@/utils/prisma'
+import { db } from '@/utils/prisma'
 import { TRPCError, initTRPC } from '@trpc/server'
 import { compare, genSalt, hash } from 'bcrypt'
 import superjson from 'superjson'
@@ -29,7 +29,7 @@ const protectedProcedure = t.procedure.use(isAuthed)
 
 const authRouter = t.router({
   getAll: protectedProcedure.query(async () => {
-    return prisma.user.findMany({
+    return db.user.findMany({
       where: {
         isDeleted: false
       },
@@ -48,7 +48,7 @@ const authRouter = t.router({
     .mutation(async ({ input }) => {
       const { name, password } = input
 
-      const user = await prisma.user.findFirst({
+      const user = await db.user.findFirst({
         where: {
           name
         }
@@ -84,7 +84,7 @@ const authRouter = t.router({
     .mutation(async ({ input }) => {
       const { name, password, passwordConfirm } = input as any
 
-      const user = await prisma.user.findUnique({
+      const user = await db.user.findUnique({
         where: {
           name
         }
@@ -118,12 +118,12 @@ const authRouter = t.router({
       const salt = await genSalt(10)
       const hashedPassword = await hash(password, salt)
 
-      await prisma.user.create({
+      await db.user.create({
         data: { name, password: hashedPassword }
       })
     }),
   remove: protectedProcedure.input(z.number()).mutation(async ({ input }) => {
-    await prisma.user.update({
+    await db.user.update({
       where: {
         id: input
       },
@@ -133,7 +133,7 @@ const authRouter = t.router({
     })
   }),
   getAdminCount: protectedProcedure.query(async () => {
-    return prisma.user.count({
+    return db.user.count({
       where: {
         isAdmin: true
       }
@@ -152,7 +152,7 @@ const authRouter = t.router({
     .mutation(async ({ input }) => {
       const { id, name, isAdmin } = input
 
-      await prisma.user.update({
+      await db.user.update({
         where: {
           id
         },
@@ -186,7 +186,7 @@ const authRouter = t.router({
       const salt = await genSalt(10)
       const hashedPassword = await hash(password, salt)
 
-      await prisma.user.update({
+      await db.user.update({
         where: { id },
         data: { password: hashedPassword }
       })
@@ -195,7 +195,7 @@ const authRouter = t.router({
 
 const itemRouter = t.router({
   getAll: protectedProcedure.query(async () => {
-    return prisma.item.findMany({
+    return db.item.findMany({
       orderBy: {
         id: 'asc'
       }
@@ -212,14 +212,14 @@ const itemRouter = t.router({
     .mutation(async ({ input, ctx: { user } }) => {
       const { name, count = 0 } = input
 
-      const item = await prisma.item.create({
+      const item = await db.item.create({
         data: {
           name,
           count
         }
       })
 
-      await prisma.transaction.create({
+      await db.transaction.create({
         data: {
           userId: user?.id!,
           itemId: item.id,
@@ -228,7 +228,7 @@ const itemRouter = t.router({
       })
     }),
   remove: protectedProcedure.input(z.number()).mutation(async ({ input }) => {
-    await prisma.item.delete({
+    await db.item.delete({
       where: {
         id: input
       }
@@ -243,7 +243,7 @@ const transactionRouter = t.router({
       const where: { itemId?: number } = {}
       if (input) where.itemId = input
 
-      const transactions = await prisma.transaction.findMany({
+      const transactions = await db.transaction.findMany({
         where,
         orderBy: {
           createdAt: 'desc'
@@ -275,14 +275,14 @@ const transactionRouter = t.router({
           if (type == 'inc') operation.increment = by
           if (type == 'dec') operation.decrement = by
 
-          await prisma.item.update({
+          await db.item.update({
             data: {
               count: operation
             },
             where: { id: itemId }
           })
 
-          await prisma.transaction.create({
+          await db.transaction.create({
             data: {
               itemId,
               message: `قام ##### ${
@@ -307,14 +307,14 @@ const transactionRouter = t.router({
     .mutation(async ({ input: transactions, ctx: { user } }) => {
       await Promise.all(
         transactions.map(async ({ itemId, newVal, oldVal }) => {
-          await prisma.item.update({
+          await db.item.update({
             data: {
               name: newVal
             },
             where: { id: itemId }
           })
 
-          await prisma.transaction.create({
+          await db.transaction.create({
             data: {
               itemId,
               message: `قام ##### بتغيير اسم العنصر من (${oldVal}) الى (${newVal})`,
@@ -342,14 +342,14 @@ const transactionRouter = t.router({
           if (type == 'inc') operation.increment = by
           if (type == 'dec') operation.decrement = by
 
-          await prisma.item.update({
+          await db.item.update({
             data: {
               perBag: operation
             },
             where: { id: itemId }
           })
 
-          await prisma.transaction.create({
+          await db.transaction.create({
             data: {
               itemId,
               message: `قام ##### ${
@@ -377,7 +377,7 @@ const financeRouter = t.router({
       let income = 0
       let expense = 0
 
-      const data = await prisma.finance.findMany({
+      const data = await db.finance.findMany({
         where: { month, year }
       })
 
@@ -400,14 +400,14 @@ const financeRouter = t.router({
       })
     )
     .query(async ({ input: { month, year, type } }) => {
-      const financeList = await prisma.financeList.findMany({
+      const financeList = await db.financeList.findMany({
         where: { type }
       })
 
       try {
         return await Promise.all(
           financeList?.map(async ({ id: srcId }) => {
-            return await prisma.finance.upsert({
+            return await db.finance.upsert({
               where: { srcId_month_year_type: { srcId, month, year, type } },
               create: { srcId, month, year, type },
               update: {},
@@ -423,7 +423,7 @@ const financeRouter = t.router({
     .input(z.object({ type: financeType }))
     .query(
       async ({ input: { type } }) =>
-        await prisma.financeList.findMany({ where: { type } })
+        await db.financeList.findMany({ where: { type } })
     ),
   getFinanceTableData: protectedProcedure
     .input(
@@ -438,7 +438,7 @@ const financeRouter = t.router({
       const [x, y] = await Promise.all(
         years.map(
           async (y) =>
-            await prisma.finance.findMany({
+            await db.finance.findMany({
               where: { year: y, type },
               include: { src: true }
             })
@@ -466,7 +466,7 @@ const financeRouter = t.router({
     .mutation(async ({ input }) => {
       await Promise.all(
         input.map(async ({ type, srcId, month, year, price }) => {
-          await prisma.finance.upsert({
+          await db.finance.upsert({
             where: {
               srcId_month_year_type: { srcId, month, year, type }
             },
@@ -487,7 +487,7 @@ const supplyRouter = t.router({
       })
     )
     .query(async ({ input: { month, year } }) => {
-      const data = await prisma.supply.findMany({
+      const data = await db.supply.findMany({
         where: { month, year }
       })
 
@@ -501,7 +501,7 @@ const supplyRouter = t.router({
       }
     }),
   getSupplyList: protectedProcedure.query(
-    async () => await prisma.item.findMany({ select: { id: true, name: true } })
+    async () => await db.item.findMany({ select: { id: true, name: true } })
   ),
   getSupplyTableData: protectedProcedure
     .input(
@@ -515,7 +515,7 @@ const supplyRouter = t.router({
       const [x, y] = await Promise.all(
         years.map(
           async (y) =>
-            await prisma.supply.findMany({
+            await db.supply.findMany({
               where: { year: y },
               include: { src: true }
             })
@@ -553,7 +553,7 @@ const supplyRouter = t.router({
     .mutation(async ({ input: { supply, month, year }, ctx: { user } }) => {
       await Promise.all(
         supply.map(async ({ src, count, pricePerUnit }) => {
-          await prisma.supply.create({
+          await db.supply.create({
             data: {
               month,
               year,
@@ -563,7 +563,7 @@ const supplyRouter = t.router({
             }
           })
 
-          await prisma.item.update({
+          await db.item.update({
             where: { id: src.id },
             data: {
               count: {
@@ -572,7 +572,7 @@ const supplyRouter = t.router({
             }
           })
 
-          await prisma.transaction.create({
+          await db.transaction.create({
             data: {
               itemId: src.id,
               message: `قام ##### بالاضافة للمخزون بمقدار ${count}`,
@@ -588,7 +588,7 @@ const metaRouter = t.router({
   get: protectedProcedure.input(z.string()).query(async ({ input }) => {
     return (
       (
-        await prisma.meta.findUnique({
+        await db.meta.findUnique({
           where: {
             key: input
           }
@@ -606,7 +606,7 @@ const metaRouter = t.router({
     .mutation(async ({ input }) => {
       const { key, value } = input
 
-      await prisma.meta.upsert({
+      await db.meta.upsert({
         where: {
           key
         },
@@ -623,13 +623,13 @@ const metaRouter = t.router({
 
 const doneeRouter = t.router({
   getAll: protectedProcedure.query(async () => {
-    return await prisma.donee.findMany({
+    return await db.donee.findMany({
       include: { location: true }
     })
   }),
-  getCount: protectedProcedure.query(async () => await prisma.donee.count()),
+  getCount: protectedProcedure.query(async () => await db.donee.count()),
   getLocations: protectedProcedure.query(async () => {
-    return await prisma.serviceArea.findMany()
+    return await db.serviceArea.findMany()
   }),
   add: protectedProcedure
     .input(
@@ -642,7 +642,7 @@ const doneeRouter = t.router({
       })
     )
     .mutation(async ({ input: { name, location } }) => {
-      const donee = await prisma.donee.findUnique({
+      const donee = await db.donee.findUnique({
         where: {
           name
         }
@@ -654,7 +654,7 @@ const doneeRouter = t.router({
           message: 'اسم المخدوم مأخوذ, اختر اسم اخر'
         })
 
-      await prisma.donee.create({
+      await db.donee.create({
         data: { name, locationId: location }
       })
     }),
@@ -671,7 +671,7 @@ const doneeRouter = t.router({
     .mutation(async ({ input }) => {
       const { id, name, location } = input
 
-      await prisma.donee.update({
+      await db.donee.update({
         where: {
           id
         },
@@ -682,7 +682,7 @@ const doneeRouter = t.router({
       })
     }),
   remove: protectedProcedure.input(z.number()).mutation(async ({ input }) => {
-    await prisma.donee.delete({
+    await db.donee.delete({
       where: { id: input }
     })
   })
@@ -698,20 +698,20 @@ const checkoutRouter = t.router({
     )
     .query(
       async ({ input: { month, year } }) =>
-        await prisma.checkout.findMany({
+        await db.checkout.findMany({
           where: { month, year }
         })
     ),
   progress: protectedProcedure
     .input(z.object({ month: z.string(), year: z.string() }))
     .query(async ({ input: { month, year } }) => {
-      const donees = await prisma.donee.findMany()
-      const locations = await prisma.serviceArea.findMany()
+      const donees = await db.donee.findMany()
+      const locations = await db.serviceArea.findMany()
 
       const progress = await Promise.all(
         donees.map(async ({ id, locationId }) => ({
           location: locationId,
-          value: await prisma.checkout.findFirst({
+          value: await db.checkout.findFirst({
             where: { month, year, doneeId: id, amount: { gt: 0 } }
           })
         }))
@@ -738,13 +738,13 @@ const checkoutRouter = t.router({
       await Promise.all(
         changes.map(async ({ doneeId, itemId, amount, diff }) => {
           if (amount == 0)
-            await prisma.checkout.delete({
+            await db.checkout.delete({
               where: {
                 doneeId_itemId_month_year: { doneeId, itemId, month, year }
               }
             })
           else
-            await prisma.checkout.upsert({
+            await db.checkout.upsert({
               where: {
                 doneeId_itemId_month_year: { doneeId, itemId, month, year }
               },
@@ -755,7 +755,7 @@ const checkoutRouter = t.router({
           const operation: { increment?: number; decrement?: number } =
             diff < 0 ? { increment: Math.abs(diff) } : { decrement: diff }
 
-          await prisma.item.update({
+          await db.item.update({
             where: { id: itemId },
             data: { count: operation }
           })

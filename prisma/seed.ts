@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient({
+const db = new PrismaClient({
   log: ['query', 'info', 'warn', 'error']
 })
 
 const main = async () => {
   console.time('Seed finished in')
 
-  const user = await prisma.user.create({
+  const user = await db.user.create({
     data: {
       name: 'كيرلس',
       password: '$2a$10$.edjaS/EsDN4xT13QRwY9.TCpEzkT6izf78Fg0KxB8.itqW5UHmOG',
@@ -29,14 +29,14 @@ const main = async () => {
     { id: 12, name: 'جبنة', perBag: 0, count: 0 }
   ]
 
-  await prisma.item.createMany({
+  await db.item.createMany({
     data: itemsPayload
   })
 
   await Promise.all(
     itemsPayload.map(
       async ({ id }) =>
-        await prisma.transaction.create({
+        await db.transaction.create({
           data: {
             userId: user.id,
             message: `قام ##### باضافة هذا العنصر`,
@@ -46,7 +46,7 @@ const main = async () => {
     )
   )
 
-  await prisma.financeList.createMany({
+  await db.financeList.createMany({
     data: [
       { type: 'income', name: 'اشتراكات' },
       { type: 'income', name: 'تبرعات' },
@@ -61,7 +61,7 @@ const main = async () => {
     ]
   })
 
-  await prisma.meta.createMany({
+  await db.meta.createMany({
     data: [
       {
         key: 'initYear',
@@ -70,7 +70,7 @@ const main = async () => {
     ]
   })
 
-  await prisma.serviceArea.createMany({
+  await db.serviceArea.createMany({
     data: [
       { name: 'عين شمس' },
       { name: 'عزبة النخل' },
@@ -79,7 +79,7 @@ const main = async () => {
     ]
   })
 
-  await prisma.donee.createMany({
+  await db.donee.createMany({
     data: [
       // عين شمس
       { name: 'ماري ذكي', locationId: 1 },
