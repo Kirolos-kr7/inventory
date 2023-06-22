@@ -1,12 +1,19 @@
 "use client"
 
-import { trpc } from "@/utils/trpc"
-import { useEffect } from "react"
 import dayjs from "@/utils/dayjs"
+import { trpc } from "@/utils/trpc"
 import Loading from "../Loading"
+import { Item } from "@prisma/client"
 
-const History = ({ itemId }: { itemId: number | null }) => {
-  const { data, isLoading } = trpc.transaction.getAll.useQuery(itemId, {
+const History = ({ item }: { item: Item | null }) => {
+  if (!item)
+    return (
+      <div className="text-gray-400 text-center py-8">
+        <p>لا توجد عمليات سابقة</p>
+      </div>
+    )
+
+  const { data, isLoading } = trpc.transaction.getAll.useQuery(item?.id, {
     cacheTime: 0,
   })
 

@@ -41,7 +41,7 @@ const Inventory: NextPage = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [isRemoving, setIsRemoving] = useState(false)
   const [isHistory, setIsHistory] = useState(false)
-  const [selectedItem, setSelectedItem] = useState<number | null>(null)
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null)
 
   useEffect(() => {
     if (data) setUpdatedData(structuredClone(data))
@@ -138,7 +138,7 @@ const Inventory: NextPage = () => {
   const removeItem = async () => {
     if (!selectedItem) return
 
-    await removeMutation.mutateAsync(selectedItem)
+    await removeMutation.mutateAsync(selectedItem.id)
     await refetch()
     setSelectedItem(null)
   }
@@ -241,8 +241,8 @@ const Inventory: NextPage = () => {
                     ? true
                     : false
                 }
-                remove={(id) => setSelectedItem(id)}
-                showHistory={(id) => (setIsHistory(true), setSelectedItem(id))}
+                remove={() => setSelectedItem(item)}
+                showHistory={() => (setIsHistory(true), setSelectedItem(item))}
                 pending={pending}
               />
             </div>
@@ -290,8 +290,15 @@ const Inventory: NextPage = () => {
 
       <Dialog
         open={isHistory}
-        header="العمليات السابقة"
-        body={<History itemId={selectedItem} />}
+        header={
+          <>
+            العمليات السابقة
+            <span className="text-gray-400 text-sm ms-2">
+              [{selectedItem?.name}]
+            </span>
+          </>
+        }
+        body={<History item={selectedItem} />}
         close={() => (setIsHistory(false), setSelectedItem(null))}
       />
     </div>
