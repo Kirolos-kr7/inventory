@@ -1,12 +1,11 @@
-import { TRPCError, initTRPC } from "@trpc/server"
-import { z } from "zod"
-import superjson from "superjson"
-import { prisma } from "@/utils/prisma"
-import { genJWT } from "@/utils/jwt"
-import { compare, hash, genSalt } from "bcrypt"
-import { Context } from "./[trpc]/context"
 import { MONTHS } from "@/utils/dayjs"
-import { Finance } from "@prisma/client"
+import { genJWT } from "@/utils/jwt"
+import { prisma } from "@/utils/prisma"
+import { TRPCError, initTRPC } from "@trpc/server"
+import { compare, genSalt, hash } from "bcrypt"
+import superjson from "superjson"
+import { z } from "zod"
+import { Context } from "./[trpc]/context"
 
 export const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -26,8 +25,7 @@ export const isAuthed = t.middleware((opts) => {
   })
 })
 
-const publicProcedure = t.procedure
-const protectedProcedure = publicProcedure.use(isAuthed)
+const protectedProcedure = t.procedure.use(isAuthed)
 
 const authRouter = t.router({
   getAll: protectedProcedure.query(async () => {
@@ -40,7 +38,7 @@ const authRouter = t.router({
       },
     })
   }),
-  login: publicProcedure
+  login: t.procedure
     .input(
       z.object({
         name: z.string().toLowerCase(),
