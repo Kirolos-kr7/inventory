@@ -1,7 +1,7 @@
+import Button from "@/components/button"
 import { handleError } from "@/utils/handleError"
 import { trpc } from "@/utils/trpc"
 import { FormEvent, useState } from "react"
-import Button from "../Button"
 
 const AddItem = ({ done, pending }: { done: () => void; pending: boolean }) => {
   const [name, setName] = useState("")

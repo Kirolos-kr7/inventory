@@ -2,8 +2,7 @@
 
 import { useDateStore } from "@/utils/store"
 import { trpc } from "@/utils/trpc"
-import InfoBox from "./InfoBox"
-import Loader from "../Loader"
+import InfoBox from "./infoBox"
 
 const TopBoxes = () => {
   const { month, year } = useDateStore()

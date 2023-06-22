@@ -1,10 +1,9 @@
 "use client"
 
-import Button from "@/components/Button"
-import DateSelector from "@/components/DateSelector"
-import Loading from "@/components/Loading"
-import PageHeader from "@/components/PageHeader"
-import YearlyTable from "@/components/YearlyTable"
+import Button from "@/components/button"
+import DateSelector from "@/components/dateSelector"
+import Loading from "@/components/loading"
+import PageHeader from "@/components/pageHeader"
 import { MONTHS, getFinancialYear } from "@/utils/dayjs"
 import { handleError } from "@/utils/handleError"
 import { useDateStore } from "@/utils/store"
@@ -15,6 +14,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { NextPage } from "next"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
+import FinanceTable from "./financeTable"
 
 const Stats: NextPage = () => {
   const { month, year } = useDateStore()
@@ -159,7 +159,7 @@ const Stats: NextPage = () => {
 
       {!isLoading && (
         <>
-          <YearlyTable
+          <FinanceTable
             data={finance}
             changes={changes}
             financeList={financeList}

@@ -1,7 +1,7 @@
-import { Cairo } from "next/font/google"
-import "./globals.css"
 import { TrpcProvider } from "@/utils/trpc-provider"
+import { Cairo } from "next/font/google"
 import { Toaster } from "react-hot-toast"
+import "./globals.css"
 
 export const metadata = {
   title: "St. Kriakos Coptic Orthozox Org",

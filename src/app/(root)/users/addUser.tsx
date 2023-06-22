@@ -1,9 +1,9 @@
 "use client"
 
+import Button from "@/components/button"
 import { handleError } from "@/utils/handleError"
 import { trpc } from "@/utils/trpc"
 import { FormEvent, useState } from "react"
-import Button from "../Button"
 
 const AddUser = ({ done }: { done: () => void }) => {
   const [userData, setUserData] = useState({

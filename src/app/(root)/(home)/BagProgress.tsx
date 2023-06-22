@@ -1,11 +1,10 @@
 "use client"
 
-import { currMonth, currYear } from "@/utils/dayjs"
+import Loading from "@/components/loading"
+import { useDateStore } from "@/utils/store"
 import { trpc } from "@/utils/trpc"
 import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
-import Loading from "../Loading"
-import { useDateStore } from "@/utils/store"
 
 const BagProgress = () => {
   const { month, year } = useDateStore()

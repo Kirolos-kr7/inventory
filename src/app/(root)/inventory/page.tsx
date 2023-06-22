@@ -1,19 +1,19 @@
 "use client"
 
-import Button from "@/components/Button"
-import Dialog from "@/components/Dialog"
-import ItemCard from "@/components/ItemCard"
-import Loading from "@/components/Loading"
-import PageHeader from "@/components/PageHeader"
-import AddItem from "@/components/dialogs/AddItem"
-import Confirmation from "@/components/dialogs/Confirmation"
-import History from "@/components/dialogs/History"
+import Button from "@/components/button"
+import Confirmation from "@/components/confirmation"
+import Dialog from "@/components/dialog"
+import Loading from "@/components/loading"
+import PageHeader from "@/components/pageHeader"
 import { trpc } from "@/utils/trpc"
 import Add from "@iconify/icons-mdi/add"
 import { Icon } from "@iconify/react/offline"
 import { Item } from "@prisma/client"
 import { NextPage } from "next"
 import { useEffect, useMemo, useState } from "react"
+import AddItem from "./addItem"
+import History from "./history"
+import ItemCard from "./itemCard"
 
 const Inventory: NextPage = () => {
   const [updatedData, setUpdatedData] = useState<Item[]>()

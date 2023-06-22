@@ -1,15 +1,15 @@
 "use client"
 
-import Button from "@/components/Button"
+import Button from "@/components/button"
+import Loading from "@/components/loading"
 import { handleError } from "@/utils/handleError"
 import { useStore } from "@/utils/store"
 import { trpc } from "@/utils/trpc"
 import { setCookie } from "cookies-next"
+import { AnimatePresence, motion } from "framer-motion"
 import { NextPage } from "next"
 import { useRouter } from "next/navigation"
 import { FormEvent, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import Loading from "@/components/Loading"
 import { toast } from "react-hot-toast"
 
 const loginAnimation = {

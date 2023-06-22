@@ -1,7 +1,7 @@
-import { ReactElement } from "react"
-import { motion } from "framer-motion"
-import Loader from "../Loader"
+import Loader from "@/components/loader"
 import { slideUp } from "@/utils/motion"
+import { motion } from "framer-motion"
+import { ReactElement } from "react"
 
 const InfoBox = ({
   name,

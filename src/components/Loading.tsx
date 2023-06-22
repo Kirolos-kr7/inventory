@@ -1,4 +1,4 @@
-import Loader from "./Loader"
+import Loader from "./loader"
 
 const Loading = ({ offset = 150 }: { offset?: number }) => {
   return (

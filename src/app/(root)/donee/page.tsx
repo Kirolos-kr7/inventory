@@ -1,20 +1,20 @@
 "use client"
 
-import Button from "@/components/Button"
-import Loading from "@/components/Loading"
-import PageHeader from "@/components/PageHeader"
+import Button from "@/components/button"
+import Confirmation from "@/components/confirmation"
+import Dialog from "@/components/dialog"
+import Loading from "@/components/loading"
+import PageHeader from "@/components/pageHeader"
 import { trpc } from "@/utils/trpc"
+import Check from "@iconify/icons-mdi/check"
 import Remove from "@iconify/icons-mdi/delete"
 import Edit from "@iconify/icons-mdi/edit"
-import Check from "@iconify/icons-mdi/check"
 import { Icon } from "@iconify/react/dist/offline"
 import { Donee } from "@prisma/client"
 import { NextPage } from "next"
 import { useEffect, useState } from "react"
-import Dialog from "@/components/Dialog"
-import AddDonee from "@/components/dialogs/AddDonee"
-import UpdateDonee from "@/components/dialogs/UpdateDonee"
-import Confirmation from "@/components/dialogs/Confirmation"
+import AddDonee from "./addDonee"
+import UpdateDonee from "./updateDonee"
 
 const Users: NextPage = () => {
   const { data, refetch, isLoading, isRefetching } =

@@ -1,14 +1,13 @@
 "use client"
 
-import Button from "@/components/Button"
-import Dialog from "@/components/Dialog"
-import Loading from "@/components/Loading"
-import MonthlyBags from "@/components/MonthlyBags"
-import PageHeader from "@/components/PageHeader"
-import BagContent from "@/components/dialogs/BagContent"
+import Button from "@/components/button"
+import Dialog from "@/components/dialog"
+import Loading from "@/components/loading"
+import PageHeader from "@/components/pageHeader"
 import { trpc } from "@/utils/trpc"
 import { NextPage } from "next"
 import { useState } from "react"
+import BagContent from "./bagContent"
 
 const Bag: NextPage = () => {
   const { data, refetch, isLoading } = trpc.item.getAll.useQuery()

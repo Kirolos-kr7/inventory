@@ -1,6 +1,6 @@
-import HomeGrid from "@/components/home/HomeGrid"
+import DateSelector from "@/components/dateSelector"
 import { NextPage } from "next"
-import DateSelector from "@/components/DateSelector"
+import HomeGrid from "./homeGrid"
 
 const Home: NextPage = () => {
   return (

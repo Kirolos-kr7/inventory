@@ -1,12 +1,10 @@
 "use client"
 
-import Button from "@/components/Button"
-import Dialog from "@/components/Dialog"
-import Loading from "@/components/Loading"
-import PageHeader from "@/components/PageHeader"
-import AddUser from "@/components/dialogs/AddUser"
-import Confirmation from "@/components/dialogs/Confirmation"
-import UpdateUser from "@/components/dialogs/UpdateUser"
+import Button from "@/components/button"
+import Confirmation from "@/components/confirmation"
+import Dialog from "@/components/dialog"
+import Loading from "@/components/loading"
+import PageHeader from "@/components/pageHeader"
 import dayjs from "@/utils/dayjs"
 import { useStore } from "@/utils/store"
 import { trpc } from "@/utils/trpc"
@@ -17,6 +15,8 @@ import { User } from "@prisma/client"
 import { NextPage } from "next"
 import { useState } from "react"
 import { CheckmarkIcon, ErrorIcon } from "react-hot-toast"
+import AddUser from "./addUser"
+import UpdateUser from "./updateUser"
 
 const Users: NextPage = () => {
   const { data, refetch, isLoading, isRefetching } = trpc.auth.getAll.useQuery()

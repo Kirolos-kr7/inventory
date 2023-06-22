@@ -1,5 +1,5 @@
 import { FormEvent } from "react"
-import Button from "../Button"
+import Button from "./button"
 
 const Confirmation = ({
   cta,

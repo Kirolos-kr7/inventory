@@ -1,7 +1,7 @@
 "use client"
 
-import Button from "@/components/Button"
-import Sidebar from "@/components/Sidebar"
+import Button from "@/components/button"
+import Sidebar from "@/components/sidebar"
 import { useStore } from "@/utils/store"
 import Menu from "@iconify/icons-mdi/menu"
 import { Icon } from "@iconify/react"

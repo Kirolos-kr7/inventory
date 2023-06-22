@@ -1,14 +1,14 @@
 "use client"
 
-import DateSelector from "@/components/DateSelector"
-import Loading from "@/components/Loading"
-import PageHeader from "@/components/PageHeader"
-import SupplyTable from "@/components/SupplyTable"
+import DateSelector from "@/components/dateSelector"
+import Loading from "@/components/loading"
+import PageHeader from "@/components/pageHeader"
 import { getFinancialYear } from "@/utils/dayjs"
 import { useDateStore } from "@/utils/store"
 import { trpc } from "@/utils/trpc"
 import { NextPage } from "next"
 import { useState } from "react"
+import SupplyTable from "./supplyTable"
 
 const Stats: NextPage = () => {
   const { month, year } = useDateStore()

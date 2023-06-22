@@ -1,12 +1,10 @@
 "use client"
 
-import Button from "@/components/Button"
-import CheckoutTable from "@/components/CheckoutTable"
-import DateSelector from "@/components/DateSelector"
-import Dialog from "@/components/Dialog"
-import Loading from "@/components/Loading"
-import PageHeader from "@/components/PageHeader"
-import FilterCheckoutItems from "@/components/dialogs/filterCheckoutItems"
+import Button from "@/components/button"
+import DateSelector from "@/components/dateSelector"
+import Dialog from "@/components/dialog"
+import Loading from "@/components/loading"
+import PageHeader from "@/components/pageHeader"
 import { handleError } from "@/utils/handleError"
 import { useDateStore } from "@/utils/store"
 import { trpc } from "@/utils/trpc"
@@ -17,6 +15,8 @@ import { Checkout, Item } from "@prisma/client"
 import { AnimatePresence, motion } from "framer-motion"
 import { NextPage } from "next"
 import { useEffect, useMemo, useState } from "react"
+import CheckoutTable from "./checkoutTable"
+import FilterCheckoutItems from "./filterCheckoutItems"
 
 const Checkout: NextPage = () => {
   const { month, year } = useDateStore()

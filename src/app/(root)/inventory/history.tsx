@@ -1,8 +1,8 @@
 "use client"
 
+import Loading from "@/components/loading"
 import dayjs from "@/utils/dayjs"
 import { trpc } from "@/utils/trpc"
-import Loading from "../Loading"
 import { Item } from "@prisma/client"
 
 const History = ({ item }: { item: Item | null }) => {

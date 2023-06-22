@@ -1,5 +1,5 @@
-import BagProgress from "./BagProgress"
-import TopBoxes from "./TopBoxes"
+import BagProgress from "./bagProgress"
+import TopBoxes from "./topBoxes"
 
 const HomeGrid = () => {
   return (
