@@ -26,7 +26,7 @@ const Users: NextPage = () => {
     { id: number; name: string; isActive: boolean }[]
   >([])
   const [isAdding, setIsAdding] = useState(false)
-  const [isEditing, setIsEditing] = useState(true)
+  const [isEditing, setIsEditing] = useState(false)
   const [isRemoving, setIsRemoving] = useState(false)
   const [selectedDonee, setSelectedDonee] = useState<Donee | null>(null)
 
@@ -103,7 +103,7 @@ const Users: NextPage = () => {
             </thead>
             <tbody>
               {getDonees()?.map(({ id, name, location }, i, u) => (
-                <tr key={id}>
+                <tr key={id} className="table-compact">
                   <th>{i + 1}</th>
                   <td>{name}</td>
                   <td>{location.name}</td>
