@@ -25,7 +25,7 @@ const Dialog = ({
               exit="hide"
               transition={{
                 type: "spring",
-                duration: "0.5",
+                duration: 0.5,
               }}
               className="modal-box fixed top-1/2 left-1/2 w-[calc(100%-24px)] sm:w-full border border-base-300 shadow-md md:min-w-[480px] z-40"
             >
