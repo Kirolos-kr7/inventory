@@ -12,7 +12,9 @@ const TopBoxes = () => {
     trpc.supply.getHomeData.useQuery({ month, year })
 
   return (
-    <div className="flex flex-col gap-2 col-span-2 sm:col-span-1">
+    <div className="flex flex-col gap-2 col-span-2 sm:col-span-1 mt-5 sm:mt-3">
+      <h2 className="text-lg font-bold mb-1">الاحصائيات الشهرية</h2>
+
       <InfoBox
         name="الدخل"
         value={finance?.income}
