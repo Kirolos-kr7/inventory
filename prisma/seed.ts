@@ -6,7 +6,7 @@ const prisma = new PrismaClient({
 const main = async () => {
   console.time("Seed finished in")
 
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       name: "كيرلس",
       password: "$2a$10$.edjaS/EsDN4xT13QRwY9.TCpEzkT6izf78Fg0KxB8.itqW5UHmOG",
@@ -14,22 +14,37 @@ const main = async () => {
     },
   })
 
+  const itemsPayload = [
+    { id: 1, name: "رز", perBag: 2, count: 107 },
+    { id: 2, name: "سكر", perBag: 2, count: 79 },
+    { id: 3, name: "مكرونة", perBag: 2, count: 123 },
+    { id: 4, name: "شاي", perBag: 2, count: 6 },
+    { id: 5, name: "زيت", perBag: 1, count: 23 },
+    { id: 6, name: "فراخ", perBag: 1, count: 0 },
+    { id: 7, name: "لحمة", perBag: 0, count: 0 },
+    { id: 8, name: "ملح", perBag: 0, count: 28 },
+    { id: 9, name: "عدس", perBag: 1, count: 17 },
+    { id: 10, name: "سمنة", perBag: 0, count: 40 },
+    { id: 11, name: "لبن", perBag: 0, count: 0 },
+    { id: 12, name: "جبنة", perBag: 0, count: 0 },
+  ]
+
   await prisma.item.createMany({
-    data: [
-      { name: "رز", perBag: 2, count: 107 },
-      { name: "سكر", perBag: 2, count: 79 },
-      { name: "مكرونة", perBag: 2, count: 123 },
-      { name: "شاي", perBag: 2, count: 6 },
-      { name: "زيت", perBag: 0, count: 23 },
-      { name: "فراخ", perBag: 1, count: 0 },
-      { name: "لحمة", perBag: 1, count: 0 },
-      { name: "ملح", perBag: 0, count: 28 },
-      { name: "عدس", perBag: 1, count: 17 },
-      { name: "سمنة", perBag: 1, count: 40 },
-      { name: "لبن", perBag: 1, count: 0 },
-      { name: "جبنة", perBag: 1, count: 0 },
-    ],
+    data: itemsPayload,
   })
+
+  await Promise.all(
+    itemsPayload.map(
+      async ({ id }) =>
+        await prisma.transaction.create({
+          data: {
+            userId: user.id,
+            message: `قام ##### باضافة هذا العنصر`,
+            itemId: id,
+          },
+        })
+    )
+  )
 
   await prisma.financeList.createMany({
     data: [
