@@ -1,5 +1,6 @@
 import { fadeIn, zoomIn } from "@/utils/motion"
 import { motion, AnimatePresence } from "framer-motion"
+import { ReactElement } from "react"
 
 const Dialog = ({
   open,
@@ -8,8 +9,8 @@ const Dialog = ({
   close,
 }: {
   open: boolean
-  header: string
-  body: React.ReactElement
+  header: string | ReactElement
+  body: ReactElement
   close?: () => void
 }) => {
   return (
