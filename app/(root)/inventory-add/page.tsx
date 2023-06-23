@@ -2,6 +2,7 @@
 
 import Button from '@/components/button'
 import DateSelector from '@/components/dateSelector'
+import InputNumber from '@/components/inputNumber'
 import Loading from '@/components/loading'
 import PageHeader from '@/components/pageHeader'
 import { handleError } from '@/utils/handleError'
@@ -132,36 +133,34 @@ const InventoryAdd: NextPage = () => {
                 <label className="label" htmlFor={`count_${i}`}>
                   العدد
                 </label>
-                <input
-                  dir="ltr"
-                  className="input-sm bg-base-100 rounded-md border border-secondary input-secondary px-2 text-center w-[6rem]"
-                  type="number"
-                  value={count}
-                  onChange={(e) => handleChange('count', e.target.value, i)}
+
+                <InputNumber
+                  className="bg-base-100 rounded-md border border-secondary input-secondary px-2 text-center w-[6rem]"
+                  size="sm"
                   id={`count_${i}`}
-                  min={1}
+                  value={count}
+                  update={(v) => handleChange('count', v, i)}
                 />
               </div>
               <div>
                 <label className="label" htmlFor={`pricePerUnit_${i}`}>
                   سعر الوحدة
                 </label>
-                <input
-                  dir="ltr"
-                  className="input-sm bg-base-100 rounded-md border border-secondary input-secondary px-2 text-center w-[6rem]"
-                  type="number"
-                  step="0.01"
-                  value={pricePerUnit}
-                  onChange={(e) =>
-                    handleChange('pricePerUnit', e.target.value, i)
-                  }
+
+                <InputNumber
+                  className="bg-base-100 rounded-md border border-secondary input-secondary px-2 text-center w-[6rem]"
+                  size="sm"
                   id={`pricePerUnit_${i}`}
+                  value={pricePerUnit}
+                  update={(v) => handleChange('pricePerUnit', v, i)}
                 />
               </div>
               <div>
                 <label className="label">الاجمالي</label>
                 <span className="text-gray-300 h-8 block leading-8">
-                  {count * pricePerUnit}
+                  {new Intl.NumberFormat('en-US', {
+                    maximumFractionDigits: 2
+                  }).format(count * pricePerUnit)}
                 </span>
               </div>
             </div>

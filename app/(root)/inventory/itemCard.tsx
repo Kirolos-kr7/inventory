@@ -77,10 +77,11 @@ const ItemCard: FC<ItemCardProps> = ({
               }`}
               value={count}
               style={{ width: `${String(count).length}ch` }}
-              onChange={(e) => {
-                const el = e.target
-                el.style.width = `${el.value.length}ch`
-                changeCount('custom', id, parseInt(el.value))
+              onChange={({ target }) => {
+                target.style.width = `${target.value.length}ch`
+                changeCount('custom', id, parseInt(target.value))
+                const val = parseInt(target.value) || 0
+                target.value = String(val)
               }}
               disabled={(!isEditing && !isRemoving) || pending}
             />

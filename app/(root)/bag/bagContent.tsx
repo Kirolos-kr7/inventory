@@ -1,4 +1,5 @@
 import Button from '@/components/button'
+import InputNumber from '@/components/inputNumber'
 import { trpc } from '@/utils/trpc'
 import Add from '@iconify/icons-mdi/add'
 import Subrtact from '@iconify/icons-mdi/minus'
@@ -94,10 +95,10 @@ const BagContent = ({
               >
                 <Icon icon={Add} width={18} />
               </button>
-              <input
-                type="number"
+              <InputNumber
                 id={name}
-                className="input w-20 rounded-none text-center text-xl bg-base-200 input-sm"
+                className="w-20 rounded-none text-center text-xl bg-base-200"
+                size="sm"
                 value={perBag}
                 disabled
               />
