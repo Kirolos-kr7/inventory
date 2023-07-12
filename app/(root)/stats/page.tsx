@@ -4,11 +4,14 @@ import Button from '@/components/button'
 import DateSelector from '@/components/dateSelector'
 import Loading from '@/components/loading'
 import PageHeader from '@/components/pageHeader'
+import { downloadCsvFile } from '@/utils/csv'
 import { MONTHS, getFinancialYear } from '@/utils/dayjs'
 import { handleError } from '@/utils/handleError'
 import { useDateStore } from '@/utils/store'
 import { trpc } from '@/utils/trpc'
 import { FinanceChange, FinanceWithSrc } from '@/utils/types'
+import Download from '@iconify/icons-mdi/microsoft-excel'
+import { Icon } from '@iconify/react/dist/offline'
 import { FinanceType } from '@prisma/client'
 import { AnimatePresence, motion } from 'framer-motion'
 import { NextPage } from 'next'
@@ -151,6 +154,13 @@ const Stats: NextPage = () => {
                 </li>
               </ul>
             </div>
+
+            <Button
+              className="p-3 h-auto min-h-fit"
+              onClick={() => downloadCsvFile('financeTable')}
+            >
+              <Icon icon={Download} width={20} />
+            </Button>
           </div>
         }
       />

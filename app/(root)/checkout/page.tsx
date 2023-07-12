@@ -5,11 +5,13 @@ import DateSelector from '@/components/dateSelector'
 import Dialog from '@/components/dialog'
 import Loading from '@/components/loading'
 import PageHeader from '@/components/pageHeader'
+import { downloadCsvFile } from '@/utils/csv'
 import { handleError } from '@/utils/handleError'
 import { useDateStore } from '@/utils/store'
 import { trpc } from '@/utils/trpc'
 import { CheckoutChange } from '@/utils/types'
 import Check from '@iconify/icons-mdi/check'
+import Download from '@iconify/icons-mdi/microsoft-excel'
 import { Icon } from '@iconify/react'
 import { Checkout, Item } from '@prisma/client'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -170,6 +172,13 @@ const Checkout: NextPage = () => {
                 ))}
               </ul>
             </div>
+
+            <Button
+              className="p-3 h-auto min-h-fit"
+              onClick={() => downloadCsvFile('checkoutTable')}
+            >
+              <Icon icon={Download} width={20} />
+            </Button>
           </div>
         }
       />

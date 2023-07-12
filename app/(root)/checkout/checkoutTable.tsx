@@ -1,7 +1,7 @@
 import { CheckoutChange } from '@/utils/types'
-import { Donee, Checkout, Item } from '@prisma/client'
-import { Icon } from '@iconify/react/dist/offline'
 import Filter from '@iconify/icons-mdi/filter-list'
+import { Icon } from '@iconify/react/dist/offline'
+import { Checkout, Donee, Item } from '@prisma/client'
 import { useCallback, useEffect, useState } from 'react'
 
 const CheckoutTable = ({
@@ -80,7 +80,7 @@ const CheckoutTable = ({
           changes && changes?.length > 0 ? 'mb-[4.6rem]' : 'mb-2'
         }`}
       >
-        <table className="table w-full text-right">
+        <table className="table w-full text-right" id="checkoutTable">
           <thead>
             <tr className="[&>*]:first-of-type:rounded-t-none [&>*]:last-of-type:rounded-t-none sticky top-0 shadow-sm z-[12]">
               <th className="text-base">
