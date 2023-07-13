@@ -117,7 +117,7 @@ const InventoryAdd: NextPage = () => {
                   العنصر
                 </label>
                 <select
-                  className="select select-sm select-secondary w-[6rem]"
+                  className="select select-sm h-8 select-secondary w-[6rem]"
                   id={`item_${i}`}
                   onChange={(e) => handleChange('src', e.target.value, i)}
                   value={src?.name}
@@ -135,7 +135,7 @@ const InventoryAdd: NextPage = () => {
                 </label>
 
                 <InputNumber
-                  className="bg-base-100 rounded-md border border-secondary input-secondary px-2 text-center w-[6rem]"
+                  className="bg-base-100 h-8 rounded-md border border-secondary input-secondary px-2 text-center w-[6rem]"
                   size="sm"
                   id={`count_${i}`}
                   value={count}
@@ -148,7 +148,7 @@ const InventoryAdd: NextPage = () => {
                 </label>
 
                 <InputNumber
-                  className="bg-base-100 rounded-md border border-secondary input-secondary px-2 text-center w-[6rem]"
+                  className="bg-base-100 h-8 rounded-md border border-secondary input-secondary px-2 text-center w-[6rem]"
                   size="sm"
                   id={`pricePerUnit_${i}`}
                   value={pricePerUnit}

@@ -8,7 +8,7 @@ import Stats from '@iconify/icons-mdi/finance'
 import Home from '@iconify/icons-mdi/home'
 import Checkout from '@iconify/icons-mdi/money'
 import Inventory from '@iconify/icons-mdi/package-variant'
-import InventoryAdd from '@iconify/icons-mdi/package-variant-add'
+import Restock from '@iconify/icons-mdi/package-variant-add'
 import Supply from '@iconify/icons-mdi/table'
 import User from '@iconify/icons-mdi/user'
 import Users from '@iconify/icons-mdi/users'
@@ -56,8 +56,8 @@ const Sidebar = () => {
     },
     {
       name: 'إضافة',
-      to: '/inventory-add',
-      icon: InventoryAdd
+      to: '/restock',
+      icon: Restock
     },
     {
       name: 'الشنطة',
