@@ -17,3 +17,21 @@ export const yearList = (financial: boolean = false) => {
 
   return years
 }
+
+export const useResetDateStore = () => {
+  const { month, setMonth, year, setYear } = useDateStore()
+
+  useEffect(() => {
+    const oldMonth = month,
+      oldYear = year
+
+    setMonth(currMonth)
+    setYear(currYear)
+
+    return () => {
+      setMonth(oldMonth)
+      setYear(oldYear)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setMonth, setYear])
+}

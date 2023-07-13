@@ -6,6 +6,7 @@ import Loading from '@/components/loading'
 import PageHeader from '@/components/pageHeader'
 import { downloadCsvFile } from '@/utils/csv'
 import { getFinancialYear } from '@/utils/dayjs'
+import { useResetDateStore } from '@/utils/helpers'
 import { useDateStore } from '@/utils/store'
 import { trpc } from '@/utils/trpc'
 import Download from '@iconify/icons-mdi/microsoft-excel'
@@ -24,6 +25,7 @@ const Stats: NextPage = () => {
     year: financialYear
   })
   const { data: supplyList } = trpc.supply.getSupplyList.useQuery()
+  useResetDateStore()
 
   return (
     <>

@@ -7,6 +7,7 @@ import PageHeader from '@/components/pageHeader'
 import { downloadCsvFile } from '@/utils/csv'
 import { MONTHS, getFinancialYear } from '@/utils/dayjs'
 import { handleError } from '@/utils/handleError'
+import { useResetDateStore } from '@/utils/helpers'
 import { useDateStore } from '@/utils/store'
 import { trpc } from '@/utils/trpc'
 import { FinanceChange, FinanceWithSrc } from '@/utils/types'
@@ -38,6 +39,7 @@ const Stats: NextPage = () => {
     type
   })
   const updateMutation = trpc.finance.updateFinance.useMutation()
+  useResetDateStore()
 
   useEffect(() => {
     const view = params.get('view')
