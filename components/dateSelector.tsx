@@ -1,6 +1,6 @@
 'use client'
 
-import { MONTHS, getFinancialYear } from '@/utils/dayjs'
+import { MONTHS } from '@/utils/dayjs'
 import { yearList } from '@/utils/helpers'
 import { fadeIn, slideDown } from '@/utils/motion'
 import { useDateStore } from '@/utils/store'
@@ -18,8 +18,8 @@ const DateSelector = ({ onlyYear = false }: { onlyYear?: boolean }) => {
     <>
       <div>
         <div className="flex gap-2 mt-1">
-          <p className="text-gray-400 ">
-            {onlyYear && `لسنة ${getFinancialYear(month, year)}`}
+          <p className="text-gray-400">
+            {onlyYear && `لسنة ${year}-${parseInt(year) + 1}`}
             {!onlyYear && `${month} ${year}`}
           </p>
           <Button className="btn-xs" onClick={() => setDateEdit(true)}>
@@ -66,13 +66,13 @@ const DateDialog = ({ onlyYear = false }: { onlyYear: boolean }) => {
       <div className="flex gap-3 w-full">
         <label className="label">السنة</label>
         <ul className="compact menu w-full max-h-20 gap-2 p-2 shadow bg-base-200 rounded-box">
-          {yearList(onlyYear).map(({ name, value }) => (
-            <li key={value}>
+          {yearList().map((v) => (
+            <li key={`${v}`}>
               <a
-                className={`justify-center ${value == year ? 'active' : ''}`}
-                onClick={() => setYear(value)}
+                className={`justify-center ${`${v}` == year ? 'active' : ''}`}
+                onClick={() => setYear(`${v}`)}
               >
-                {name}
+                {onlyYear ? `${v + 1}-${v}` : v}
               </a>
             </li>
           ))}
@@ -82,7 +82,7 @@ const DateDialog = ({ onlyYear = false }: { onlyYear: boolean }) => {
         <div className="flex gap-3 w-full">
           <label className="label">الشهر</label>
           <ul
-            className="compact menu w-full max-h-40 gap-2 p-2 shadow bg-base-200 rounded-box"
+            className="compact menu grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 w-full gap-2 p-2 shadow bg-base-200 rounded-box"
             dir="rtl"
           >
             {MONTHS.map((n) => (

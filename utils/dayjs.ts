@@ -35,8 +35,5 @@ export const getFinancialMonths = (year: string) => [
   { month: 'يونيو', year: parseInt(year) + 1 }
 ]
 
-export const getFinancialYear = (month: string, year: string) => {
-  if (MONTHS.slice(0, 6).includes(month))
-    return `${parseInt(year) - 1}-${parseInt(year)}`
-  else return `${parseInt(year)}-${parseInt(year) + 1}`
-}
+export const getFinancialYear = (month: string, year: string) =>
+  MONTHS.slice(0, 6).includes(month) ? `${parseInt(year) - 1}` : year

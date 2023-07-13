@@ -1,18 +1,16 @@
-import { currYear } from './dayjs'
+import { useEffect } from 'react'
+import { currMonth, currYear } from './dayjs'
+import { useDateStore } from './store'
 import { trpc } from './trpc'
 
-export const yearList = (financial: boolean = false) => {
+export const yearList = () => {
   const { data } = trpc.meta.get.useQuery('initYear')
   let initYear = parseInt(data ? data : currYear)
-  const years: { name: string; value: string }[] = []
+  const years: number[] = []
 
   for (let i = 0; i < parseInt(currYear) - initYear + 2; i++) {
     const num = initYear + i - 1
-    years.push(
-      financial
-        ? { name: `${num + 1}-${num}`, value: `${num + 1}` }
-        : { name: `${num}`, value: `${num}` }
-    )
+    years.push(num)
   }
 
   return years

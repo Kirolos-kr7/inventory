@@ -433,23 +433,21 @@ const financeRouter = t.router({
       })
     )
     .query(async ({ input: { year, type } }) => {
-      const years = year.split('-')
+      const y1 = (
+        await db.finance.findMany({
+          where: { year, type },
+          include: { src: true }
+        })
+      ).filter(({ month }) => MONTHS.slice(7, 12).includes(month))
 
-      const [x, y] = await Promise.all(
-        years.map(
-          async (y) =>
-            await db.finance.findMany({
-              where: { year: y, type },
-              include: { src: true }
-            })
-        )
-      )
+      const y2 = (
+        await db.finance.findMany({
+          where: { year: `${parseInt(year) + 1}`, type },
+          include: { src: true }
+        })
+      ).filter(({ month }) => MONTHS.slice(0, 6).includes(month))
 
-      return [...x, ...y].filter(
-        ({ year, month }) =>
-          (year == years[0] && MONTHS.slice(7, 12).includes(month)) ||
-          (year == years[1] && MONTHS.slice(0, 6).includes(month))
-      )
+      return [...y1, ...y2]
     }),
   updateFinance: protectedProcedure
     .input(
@@ -510,23 +508,21 @@ const supplyRouter = t.router({
       })
     )
     .query(async ({ input: { year } }) => {
-      const years = year.split('-')
+      const y1 = (
+        await db.supply.findMany({
+          where: { year },
+          include: { src: true }
+        })
+      ).filter(({ month }) => MONTHS.slice(7, 12).includes(month))
 
-      const [x, y] = await Promise.all(
-        years.map(
-          async (y) =>
-            await db.supply.findMany({
-              where: { year: y },
-              include: { src: true }
-            })
-        )
-      )
+      const y2 = (
+        await db.supply.findMany({
+          where: { year: `${parseInt(year) + 1}` },
+          include: { src: true }
+        })
+      ).filter(({ month }) => MONTHS.slice(0, 6).includes(month))
 
-      return [...x, ...y].filter(
-        ({ year, month }) =>
-          (year == years[0] && MONTHS.slice(7, 12).includes(month)) ||
-          (year == years[1] && MONTHS.slice(0, 6).includes(month))
-      )
+      return [...y1, ...y2]
     }),
   addToSupply: protectedProcedure
     .input(
