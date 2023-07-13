@@ -97,7 +97,7 @@ const BagContent = ({
               </button>
               <InputNumber
                 id={name}
-                className="w-20 rounded-none text-center text-xl bg-base-200"
+                className="w-20 h-min rounded-none text-center text-xl bg-base-200"
                 size="sm"
                 value={perBag}
                 disabled
