@@ -50,7 +50,7 @@ const Users: NextPage = () => {
         <div className="overflow-x-auto">
           <table className="table w-full text-right">
             <thead>
-              <tr>
+              <tr className="[&>*]:first-of-type:rounded-t-none [&>*]:text-base [&>*]:last-of-type:rounded-t-none sticky top-0 shadow-sm z-[12]">
                 <th className="w-8"></th>
                 <th>الاسم</th>
                 <th>منذ</th>
