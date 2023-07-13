@@ -1,16 +1,13 @@
 'use client'
 
-import Button from '@/components/button'
 import DateSelector from '@/components/dateSelector'
+import DownloadCsv from '@/components/downloadCsv'
 import Loading from '@/components/loading'
 import PageHeader from '@/components/pageHeader'
-import { downloadCsvFile } from '@/utils/csv'
 import { getFinancialYear } from '@/utils/dayjs'
 import { useResetDateStore } from '@/utils/helpers'
 import { useDateStore } from '@/utils/store'
 import { trpc } from '@/utils/trpc'
-import Download from '@iconify/icons-mdi/microsoft-excel'
-import { Icon } from '@iconify/react/offline'
 import { NextPage } from 'next'
 import { useState } from 'react'
 import SupplyTable from './supplyTable'
@@ -45,12 +42,13 @@ const Stats: NextPage = () => {
               التفاصيل
             </label>
 
-            <Button
-              className="p-3 h-auto min-h-fit"
-              onClick={() => downloadCsvFile('supplyTable')}
-            >
-              <Icon icon={Download} width={20} />
-            </Button>
+            {!isLoading && (
+              <DownloadCsv
+                fileName={`جدول التموين ${financialYear}-${
+                  parseInt(financialYear) + 1
+                }`}
+              />
+            )}
           </div>
         }
       />

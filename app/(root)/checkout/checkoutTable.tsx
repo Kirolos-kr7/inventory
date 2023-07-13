@@ -80,7 +80,7 @@ const CheckoutTable = ({
           changes && changes?.length > 0 ? 'mb-[4.6rem]' : 'mb-2'
         }`}
       >
-        <table className="table w-full text-right" id="checkoutTable">
+        <table className="table w-full text-right">
           <thead>
             <tr className="[&>*]:first-of-type:rounded-t-none [&>*]:last-of-type:rounded-t-none sticky top-0 shadow-sm z-[12]">
               <th className="text-base">

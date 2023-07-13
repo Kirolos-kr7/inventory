@@ -53,7 +53,7 @@ const YearlyTable = ({
 
   return (
     <div className="overflow-x-auto">
-      <table className="table w-full text-right" id="financeTable">
+      <table className="table w-full text-right">
         <thead>
           <tr>
             <th className="px-1.5 text-base w-1/5">الشهر</th>

@@ -2,17 +2,15 @@
 
 import Button from '@/components/button'
 import DateSelector from '@/components/dateSelector'
+import DownloadCsv from '@/components/downloadCsv'
 import Loading from '@/components/loading'
 import PageHeader from '@/components/pageHeader'
-import { downloadCsvFile } from '@/utils/csv'
 import { MONTHS, getFinancialYear } from '@/utils/dayjs'
 import { handleError } from '@/utils/handleError'
 import { useResetDateStore } from '@/utils/helpers'
 import { useDateStore } from '@/utils/store'
 import { trpc } from '@/utils/trpc'
 import { FinanceChange, FinanceWithSrc } from '@/utils/types'
-import Download from '@iconify/icons-mdi/microsoft-excel'
-import { Icon } from '@iconify/react/dist/offline'
 import { FinanceType } from '@prisma/client'
 import { AnimatePresence, motion } from 'framer-motion'
 import { NextPage } from 'next'
@@ -157,12 +155,14 @@ const Stats: NextPage = () => {
               </ul>
             </div>
 
-            <Button
-              className="p-3 h-auto min-h-fit"
-              onClick={() => downloadCsvFile('financeTable')}
-            >
-              <Icon icon={Download} width={20} />
-            </Button>
+            {!isLoading && (
+              <DownloadCsv
+                fileName={`جدول المالية ${financialYear}-${
+                  parseInt(financialYear) + 1
+                }`}
+                disabled={changes.length > 0}
+              />
+            )}
           </div>
         }
       />
@@ -195,7 +195,9 @@ const Stats: NextPage = () => {
                 <Button
                   className="btn-sm btn-error"
                   onClick={() =>
-                    data?.length && setFinance(structuredClone(data))
+                    setFinance(
+                      data && data?.length > 0 ? structuredClone(data) : []
+                    )
                   }
                   disabled={updateMutation.isLoading || isRefetching}
                 >
