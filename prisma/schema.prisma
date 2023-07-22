@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
@@ -30,7 +31,10 @@ model Donee {
   location   ServiceArea @relation(fields: [locationId], references: [id])
   createdAt  DateTime    @default(now())
   locationId Int
+  isRegular  Boolean     @default(true)
   Checkout   Checkout[]
+
+  @@index([locationId])
 }
 
 model Item {
@@ -66,6 +70,7 @@ model Finance {
   src   FinanceList @relation(fields: [srcId], references: [id])
 
   @@id([srcId, month, year, type])
+  @@index([srcId])
 }
 
 model Supply {
@@ -76,29 +81,37 @@ model Supply {
   price Float  @default(0)
   count Int    @default(0)
   src   Item   @relation(fields: [srcId], references: [id])
+
+  @@index([srcId])
 }
 
 model Checkout {
   month   String
   year    String
   amount  Int
-  doneeId Int
-  Donee   Donee  @relation(fields: [doneeId], references: [id])
   itemId  Int
-  Item    Item   @relation(fields: [itemId], references: [id])
+  doneeId Int
+
+  Donee Donee @relation(fields: [doneeId], references: [id])
+  Item  Item  @relation(fields: [itemId], references: [id])
 
   @@id([doneeId, itemId, month, year])
+  @@index([itemId])
+  @@index([doneeId])
 }
 
 model Transaction {
   id        Int      @id @default(autoincrement())
-  for       Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  by        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   message   String
   createdAt DateTime @default(now())
+  itemId    Int
+  userId    Int
 
-  itemId Int
-  userId Int
+  for Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  by  User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([itemId])
+  @@index([userId])
 }
 
 model meta {
