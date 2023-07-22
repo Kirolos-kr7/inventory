@@ -6,11 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "postinstall": "prisma generate",
+    "backup": "tsx prisma/backup.ts",
+    "restore": "tsx prisma/restore.ts",
     "start": "next start",
     "lint": "next lint"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@iconify/icons-mdi": "^1.2.47",
@@ -22,6 +24,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.7",
+    "@vorlefan/prisma-backup": "^0.3.5",
     "bcrypt": "^5.1.0",
     "cookies-next": "^2.1.2",
     "dayjs": "^1.11.9",
@@ -46,7 +49,7 @@
     "postcss": "^8.4.25",
     "prisma": "^5.0.0",
     "tailwindcss": "^3.3.2",
-    "ts-node": "^10.9.1",
+    "tsx": "^3.12.7",
     "typescript": "^5.1.6"
   }
 }
