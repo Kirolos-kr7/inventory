@@ -709,8 +709,10 @@ const checkoutRouter = t.router({
   progress: protectedProcedure
     .input(z.object({ month: z.string(), year: z.string() }))
     .query(async ({ input: { month, year } }) => {
-      const donees = await db.donee.findMany()
-      const locations = await db.serviceArea.findMany()
+      const donees = await db.donee.findMany({ where: { isRegular: true } })
+      const locations = await db.serviceArea.findMany({
+        orderBy: { id: 'asc' }
+      })
 
       const progress = await Promise.all(
         donees.map(async ({ id, locationId }) => ({

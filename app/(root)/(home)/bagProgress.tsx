@@ -45,7 +45,7 @@ const BagProgress = () => {
           })
         })
 
-        return locations
+        return locations.filter(({ from }) => from > 0)
       })
     }
   }, [data])
@@ -66,7 +66,7 @@ const BagProgress = () => {
         )}
       </div>
 
-      {isLoading && <Loading offset={480} />}
+      {isLoading && <Loading offset={570} />}
 
       {!isLoading && (
         <div className="flex flex-col gap-2">
