@@ -73,6 +73,8 @@ const CheckoutTable = ({
     [isMobile]
   )
 
+  const didTake = (dId: number) => data?.find(({ doneeId }) => doneeId == dId)
+
   return (
     <>
       <div
@@ -114,17 +116,30 @@ const CheckoutTable = ({
             </tr>
           </thead>
           <tbody>
-            {donees?.map(({ id: doneeId, name }) => (
-              <tr key={doneeId}>
-                <th>{getName(name)}</th>
+            {donees?.map(({ id: doneeId, name, isRegular }) => {
+              const took = isRegular && didTake(doneeId)
 
-                {items?.map(({ id: itemId }, i) => (
-                  <td className="px-2" key={i}>
-                    {getCell(doneeId, itemId)}
-                  </td>
-                ))}
-              </tr>
-            ))}
+              return (
+                <tr key={doneeId}>
+                  <th className="p-0">
+                    <div className="relative p-4">
+                      <span
+                        className={`absolute start-0 w-1 h-4 rounded-e-md  inset-y-1/2 -translate-y-1/2 
+                      ${took ? 'bg-green-400' : 'bg-secondary'}
+                      ${isRegular ? '' : '!bg-red-400'}`}
+                      />
+                      {getName(name)}
+                    </div>
+                  </th>
+
+                  {items?.map(({ id: itemId }, i) => (
+                    <td className="px-2" key={i}>
+                      {getCell(doneeId, itemId)}
+                    </td>
+                  ))}
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>

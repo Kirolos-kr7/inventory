@@ -53,12 +53,12 @@ const Users: NextPage = () => {
                 locations={locations}
                 active={activeLocations}
                 clickFunc={(id) => {
-                          setActiveLocations((v) =>
-                            v.map((loc) => {
-                              if (loc.id == id) loc.isActive = !loc.isActive
-                              return loc
-                            })
-                          )
+                  setActiveLocations((v) =>
+                    v.map((loc) => {
+                      if (loc.id == id) loc.isActive = !loc.isActive
+                      return loc
+                    })
+                  )
                 }}
                 contextFunc={(id) => {
                   setActiveLocations((v) =>
@@ -92,15 +92,18 @@ const Users: NextPage = () => {
                 <th className="w-8"></th>
                 <th>الاسم</th>
                 <th>المنطقة</th>
+                <th>شنطة شهرية</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {getDonees()?.map(({ id, name, location }, i, u) => (
+              {getDonees()?.map(({ id, name, location, isRegular }, i, u) => (
                 <tr key={id} className="table-compact">
                   <th>{i + 1}</th>
                   <td>{name}</td>
                   <td>{location.name}</td>
+                  <td>{isRegular ? <CheckmarkIcon /> : <ErrorIcon />}</td>
+
                   <td>
                     <div className="flex items-center gap-1 justify-end">
                       <Button

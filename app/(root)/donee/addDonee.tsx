@@ -15,24 +15,23 @@ const AddDonee = ({
 }) => {
   const [doneeData, setDoneeData] = useState({
     name: '',
-    location: 1
+    location: 1,
+    isRegular: true
   })
   const mutation = trpc.donee.add.useMutation()
 
   const addDonee = async (e: FormEvent) => {
     e.preventDefault()
 
-    const { name, location } = doneeData
-
     try {
-      await mutation.mutateAsync({
-        name,
-        location
-      })
+      console.log(doneeData)
+      return
+      await mutation.mutateAsync(doneeData)
 
       setDoneeData({
         name: '',
-        location: 1
+        location: 1,
+        isRegular: true
       })
       done()
     } catch (err: any) {
@@ -74,6 +73,7 @@ const AddDonee = ({
                 location: parseInt(e.target.value)
               }))
             }
+            defaultValue={doneeData.location}
           >
             {locations?.map(({ id, name }) => (
               <option key={id} value={id}>
@@ -81,6 +81,21 @@ const AddDonee = ({
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="flex gap-2 items-center my-2">
+          <label className="label" htmlFor="isRegular">
+            شنطة شهرية
+          </label>
+          <input
+            type="checkbox"
+            id="isRegular"
+            className="toggle toggle-secondary"
+            onChange={(e) => {
+              setDoneeData((v) => ({ ...v, isRegular: e.target.checked }))
+            }}
+            defaultChecked={true}
+          />
         </div>
 
         <div className="flex justify-end mt-3">

@@ -620,12 +620,17 @@ const metaRouter = t.router({
 const doneeRouter = t.router({
   getAll: protectedProcedure.query(async () => {
     return await db.donee.findMany({
-      include: { location: true }
+      include: { location: true },
+      orderBy: { locationId: 'asc' }
     })
   }),
   getCount: protectedProcedure.query(async () => await db.donee.count()),
   getLocations: protectedProcedure.query(async () => {
-    return await db.serviceArea.findMany()
+    return await db.serviceArea.findMany({
+      orderBy: {
+        id: 'asc'
+      }
+    })
   }),
   add: protectedProcedure
     .input(
@@ -634,10 +639,11 @@ const doneeRouter = t.router({
           .string()
           .min(2, 'يجب على اسم المخدوم ان يحتوي على الاقل على 2 أحرف')
           .trim(),
-        location: z.number()
+        location: z.number(),
+        isRegular: z.boolean()
       })
     )
-    .mutation(async ({ input: { name, location } }) => {
+    .mutation(async ({ input: { name, location, isRegular } }) => {
       const donee = await db.donee.findUnique({
         where: {
           name
@@ -651,7 +657,7 @@ const doneeRouter = t.router({
         })
 
       await db.donee.create({
-        data: { name, locationId: location }
+        data: { name, locationId: location, isRegular }
       })
     }),
   update: protectedProcedure
@@ -661,11 +667,12 @@ const doneeRouter = t.router({
         name: z
           .string()
           .min(2, 'يجب على اسم المخدوم ان يحتوي على الاقل على 2 أحرف'),
-        location: z.number()
+        location: z.number(),
+        isRegular: z.boolean()
       })
     )
     .mutation(async ({ input }) => {
-      const { id, name, location } = input
+      const { id, name, location, isRegular } = input
 
       await db.donee.update({
         where: {
@@ -673,7 +680,8 @@ const doneeRouter = t.router({
         },
         data: {
           name,
-          locationId: location
+          locationId: location,
+          isRegular
         }
       })
     }),

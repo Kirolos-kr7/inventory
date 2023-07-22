@@ -23,7 +23,8 @@ const UpdateDonee = ({
 
   const [doneeData, setDoneeData] = useState({
     name: '',
-    location: 1
+    location: 1,
+    isRegular: true
   })
 
   const tabs = [
@@ -32,10 +33,15 @@ const UpdateDonee = ({
   ]
 
   useEffect(() => {
-    setDoneeData((v) => ({
-      name: donee?.name || '',
-      location: donee?.locationId || 1
-    }))
+    setDoneeData((v) => {
+      if (!donee) return v
+
+      return {
+        name: donee.name,
+        location: donee.locationId,
+        isRegular: donee.isRegular
+      }
+    })
   }, [donee])
 
   const save = async (e: FormEvent) => {
@@ -44,10 +50,14 @@ const UpdateDonee = ({
     if (!donee) return
 
     try {
-      const { name, location } = doneeData
+      const { name, location, isRegular } = doneeData
 
-      if (name != donee.name || location != donee.locationId) {
-        await updateMutation.mutateAsync({ id: donee.id, name, location })
+      if (
+        name != donee.name ||
+        location != donee.locationId ||
+        donee.isRegular != isRegular
+      ) {
+        await updateMutation.mutateAsync({ id: donee.id, ...doneeData })
       }
 
       toast.success('تم الحفظ')
@@ -100,6 +110,21 @@ const UpdateDonee = ({
                 </option>
               ))}
             </select>
+          </div>
+
+          <div className="flex gap-2 items-center my-2">
+            <label className="label" htmlFor="isRegular">
+              شنطة شهرية
+            </label>
+            <input
+              type="checkbox"
+              id="isRegular"
+              className="toggle toggle-secondary"
+              onChange={(e) => {
+                setDoneeData((v) => ({ ...v, isRegular: e.target.checked }))
+              }}
+              checked={doneeData.isRegular}
+            />
           </div>
 
           <div className="flex justify-end mt-3">
