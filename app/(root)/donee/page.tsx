@@ -4,15 +4,16 @@ import Button from '@/components/button'
 import Confirmation from '@/components/confirmation'
 import Dialog from '@/components/dialog'
 import Loading from '@/components/loading'
+import Locations from '@/components/locations'
 import PageHeader from '@/components/pageHeader'
 import { trpc } from '@/utils/trpc'
-import Check from '@iconify/icons-mdi/check'
 import Remove from '@iconify/icons-mdi/delete'
 import Edit from '@iconify/icons-mdi/edit'
 import { Icon } from '@iconify/react/dist/offline'
 import { Donee } from '@prisma/client'
 import { NextPage } from 'next'
 import { useEffect, useState } from 'react'
+import { CheckmarkIcon, ErrorIcon } from 'react-hot-toast'
 import AddDonee from './addDonee'
 import UpdateDonee from './updateDonee'
 
@@ -48,35 +49,28 @@ const Users: NextPage = () => {
         actions={
           !isLoading && (
             <div className="flex items-center gap-2">
-              <div className="dropdown dropdown-end">
-                <label tabIndex={0} className="btn m-1 btn-sm sm:btn-md">
-                  المنطقة
-                </label>
-                <ul
-                  tabIndex={0}
-                  className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-52"
-                >
-                  {locations?.map(({ id, name }) => (
-                    <li key={id}>
-                      <a
-                        onClick={() =>
+              <Locations
+                locations={locations}
+                active={activeLocations}
+                clickFunc={(id) => {
                           setActiveLocations((v) =>
                             v.map((loc) => {
                               if (loc.id == id) loc.isActive = !loc.isActive
                               return loc
                             })
                           )
-                        }
-                      >
-                        {activeLocations.find(
-                          ({ id: lId, isActive }) => id == lId && isActive
-                        ) && <Icon className="text-secondary" icon={Check} />}
-                        {name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                }}
+                contextFunc={(id) => {
+                  setActiveLocations((v) =>
+                    v.map((loc) => {
+                      if (loc.id == id) loc.isActive = true
+                      else loc.isActive = false
+                      return loc
+                    })
+                  )
+                }}
+              />
+
               <Button
                 className="btn-sm sm:btn-md"
                 onClick={() => setIsAdding(true)}

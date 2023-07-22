@@ -5,13 +5,12 @@ import DateSelector from '@/components/dateSelector'
 import Dialog from '@/components/dialog'
 import DownloadCsv from '@/components/downloadCsv'
 import Loading from '@/components/loading'
+import Locations from '@/components/locations'
 import PageHeader from '@/components/pageHeader'
 import { handleError } from '@/utils/handleError'
 import { useDateStore } from '@/utils/store'
 import { trpc } from '@/utils/trpc'
 import { CheckoutChange } from '@/utils/types'
-import Check from '@iconify/icons-mdi/check'
-import { Icon } from '@iconify/react'
 import { Checkout, Item } from '@prisma/client'
 import { AnimatePresence, motion } from 'framer-motion'
 import { NextPage } from 'next'
@@ -141,43 +140,35 @@ const Checkout: NextPage = () => {
         title="الصرف"
         subtitle={<DateSelector />}
         actions={
-          <div className="flex gap-2 items-center" dir="ltr">
-            <div className="dropdown dropdown-end" dir="rtl">
-              <label tabIndex={0} className="btn m-1 btn-sm sm:btn-md">
-                المنطقة
-              </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-52"
-              >
-                {locations?.map(({ id, name }) => (
-                  <li key={id}>
-                    <a
-                      onClick={() =>
-                        setActiveLocations((v) =>
-                          v.map((loc) => {
-                            if (loc.id == id) loc.isActive = !loc.isActive
-                            return loc
-                          })
-                        )
-                      }
-                    >
-                      {activeLocations.find(
-                        ({ id: lId, isActive }) => id == lId && isActive
-                      ) && <Icon className="text-secondary" icon={Check} />}
-                      {name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
+          <div className="flex gap-2 items-center">
             {!isLoading && (
               <DownloadCsv
                 fileName={`الصرف ${month} ${year}`}
                 disabled={changes.length > 0}
               />
             )}
+
+            <Locations
+              locations={locations}
+              active={activeLocations}
+              clickFunc={(id) => {
+                setActiveLocations((v) =>
+                  v.map((loc) => {
+                    if (loc.id == id) loc.isActive = !loc.isActive
+                    return loc
+                  })
+                )
+              }}
+              contextFunc={(id) => {
+                setActiveLocations((v) =>
+                  v.map((loc) => {
+                    if (loc.id == id) loc.isActive = true
+                    else loc.isActive = false
+                    return loc
+                  })
+                )
+              }}
+            />
           </div>
         }
       />
