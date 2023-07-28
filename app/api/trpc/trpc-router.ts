@@ -624,7 +624,9 @@ const doneeRouter = t.router({
       orderBy: { locationId: 'asc' }
     })
   }),
-  getCount: protectedProcedure.query(async () => await db.donee.count()),
+  getCount: protectedProcedure.query(async () => await db.donee.count({
+    where: { isRegular: true }
+  })),
   getLocations: protectedProcedure.query(async () => {
     return await db.serviceArea.findMany({
       orderBy: {
