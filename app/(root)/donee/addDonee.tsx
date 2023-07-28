@@ -24,8 +24,6 @@ const AddDonee = ({
     e.preventDefault()
 
     try {
-      console.log(doneeData)
-      return
       await mutation.mutateAsync(doneeData)
 
       setDoneeData({
