@@ -621,7 +621,7 @@ const doneeRouter = t.router({
   getAll: protectedProcedure.query(async () => {
     return await db.donee.findMany({
       include: { location: true },
-      orderBy: { locationId: 'asc' }
+      orderBy: [{ locationId: 'asc'},{ id: 'asc'} ]
     })
   }),
   getCount: protectedProcedure.query(async () => await db.donee.count()),
