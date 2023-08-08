@@ -432,23 +432,22 @@ const financeRouter = t.router({
         year: z.string()
       })
     )
-    .query(async ({ input: { year, type } }) => {
-      const y1 = (
+    .query(
+      async ({ input: { year, type } }) =>
         await db.finance.findMany({
-          where: { year, type },
+          where: {
+            OR: [
+              { year, type, month: { in: MONTHS.slice(6, 12) } },
+              {
+                year: `${parseInt(year) + 1}`,
+                type,
+                month: { in: MONTHS.slice(0, 6) }
+              }
+            ]
+          },
           include: { src: true }
         })
-      ).filter(({ month }) => MONTHS.slice(7, 12).includes(month))
-
-      const y2 = (
-        await db.finance.findMany({
-          where: { year: `${parseInt(year) + 1}`, type },
-          include: { src: true }
-        })
-      ).filter(({ month }) => MONTHS.slice(0, 6).includes(month))
-
-      return [...y1, ...y2]
-    }),
+    ),
   updateFinance: protectedProcedure
     .input(
       z.array(
@@ -507,23 +506,28 @@ const supplyRouter = t.router({
         year: z.string()
       })
     )
-    .query(async ({ input: { year } }) => {
-      const y1 = (
+    .query(
+      async ({ input: { year } }) =>
         await db.supply.findMany({
-          where: { year },
+          where: {
+            OR: [
+              {
+                year,
+                month: {
+                  in: MONTHS.slice(6, 12)
+                }
+              },
+              {
+                year: `${parseInt(year) + 1}`,
+                month: {
+                  in: MONTHS.slice(0, 6)
+                }
+              }
+            ]
+          },
           include: { src: true }
         })
-      ).filter(({ month }) => MONTHS.slice(7, 12).includes(month))
-
-      const y2 = (
-        await db.supply.findMany({
-          where: { year: `${parseInt(year) + 1}` },
-          include: { src: true }
-        })
-      ).filter(({ month }) => MONTHS.slice(0, 6).includes(month))
-
-      return [...y1, ...y2]
-    }),
+    ),
   addToSupply: protectedProcedure
     .input(
       z.object({
@@ -621,12 +625,15 @@ const doneeRouter = t.router({
   getAll: protectedProcedure.query(async () => {
     return await db.donee.findMany({
       include: { location: true },
-      orderBy: [{ locationId: 'asc'},{ id: 'asc'} ]
+      orderBy: [{ locationId: 'asc' }, { id: 'asc' }]
     })
   }),
-  getCount: protectedProcedure.query(async () => await db.donee.count({
-    where: { isRegular: true }
-  })),
+  getCount: protectedProcedure.query(
+    async () =>
+      await db.donee.count({
+        where: { isRegular: true }
+      })
+  ),
   getLocations: protectedProcedure.query(async () => {
     return await db.serviceArea.findMany({
       orderBy: {
