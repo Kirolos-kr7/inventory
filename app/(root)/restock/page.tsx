@@ -2,6 +2,7 @@
 
 import Button from '@/components/button'
 import DateSelector from '@/components/dateSelector'
+import Dialog from '@/components/dialog'
 import InputNumber from '@/components/inputNumber'
 import Loading from '@/components/loading'
 import PageHeader from '@/components/pageHeader'
@@ -14,6 +15,7 @@ import { Icon } from '@iconify/react/dist/offline'
 import { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
+import StockHistory from './stockHistory'
 
 type src = { id: number; name: string }
 
@@ -22,6 +24,7 @@ const InventoryAdd: NextPage = () => {
   const supplyMutation = trpc.supply.addToSupply.useMutation()
 
   const [srcList, setSrcList] = useState<src[]>([])
+  const [isOpen, setIsOpen] = useState(false)
   const { month, year } = useDateStore()
 
   useEffect(() => {
@@ -94,7 +97,15 @@ const InventoryAdd: NextPage = () => {
 
   return (
     <div>
-      <PageHeader title="اضافة للمخزون" subtitle={<DateSelector />} />
+      <PageHeader
+        title="اضافة للمخزون"
+        subtitle={<DateSelector />}
+        actions={
+          <>
+            <Button onClick={() => setIsOpen(true)}>العمليات السابقة</Button>
+          </>
+        }
+      />
 
       {isLoading && <Loading />}
 
@@ -187,6 +198,20 @@ const InventoryAdd: NextPage = () => {
           </div>
         </form>
       )}
+
+      <Dialog
+        open={isOpen}
+        header={
+          <>
+            تاريخ العمليات{' '}
+            <span className="text-gray-400 text-sm ms-2">
+              [{month} {year}]
+            </span>
+          </>
+        }
+        body={<StockHistory />}
+        close={() => setIsOpen(false)}
+      />
     </div>
   )
 }

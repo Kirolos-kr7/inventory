@@ -500,6 +500,15 @@ const supplyRouter = t.router({
   getSupplyList: protectedProcedure.query(
     async () => await db.item.findMany({ select: { id: true, name: true } })
   ),
+  getSupplyPerMonth: protectedProcedure
+    .input(z.object({ month: z.string(), year: z.string() }))
+    .query(
+      async ({ input: { month, year } }) =>
+        await db.supply.findMany({
+          where: { month, year },
+          include: { src: true }
+        })
+    ),
   getSupplyTableData: protectedProcedure
     .input(
       z.object({
