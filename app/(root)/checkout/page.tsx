@@ -22,6 +22,7 @@ const Checkout: NextPage = () => {
   const { month, year } = useDateStore()
   const [checkouts, setCheckouts] = useState<Checkout[]>([])
   const [filterOpened, setFilterOpened] = useState(false)
+  const [initial, setInitial] = useState(true)
   const [items, setItems] = useState<(Item & { isActive: boolean })[]>([])
   const [activeLocations, setActiveLocations] = useState<
     { id: number; name: string; isActive: boolean }[]
@@ -49,13 +50,24 @@ const Checkout: NextPage = () => {
 
   useEffect(() => {
     if (itemsData)
-      setItems(
+      setItems((v) =>
         structuredClone(
-          itemsData.map((item) => {
-            return { ...item, isActive: true }
+          itemsData.map((item, i) => {
+            if (initial) {
+              setInitial(false)
+              return {
+                ...item,
+                isActive: item.perBag > 0
+              }
+            } else
+              return {
+                ...item,
+                isActive: v[i]?.isActive
+              }
           })
         )
       )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [itemsData])
 
   const getDonees = () => {
