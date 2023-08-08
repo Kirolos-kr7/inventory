@@ -40,20 +40,23 @@ const CheckoutTable = ({
     )
 
     return (
-      <input
-        type="number"
-        className={`bg-transparent w-8 rounded-md text-center focus-within:bg-slate-600 ${
-          changedItem ? '!bg-pink-900' : ''
-        }`}
-        value={item?.amount || 0}
-        onChange={({ target }) => {
-          const val = parseInt(target.value) || 0
-          update(dId, iId, val)
-          target.value = String(val)
-        }}
-        onFocus={(e) => e.target.select()}
-        onWheel={(e) => (e.target as HTMLInputElement).blur()}
-      />
+      <>
+        <input
+          type="number"
+          className={`bg-transparent w-8 rounded-md text-center focus-within:bg-slate-600 ${
+            changedItem ? '!bg-pink-900' : ''
+          }`}
+          value={item?.amount || 0}
+          onChange={({ target }) => {
+            const val = parseInt(target.value) || 0
+            update(dId, iId, val)
+            target.value = String(val)
+          }}
+          onFocus={(e) => e.target.select()}
+          onWheel={(e) => (e.target as HTMLInputElement).blur()}
+        />
+        <span className="hidden">{item?.amount || 0}</span>
+      </>
     )
   }
 
@@ -101,14 +104,16 @@ const CheckoutTable = ({
 
                 return (
                   <th key={i} className="text-sm px-3">
-                    {name}
+                    {name + ' '}
                     <span
                       className={`px-1 badge me-1 ${
                         itemCount < 0 ? 'badge-error' : 'text-secondary'
                       }`}
                       dir="ltr"
                     >
+                      <span className="hidden">(</span>
                       {itemCount}
+                      <span className="hidden">)</span>
                     </span>
                   </th>
                 )
