@@ -20,25 +20,35 @@ const SupplyTable = ({
     )
 
     if (items && items.length > 0) {
+      const total = items
+        .map(({ price, count }) => price * count)
+        .reduce((a, c) => (a += c))
+
       return (
-        <div className="flex gap-1 items-center">
-          {items?.map(({ price, count, id }, i) => (
-            <Fragment key={id}>
-              {i != 0 && <span>+</span>}
-              <div className="py-1 w-fit">
-                <div className="flex flex-col text-center" dir="ltr">
-                  {showDetails && (
-                    <span className="border-b border-gray-400">
-                      {price + ' × '}
-                      <span className="text-secondary">{count}</span>
-                    </span>
-                  )}
-                  <span>{price * count}</span>
-                </div>
-              </div>
-            </Fragment>
-          ))}
-        </div>
+        <>
+          {showDetails ? (
+            <div className="flex gap-1 items-center border border-dashed px-1 w-min">
+              {items?.map(({ price, count, id }, i) => (
+                <Fragment key={id}>
+                  {i != 0 && <span> + </span>}
+                  <div className="py-1 w-fit">
+                    <div className="flex flex-col text-center" dir="ltr">
+                      <span className="border-b border-gray-400">
+                        {price + ' × '}
+                        <span className="text-secondary">{count}</span>
+                      </span>
+                      <span className="hidden"> = </span>
+                      <span>{price * count}</span>
+                    </div>
+                  </div>
+                </Fragment>
+              ))}
+              <span className="hidden"> ({total}) </span>
+            </div>
+          ) : (
+            <div>{total}</div>
+          )}
+        </>
       )
     } else return '-'
   }
@@ -96,7 +106,7 @@ const SupplyTable = ({
                 </div>
               </th>
               {supplyList?.map(({ name: label }, i) => (
-                <td key={i} className="p-0">
+                <td key={i} className="px-1">
                   {getCellData(label, month, String(yr))}
                 </td>
               ))}
