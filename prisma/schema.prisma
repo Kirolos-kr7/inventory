@@ -74,13 +74,14 @@ model Finance {
 }
 
 model Supply {
-  id    Int    @id @default(autoincrement())
-  srcId Int
-  month String
-  year  String
-  price Float  @default(0)
-  count Int    @default(0)
-  src   Item   @relation(fields: [srcId], references: [id])
+  id        Int      @id @default(autoincrement())
+  srcId     Int
+  month     String
+  year      String
+  price     Float    @default(0)
+  count     Int      @default(0)
+  src       Item     @relation(fields: [srcId], references: [id])
+  createdAt DateTime @default(now())
 
   @@index([srcId])
 }
