@@ -785,6 +785,44 @@ const checkoutRouter = t.router({
           })
         })
       )
+    }),
+  outBags: protectedProcedure
+    .input(
+      z.object({
+        donees: z.array(z.number()),
+        month: z.string(),
+        year: z.string()
+      })
+    )
+    .mutation(async ({ input: { donees, month, year } }) => {
+      const items = await db.item.findMany({
+        where: { perBag: { gt: 0 } },
+        select: { id: true, perBag: true }
+      })
+
+      await Promise.all(
+        donees.map(
+          async (dId) =>
+            await Promise.all(
+              items.map(async ({ id: iId, perBag }) => {
+                await db.item.update({
+                  where: { id: iId },
+                  data: {
+                    count: { decrement: perBag },
+                    Checkout: {
+                      create: {
+                        doneeId: dId,
+                        month,
+                        year,
+                        amount: perBag
+                      }
+                    }
+                  }
+                })
+              })
+            )
+        )
+      )
     })
 })
 

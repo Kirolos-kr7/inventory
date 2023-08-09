@@ -2,24 +2,36 @@ import { CheckoutChange } from '@/utils/types'
 import Filter from '@iconify/icons-mdi/filter-list'
 import { Icon } from '@iconify/react/dist/offline'
 import { Checkout, Donee, Item } from '@prisma/client'
-import { useCallback, useEffect, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 
 const CheckoutTable = ({
   data,
   items,
   donees,
   changes,
+  checked,
+  setChecked,
   update,
   openFilter
 }: {
   data: Checkout[] | undefined
   items: Item[] | undefined
   donees: Donee[] | undefined
-  changes: CheckoutChange[] | undefined
+  changes: CheckoutChange[]
+  checked: number[]
+  setChecked: Dispatch<SetStateAction<number[]>>
   update: (doneeId: number, itemId: number, amount: number) => void
   openFilter: () => void
 }) => {
   const [isMobile, setIsMobile] = useState(false)
+  const mainCHK = useRef<HTMLInputElement>(null)
 
   const handleResize = () => setIsMobile(window.innerWidth < 600)
 
@@ -54,6 +66,7 @@ const CheckoutTable = ({
           }}
           onFocus={(e) => e.target.select()}
           onWheel={(e) => (e.target as HTMLInputElement).blur()}
+          disabled={checked.length > 0}
         />
         <span className="hidden">{item?.amount || 0}</span>
       </>
@@ -76,13 +89,51 @@ const CheckoutTable = ({
     [isMobile]
   )
 
-  const didTake = (dId: number) => data?.find(({ doneeId }) => doneeId == dId)
+  const didTake = useCallback(
+    (dId: number) => data?.find(({ doneeId }) => doneeId == dId),
+    [data]
+  )
+
+  useEffect(() => {
+    if (!mainCHK.current) return
+
+    if (checked.length == 0) {
+      mainCHK.current.checked = false
+      mainCHK.current.indeterminate = false
+      return
+    }
+
+    const active = donees?.filter(({ id }) => !didTake(id))
+
+    if (active?.length == checked.length) {
+      mainCHK.current.checked = true
+      mainCHK.current.indeterminate = false
+      return
+    }
+
+    mainCHK.current.indeterminate = true
+  }, [checked.length, donees, didTake, setChecked])
+
+  const checkAll = () => {
+    const items: NodeListOf<HTMLInputElement> | undefined = document
+      .querySelector('tbody')
+      ?.querySelectorAll('input[type="checkbox"]')
+
+    if (!items) return
+
+    setChecked(
+      Array.from(items)
+        .filter((x) => !x.disabled)
+        .map(({ id }) => parseInt(id))
+        .flat()
+    )
+  }
 
   return (
     <>
       <div
         className={`overflow-auto max-h-[calc(79lvh)] ${
-          changes && changes?.length > 0 ? 'mb-[4.6rem]' : 'mb-2'
+          changes?.length > 0 ? 'mb-[4.6rem]' : 'mb-2'
         }`}
       >
         <table className="table w-full text-right">
@@ -90,7 +141,28 @@ const CheckoutTable = ({
             <tr className="[&>*]:first-of-type:rounded-t-none [&>*]:last-of-type:rounded-t-none sticky top-0 shadow-sm z-[12]">
               <th className="text-base">
                 <div className="flex items-center gap-1 justify-between">
-                  <span>المخدوم</span>
+                  <div className="flex items-center gap-2">
+                    <input
+                      ref={mainCHK}
+                      type="checkbox"
+                      className="checkbox checkbox-xs checkbox-secondary"
+                      onChange={({
+                        currentTarget: { checked, indeterminate }
+                      }) => {
+                        if (!checked) setChecked([])
+                        else checkAll()
+                      }}
+                      disabled={changes.length > 0}
+                    />
+                    <div className="flex items-end gap-1">
+                      <span>المخدوم</span>
+                      {checked.length > 0 && (
+                        <span className="text-sm text-gray-400">
+                          [{checked.length}]
+                        </span>
+                      )}
+                    </div>
+                  </div>
                   <button
                     className="btn btn-square btn-xs"
                     onClick={() => openFilter()}
@@ -127,11 +199,25 @@ const CheckoutTable = ({
               return (
                 <tr key={doneeId}>
                   <th className="p-0">
-                    <div className="relative p-4">
+                    <div className="relative p-4 flex items-center gap-2">
                       <span
                         className={`absolute start-0 w-1 h-4 rounded-e-md  inset-y-1/2 -translate-y-1/2 
                       ${took ? 'bg-green-400' : 'bg-secondary'}
                       ${isRegular ? '' : '!bg-red-400'}`}
+                      />
+                      <input
+                        type="checkbox"
+                        id={`${doneeId}`}
+                        className="checkbox checkbox-xs checkbox-secondary"
+                        checked={checked.includes(doneeId)}
+                        onChange={() =>
+                          setChecked((v) => {
+                            if (v?.includes(doneeId))
+                              return v.filter((n) => n != doneeId)
+                            else return [...v, doneeId]
+                          })
+                        }
+                        disabled={took || changes?.length > 0 ? true : false}
                       />
                       {getName(name)}
                     </div>

@@ -24,6 +24,7 @@ const Checkout: NextPage = () => {
   const [filterOpened, setFilterOpened] = useState(false)
   const [initial, setInitial] = useState(true)
   const [items, setItems] = useState<(Item & { isActive: boolean })[]>([])
+  const [checked, setChecked] = useState<number[]>([])
   const [activeLocations, setActiveLocations] = useState<
     { id: number; name: string; isActive: boolean }[]
   >([])
@@ -38,6 +39,7 @@ const Checkout: NextPage = () => {
     })
 
   const updateMutation = trpc.checkout.update.useMutation()
+  const checkoutMutation = trpc.checkout.outBags.useMutation()
 
   useEffect(() => {
     if (locations)
@@ -146,6 +148,21 @@ const Checkout: NextPage = () => {
     }
   }
 
+  const checkoutBags = async () => {
+    try {
+      await checkoutMutation.mutateAsync({
+        donees: checked,
+        month,
+        year
+      })
+      refetch()
+      refetchItems()
+      setChecked([])
+    } catch (err) {
+      handleError(err)
+    }
+  }
+
   return (
     <div>
       <PageHeader
@@ -193,13 +210,15 @@ const Checkout: NextPage = () => {
             data={checkouts}
             items={items.filter(({ isActive }) => isActive)}
             changes={changes}
+            checked={checked}
+            setChecked={setChecked}
             donees={getDonees()}
             update={update}
             openFilter={() => setFilterOpened(true)}
           />
 
           <AnimatePresence>
-            {changes.length > 0 && (
+            {(changes.length > 0 || checked.length > 0) && (
               <motion.div
                 initial={{ translateY: '500px' }}
                 animate={{ translateY: '0px' }}
@@ -213,22 +232,46 @@ const Checkout: NextPage = () => {
               >
                 <Button
                   className="btn-sm btn-error"
-                  onClick={() =>
+                  onClick={() => {
                     setCheckouts(
                       data && data?.length > 0 ? structuredClone(data) : []
                     )
+                    setChecked([])
+                  }}
+                  disabled={
+                    updateMutation.isLoading ||
+                    checkoutMutation.isLoading ||
+                    isRefetching
                   }
-                  disabled={updateMutation.isLoading || isRefetching}
                 >
                   الغاء
                 </Button>
-                <Button
-                  className="btn-sm"
-                  onClick={save}
-                  pending={updateMutation.isLoading || isRefetching}
-                >
-                  حفظ
-                </Button>
+                {changes.length > 0 && (
+                  <Button
+                    className="btn-sm"
+                    onClick={save}
+                    pending={
+                      updateMutation.isLoading ||
+                      checkoutMutation.isLoading ||
+                      isRefetching
+                    }
+                  >
+                    حفظ
+                  </Button>
+                )}
+                {checked.length > 0 && (
+                  <Button
+                    className="btn-sm"
+                    onClick={checkoutBags}
+                    pending={
+                      updateMutation.isLoading ||
+                      checkoutMutation.isLoading ||
+                      isRefetching
+                    }
+                  >
+                    اخرج شنط
+                  </Button>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
