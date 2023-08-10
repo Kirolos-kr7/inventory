@@ -3,22 +3,17 @@
 import Button from '@/components/button'
 import { handleError } from '@/utils/handleError'
 import { trpc } from '@/utils/trpc'
-import { ServiceArea } from '@prisma/client'
 import { FormEvent, useState } from 'react'
 
-const AddDonee = ({
-  locations,
-  done
-}: {
-  locations: ServiceArea[] | undefined
-  done: () => void
-}) => {
+const AddDonee = ({ done }: { done: () => void }) => {
+  const { data: locations } = trpc.donee.getLocations.useQuery()
+  const mutation = trpc.donee.add.useMutation()
+
   const [doneeData, setDoneeData] = useState({
     name: '',
     location: 1,
     isRegular: true
   })
-  const mutation = trpc.donee.add.useMutation()
 
   const addDonee = async (e: FormEvent) => {
     e.preventDefault()

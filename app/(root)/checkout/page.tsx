@@ -30,7 +30,6 @@ const Checkout: NextPage = () => {
   >([])
 
   const { data: doneesData } = trpc.donee.getAll.useQuery()
-  const { data: locations } = trpc.donee.getLocations.useQuery()
   const { data: itemsData, refetch: refetchItems } = trpc.item.getAll.useQuery()
   const { data, isLoading, refetch, isRefetching } =
     trpc.checkout.getByMix.useQuery({
@@ -40,11 +39,6 @@ const Checkout: NextPage = () => {
 
   const updateMutation = trpc.checkout.update.useMutation()
   const checkoutMutation = trpc.checkout.outBags.useMutation()
-
-  useEffect(() => {
-    if (locations)
-      setActiveLocations(() => locations.map((v) => ({ ...v, isActive: true })))
-  }, [locations])
 
   useEffect(() => {
     if (data) setCheckouts(structuredClone(data))
@@ -178,25 +172,8 @@ const Checkout: NextPage = () => {
             )}
 
             <Locations
-              locations={locations}
               active={activeLocations}
-              clickFunc={(id) => {
-                setActiveLocations((v) =>
-                  v.map((loc) => {
-                    if (loc.id == id) loc.isActive = !loc.isActive
-                    return loc
-                  })
-                )
-              }}
-              contextFunc={(id) => {
-                setActiveLocations((v) =>
-                  v.map((loc) => {
-                    if (loc.id == id) loc.isActive = true
-                    else loc.isActive = false
-                    return loc
-                  })
-                )
-              }}
+              setActive={setActiveLocations}
             />
           </div>
         }

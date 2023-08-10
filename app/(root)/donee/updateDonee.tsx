@@ -1,7 +1,7 @@
 import Button from '@/components/button'
 import { handleError } from '@/utils/handleError'
 import { trpc } from '@/utils/trpc'
-import { Donee, ServiceArea } from '@prisma/client'
+import { Donee } from '@prisma/client'
 import { FormEvent, useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 
@@ -12,13 +12,12 @@ enum TABS {
 
 const UpdateDonee = ({
   donee,
-  locations,
   done
 }: {
   donee: Donee | null
-  locations: ServiceArea[] | undefined
   done: () => Promise<void>
 }) => {
+  const { data: locations } = trpc.donee.getLocations.useQuery()
   const updateMutation = trpc.donee.update.useMutation()
 
   const [doneeData, setDoneeData] = useState({
@@ -26,11 +25,6 @@ const UpdateDonee = ({
     location: 1,
     isRegular: true
   })
-
-  const tabs = [
-    { name: 'الاسم', value: TABS.INFO },
-    { name: 'كلمة المرور', value: TABS.PASSWORD }
-  ]
 
   useEffect(() => {
     setDoneeData((v) => {

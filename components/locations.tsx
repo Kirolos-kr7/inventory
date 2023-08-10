@@ -1,28 +1,23 @@
+import { trpc } from '@/utils/trpc'
+import { ActiveLocation } from '@/utils/types'
 import Check from '@iconify/icons-mdi/check'
 import { Icon } from '@iconify/react'
+import { Dispatch, SetStateAction, useEffect } from 'react'
 
 interface LocationsProps {
-  locations:
-    | {
-        id: number
-        name: string
-      }[]
-    | undefined
-  active: {
-    id: number
-    name: string
-    isActive: boolean
-  }[]
-  clickFunc: (id: number) => void
-  contextFunc?: (id: number) => void
+  active: ActiveLocation[]
+  setActive: Dispatch<SetStateAction<ActiveLocation[]>>
 }
 
-const Locations = ({
-  locations,
-  active,
-  clickFunc,
-  contextFunc
-}: LocationsProps) => {
+const Locations = ({ active, setActive }: LocationsProps) => {
+  const { data: locations } = trpc.donee.getLocations.useQuery()
+
+  useEffect(() => {
+    if (locations)
+      setActive(() => locations.map((v) => ({ ...v, isActive: true })))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locations])
+
   return (
     <div className="dropdown dropdown-end">
       <label tabIndex={0} className="btn m-1 btn-sm sm:btn-md">
@@ -35,12 +30,30 @@ const Locations = ({
         {locations?.map(({ id, name }) => (
           <li key={id}>
             <a
-              onClick={() => clickFunc(id)}
+              onClick={() =>
+                setActive((v) =>
+                  v.map((loc) => {
+                    if (loc.id == id) loc.isActive = !loc.isActive
+                    return loc
+                  })
+                )
+              }
               onContextMenu={(e) => {
-                if (contextFunc) {
-                  e.preventDefault()
-                  contextFunc(id)
-                }
+                e.preventDefault()
+                setActive((v) => {
+                  const active = v.filter(({ isActive }) => isActive)
+                  if (active.length == 1)
+                    return v.map((loc) => {
+                      loc.isActive = true
+                      return loc
+                    })
+
+                  return v.map((loc) => {
+                    if (loc.id == id) loc.isActive = true
+                    else loc.isActive = false
+                    return loc
+                  })
+                })
               }}
             >
               {active.find(

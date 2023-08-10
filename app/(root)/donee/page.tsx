@@ -12,7 +12,7 @@ import Edit from '@iconify/icons-mdi/edit'
 import { Icon } from '@iconify/react/dist/offline'
 import { Donee } from '@prisma/client'
 import { NextPage } from 'next'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { CheckmarkIcon, ErrorIcon } from 'react-hot-toast'
 import AddDonee from './addDonee'
 import UpdateDonee from './updateDonee'
@@ -20,7 +20,6 @@ import UpdateDonee from './updateDonee'
 const Users: NextPage = () => {
   const { data, refetch, isLoading, isRefetching } =
     trpc.donee.getAll.useQuery()
-  const { data: locations } = trpc.donee.getLocations.useQuery()
   const removeMutation = trpc.donee.remove.useMutation()
 
   const [activeLocations, setActiveLocations] = useState<
@@ -30,11 +29,6 @@ const Users: NextPage = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [isRemoving, setIsRemoving] = useState(false)
   const [selectedDonee, setSelectedDonee] = useState<Donee | null>(null)
-
-  useEffect(() => {
-    if (locations)
-      setActiveLocations(() => locations.map((v) => ({ ...v, isActive: true })))
-  }, [locations])
 
   const getDonees = () => {
     return data?.filter(({ location }) =>
@@ -50,25 +44,8 @@ const Users: NextPage = () => {
           !isLoading && (
             <div className="flex items-center gap-2">
               <Locations
-                locations={locations}
                 active={activeLocations}
-                clickFunc={(id) => {
-                  setActiveLocations((v) =>
-                    v.map((loc) => {
-                      if (loc.id == id) loc.isActive = !loc.isActive
-                      return loc
-                    })
-                  )
-                }}
-                contextFunc={(id) => {
-                  setActiveLocations((v) =>
-                    v.map((loc) => {
-                      if (loc.id == id) loc.isActive = true
-                      else loc.isActive = false
-                      return loc
-                    })
-                  )
-                }}
+                setActive={setActiveLocations}
               />
 
               <Button
@@ -138,7 +115,6 @@ const Users: NextPage = () => {
         header="مستخدم جديد"
         body={
           <AddDonee
-            locations={locations}
             done={() => {
               refetch()
               setIsAdding(false)
@@ -154,7 +130,6 @@ const Users: NextPage = () => {
         body={
           <UpdateDonee
             donee={selectedDonee}
-            locations={locations}
             done={async () => {
               setIsEditing(false)
               setSelectedDonee(null)

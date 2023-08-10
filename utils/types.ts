@@ -27,3 +27,9 @@ export interface FinanceChange {
   price: number
   type: FinanceType
 }
+
+export interface ActiveLocation {
+  id: number
+  name: string
+  isActive: boolean
+}
