@@ -5,7 +5,7 @@ const db = new PrismaClient({
   log: ['query', 'info', 'warn', 'error']
 })
 
-const BACKUP_TS = 1690016471257
+const BACKUP_TS = 1693474801197
 const BASE_PATH = `./.db/${BACKUP_TS}`
 
 const main = async () => {

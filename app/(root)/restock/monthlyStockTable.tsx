@@ -1,14 +1,21 @@
 'use client'
 
 import Button from '@/components/button'
+import Dialog from '@/components/dialog'
 import { SupplyWithSrc } from '@/utils/types'
 import ChevronDown from '@iconify/icons-mdi/chevron-down'
 import ChevronUp from '@iconify/icons-mdi/chevron-up'
+import Delete from '@iconify/icons-mdi/delete'
+import Edit from '@iconify/icons-mdi/edit'
 import { Icon } from '@iconify/react/dist/offline'
 import { Fragment, useMemo, useState } from 'react'
+import DeleteStockEntry from './deleteStockEntry'
 
 const MonthlyStockTable = ({ data }: { data: SupplyWithSrc[] | undefined }) => {
   const [activeSrc, setActiveSrc] = useState<number | null>(null)
+  const [editDialog, setEditDialog] = useState(true)
+  const [deleteDialog, setDeleteDialog] = useState(true)
+  const [selectedStock, setSelectedStock] = useState<number | null>(null)
 
   const actions = useMemo(() => {
     let rows: {
@@ -63,7 +70,7 @@ const MonthlyStockTable = ({ data }: { data: SupplyWithSrc[] | undefined }) => {
               <th className="px-1.5 text-sm">العدد</th>
               <th className="px-1.5 text-sm">سعر الوحدة</th>
               <th className="px-1.5 text-sm">الاجمالي</th>
-              <th className="w-4" />
+              <th />
             </tr>
           </thead>
           <tbody>
@@ -89,20 +96,24 @@ const MonthlyStockTable = ({ data }: { data: SupplyWithSrc[] | undefined }) => {
                             </span>
                           </td>
                           <td>{total}</td>
-                          <td>
-                            <Button
-                              className="btn h-auto min-h-min rounded-full p-1"
-                              onClick={() =>
-                                setActiveSrc((v) => (!v ? src.id : null))
-                              }
-                            >
-                              <Icon
-                                icon={
-                                  activeSrc == src.id ? ChevronUp : ChevronDown
+                          <td className="w-4">
+                            <div className="flex justify-end">
+                              <Button
+                                className="btn h-auto min-h-min rounded-full p-1"
+                                onClick={() =>
+                                  setActiveSrc((v) => (!v ? src.id : null))
                                 }
-                                width={18}
-                              />
-                            </Button>
+                              >
+                                <Icon
+                                  icon={
+                                    activeSrc == src.id
+                                      ? ChevronUp
+                                      : ChevronDown
+                                  }
+                                  width={16}
+                                />
+                              </Button>
+                            </div>
                           </td>
                         </tr>
                       )}
@@ -125,7 +136,28 @@ const MonthlyStockTable = ({ data }: { data: SupplyWithSrc[] | undefined }) => {
                           <td>{count}</td>
                           <td>{price}</td>
                           <td>{count * price}</td>
-                          <td />
+                          <td>
+                            <div className="flex gap-1">
+                              <Button
+                                className={`btn btn-ghost h-auto min-h-min rounded-full p-1 ${
+                                  !activeSrc || src.id == activeSrc
+                                    ? 'text-secondary'
+                                    : 'text-secondary/50'
+                                }`}
+                              >
+                                <Icon icon={Edit} width={16} />
+                              </Button>
+                              <Button
+                                className={`btn btn-ghost h-auto min-h-min rounded-full p-1 ${
+                                  !activeSrc || src.id == activeSrc
+                                    ? 'text-primary'
+                                    : 'text-primary/50'
+                                }`}
+                              >
+                                <Icon icon={Delete} width={16} />
+                              </Button>
+                            </div>
+                          </td>
                         </tr>
                       )}
                     </Fragment>
@@ -148,6 +180,12 @@ const MonthlyStockTable = ({ data }: { data: SupplyWithSrc[] | undefined }) => {
           </tbody>
         </table>
       </div>
+
+      <Dialog
+        open={deleteDialog}
+        header={'مسح الادخال'}
+        body={<DeleteStockEntry done={() => console.log('x')} />}
+      />
     </>
   )
 }
