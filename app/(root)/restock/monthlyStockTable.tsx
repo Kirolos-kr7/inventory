@@ -11,10 +11,18 @@ import { Icon } from '@iconify/react/dist/offline'
 import { Fragment, useMemo, useState } from 'react'
 import DeleteStockEntry from './deleteStockEntry'
 
-const MonthlyStockTable = ({ data }: { data: SupplyWithSrc[] | undefined }) => {
+const MonthlyStockTable = ({
+  data,
+  refetch,
+  pending
+}: {
+  data: SupplyWithSrc[] | undefined
+  refetch: () => Promise<void>
+  pending: boolean
+}) => {
   const [activeSrc, setActiveSrc] = useState<number | null>(null)
   const [editDialog, setEditDialog] = useState(true)
-  const [deleteDialog, setDeleteDialog] = useState(true)
+  const [deleteDialog, setDeleteDialog] = useState(false)
   const [selectedStock, setSelectedStock] = useState<number | null>(null)
 
   const actions = useMemo(() => {
@@ -153,6 +161,10 @@ const MonthlyStockTable = ({ data }: { data: SupplyWithSrc[] | undefined }) => {
                                     ? 'text-primary'
                                     : 'text-primary/50'
                                 }`}
+                                onClick={() => {
+                                  setDeleteDialog(true)
+                                  setSelectedStock(id)
+                                }}
                               >
                                 <Icon icon={Delete} width={16} />
                               </Button>
@@ -171,9 +183,11 @@ const MonthlyStockTable = ({ data }: { data: SupplyWithSrc[] | undefined }) => {
               <td />
               <td />
               <td className="px-1.5 text-sm">
-                {data
-                  ?.map(({ count, price }) => count * price)
-                  .reduce((p, c) => p + c)}
+                {data &&
+                  data?.length > 0 &&
+                  data
+                    .map(({ count, price }) => count * price)
+                    .reduce((p, c) => p + c)}
               </td>
               <td />
             </tr>
@@ -182,9 +196,20 @@ const MonthlyStockTable = ({ data }: { data: SupplyWithSrc[] | undefined }) => {
       </div>
 
       <Dialog
-        open={deleteDialog}
+        open={deleteDialog && typeof selectedStock == 'number'}
+        close={() => setDeleteDialog(false)}
         header={'مسح الادخال'}
-        body={<DeleteStockEntry done={() => console.log('x')} />}
+        body={
+          <DeleteStockEntry
+            supplyId={selectedStock}
+            done={async () => {
+              await refetch()
+              setDeleteDialog(false)
+              setSelectedStock(null)
+            }}
+            pending={pending}
+          />
+        }
       />
     </>
   )

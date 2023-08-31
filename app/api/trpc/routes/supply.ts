@@ -1,5 +1,6 @@
 import { MONTHS } from '@/utils/dayjs'
 import { db } from '@/utils/prisma'
+import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 import { protectedProcedure, router } from '../trpc'
 
@@ -123,5 +124,42 @@ export const supplyRouter = router({
           })
         })
       )
+    }),
+  delete: protectedProcedure
+    .input(
+      z.object({
+        supplyId: z.number(),
+        removeStock: z.boolean()
+      })
+    )
+    .mutation(async ({ input: { supplyId, removeStock } }) => {
+      const transactions: any[] = [
+        db.supply.delete({
+          where: {
+            id: supplyId
+          }
+        })
+      ]
+
+      if (removeStock) {
+        const supply = await db.supply.findUnique({
+          where: { id: supplyId }
+        })
+
+        if (!supply) return new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
+
+        transactions.push(
+          db.item.update({
+            where: { id: supply?.srcId },
+            data: {
+              count: {
+                decrement: supply?.count
+              }
+            }
+          })
+        )
+      }
+
+      await db.$transaction(transactions)
     })
 })

@@ -27,7 +27,12 @@ interface RestockSupply {
 const InventoryAdd: NextPage = () => {
   const { month, year } = useDateStore()
   const { data } = trpc.item.getAll.useQuery()
-  const { data: prev, isLoading } = trpc.supply.getSupplyPerMonth.useQuery({
+  const {
+    data: prev,
+    refetch,
+    isLoading,
+    isRefetching
+  } = trpc.supply.getSupplyPerMonth.useQuery({
     month,
     year
   })
@@ -115,7 +120,11 @@ const InventoryAdd: NextPage = () => {
 
       {!isLoading && (
         <>
-          <MonthlyStockTable data={prev} />
+          <MonthlyStockTable
+            data={prev}
+            refetch={refetch as any}
+            pending={isRefetching}
+          />
 
           <form
             onSubmit={save}
