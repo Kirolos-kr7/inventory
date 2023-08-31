@@ -17,6 +17,12 @@ import { toast } from 'react-hot-toast'
 import MonthlyStockTable from './monthlyStockTable'
 
 type src = { id: number; name: string }
+interface RestockSupply {
+  src: src
+  count: number
+  pricePerUnit: number
+  totalPrice: number
+}
 
 const InventoryAdd: NextPage = () => {
   const { month, year } = useDateStore()
@@ -40,13 +46,7 @@ const InventoryAdd: NextPage = () => {
       })
   }, [data])
 
-  const [supply, setSupply] = useState<
-    {
-      src: src
-      count: number
-      pricePerUnit: number
-    }[]
-  >([])
+  const [supply, setSupply] = useState<RestockSupply[]>([])
 
   const add = () => {
     if (!srcList) return
@@ -56,7 +56,8 @@ const InventoryAdd: NextPage = () => {
       {
         src: srcList[0],
         count: 0,
-        pricePerUnit: 0
+        pricePerUnit: 0,
+        totalPrice: 0
       }
     ])
   }
@@ -66,7 +67,7 @@ const InventoryAdd: NextPage = () => {
   }
 
   const handleChange = (
-    field: 'src' | 'count' | 'pricePerUnit',
+    field: 'src' | 'count' | 'pricePerUnit' | 'totalPrice',
     value: string,
     index: number
   ) => {
@@ -76,8 +77,17 @@ const InventoryAdd: NextPage = () => {
           const x = srcList?.find(({ name }) => value == name)
           if (x) entry.src = x
 
-          if (field == 'count' || field == 'pricePerUnit')
+          if (
+            field == 'count' ||
+            field == 'pricePerUnit' ||
+            field == 'totalPrice'
+          )
             entry[field] = parseFloat(value)
+
+          if (field == 'totalPrice')
+            entry['pricePerUnit'] = entry['totalPrice'] / entry['count']
+          if (field == 'pricePerUnit')
+            entry['totalPrice'] = entry['pricePerUnit'] * entry['count']
         }
 
         return entry
@@ -111,7 +121,7 @@ const InventoryAdd: NextPage = () => {
             onSubmit={save}
             className="flex flex-col gap-5 w-full overflow-x-auto py-2"
           >
-            {supply.map(({ src, count, pricePerUnit }, i) => (
+            {supply.map(({ src, count, pricePerUnit, totalPrice }, i) => (
               <div className="flex gap-5 items-center" key={i}>
                 <Button
                   className="btn-primary -mb-5 btn-xs"
@@ -165,11 +175,14 @@ const InventoryAdd: NextPage = () => {
                 </div>
                 <div>
                   <label className="label">الاجمالي</label>
-                  <span className="text-gray-300 h-8 block leading-8">
-                    {new Intl.NumberFormat('en-US', {
-                      maximumFractionDigits: 2
-                    }).format(count * pricePerUnit)}
-                  </span>
+
+                  <InputNumber
+                    className="bg-base-100 h-8 rounded-md border border-secondary input-secondary px-2 text-center w-[6rem]"
+                    size="sm"
+                    id={`totalPrice_${i}`}
+                    value={totalPrice}
+                    update={(v) => handleChange('totalPrice', v, i)}
+                  />
                 </div>
               </div>
             ))}
