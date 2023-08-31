@@ -506,7 +506,12 @@ const supplyRouter = t.router({
       async ({ input: { month, year } }) =>
         await db.supply.findMany({
           where: { month, year },
-          include: { src: true }
+          include: { src: true },
+          orderBy: {
+            src: {
+              id: 'asc'
+            }
+          }
         })
     ),
   getSupplyTableData: protectedProcedure
