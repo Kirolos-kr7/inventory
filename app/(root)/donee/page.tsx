@@ -75,7 +75,7 @@ const Users: NextPage = () => {
             </thead>
             <tbody>
               {getDonees()?.map(({ id, name, location, isRegular }, i, u) => (
-                <tr key={id} className="table-compact">
+                <tr key={id} className="table-sm">
                   <th>{i + 1}</th>
                   <td>{name}</td>
                   <td>{location.name}</td>

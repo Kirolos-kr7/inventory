@@ -89,7 +89,7 @@ const MonthlyStockTable = ({
                     <Fragment key={id}>
                       {items.length > 1 && i == 0 && (
                         <tr
-                          className={`table-compact ${
+                          className={`table-sm ${
                             activeSrc && '[&>td]:border-b-0'
                           }`}
                         >
@@ -128,7 +128,7 @@ const MonthlyStockTable = ({
 
                       {(items.length == 1 || src.id == activeSrc) && (
                         <tr
-                          className={`table-compact ${
+                          className={`table-sm ${
                             items.length > 1 && i == 0
                               ? '[&>td]:border-b-0'
                               : ''

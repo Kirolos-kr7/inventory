@@ -65,7 +65,7 @@ const DateDialog = ({ onlyYear = false }: { onlyYear: boolean }) => {
     <div className="flex flex-col gap-2 items-center mt-5">
       <div className="flex gap-3 w-full">
         <label className="label">السنة</label>
-        <ul className="compact menu w-full max-h-20 gap-2 p-2 shadow bg-base-200 rounded-box">
+        <ul className="sm menu w-full max-h-20 gap-2 p-2 shadow bg-base-200 rounded-box">
           {yearList().map((v) => (
             <li key={`${v}`}>
               <a
@@ -82,7 +82,7 @@ const DateDialog = ({ onlyYear = false }: { onlyYear: boolean }) => {
         <div className="flex gap-3 w-full">
           <label className="label">الشهر</label>
           <ul
-            className="compact menu grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 w-full gap-2 p-2 shadow bg-base-200 rounded-box"
+            className="sm menu grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 w-full gap-2 p-2 shadow bg-base-200 rounded-box"
             dir="rtl"
           >
             {MONTHS.map((n) => (

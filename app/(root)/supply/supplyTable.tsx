@@ -33,9 +33,11 @@ const SupplyTable = ({
                   {i != 0 && <span> + </span>}
                   <div className="py-1 w-fit">
                     <div className="flex flex-col text-center" dir="ltr">
-                      <span className="border-b border-gray-400">
-                        {price + ' × '}
-                        <span className="text-secondary">{count}</span>
+                      <span className="border-b border-gray-400 flex">
+                        <span className="shrink-0">{price + ' × '}</span>
+                        <span className="text-secondary pl-1 pr-3">
+                          {count}
+                        </span>
                       </span>
                       <span className="hidden"> = </span>
                       <span>{price * count}</span>
@@ -91,7 +93,7 @@ const SupplyTable = ({
           {getFinancialMonths(year).map(({ month, year: yr }) => (
             <tr
               key={month}
-              className={`table-compact ${
+              className={`table-sm ${
                 month == currMonth && `${yr}-${yr + 1}` == currFinancialYear
                   ? 'active'
                   : ''

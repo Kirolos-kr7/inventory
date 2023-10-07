@@ -108,7 +108,7 @@ const Sidebar = () => {
       <div className="sm:fixed bg-base-100 h-[100lvh] w-[inherit] flex items-start flex-col justify-between">
         <div className="grow w-full overflow-y-auto">
           <ul className="menu gap-3 sm:gap-1 p-3 sm:p-2 sm:pt-3 grid sm:flex grid-cols-2 ">
-            {sidebarItems.map(({ name, to, icon, group }) => (
+            {sidebarItems.map(({ name, to, icon, group }, i) => (
               <Fragment key={name}>
                 {group && (
                   <>
@@ -121,7 +121,7 @@ const Sidebar = () => {
                     )}
                   </>
                 )}
-                <li>
+                <li className={i == 0 ? 'col-span-2' : ''}>
                   <Link
                     href={to}
                     onClick={() => {
@@ -170,7 +170,7 @@ const Sidebar = () => {
           </div>
 
           <button
-            className={`btn ${sideOpened ? '' : 'btn-sm'}`}
+            className={`btn btn-neutral ${sideOpened ? '' : 'btn-sm'}`}
             onClick={() => toggleSb()}
           >
             <Icon

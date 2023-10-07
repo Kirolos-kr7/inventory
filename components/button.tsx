@@ -18,9 +18,9 @@ const Button = ({
   return (
     <button
       type={type}
-      className={`btn ${className || ''} ${pending ? 'loading' : ''} ${
-        disabled ? 'btn-disabled !bg-transparent' : ''
-      }`}
+      className={`btn btn-neutral ${className || ''} ${
+        pending ? 'loading' : ''
+      } ${disabled ? 'btn-disabled !bg-transparent' : ''}`}
       disabled={disabled}
       onClick={() => onClick?.()}
     >

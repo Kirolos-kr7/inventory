@@ -68,7 +68,7 @@ const YearlyTable = ({
           {getFinancialMonths(year).map(({ month, year: yr }) => (
             <tr
               key={month}
-              className={`table-compact ${
+              className={`table-sm ${
                 month == currMonth && `${yr}-${yr + 1}` == currFinancialYear
                   ? 'active'
                   : ''

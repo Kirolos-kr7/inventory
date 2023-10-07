@@ -86,7 +86,7 @@ const BagContent = ({
           <div key={id} className="flex items-center justify-between gap-3">
             <label htmlFor={name}>{name}</label>
             <div className="flex justify-end">
-              <button
+              <Button
                 type="button"
                 className="btn shrink w-10 btn-sm rounded-e-none"
                 onClick={() => {
@@ -94,7 +94,7 @@ const BagContent = ({
                 }}
               >
                 <Icon icon={Add} width={18} />
-              </button>
+              </Button>
               <InputNumber
                 id={name}
                 className="w-20 h-min rounded-none text-center text-xl bg-base-200"
@@ -102,7 +102,7 @@ const BagContent = ({
                 value={perBag}
                 disabled
               />
-              <button
+              <Button
                 type="button"
                 className="btn shrink btn-sm w-10 rounded-s-none"
                 onClick={() => {
@@ -110,7 +110,7 @@ const BagContent = ({
                 }}
               >
                 <Icon icon={Subrtact} width={18} />
-              </button>
+              </Button>
             </div>
           </div>
         ))}

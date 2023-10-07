@@ -127,7 +127,7 @@ const Stats: NextPage = () => {
             <div className="dropdown">
               <label
                 tabIndex={0}
-                className={`btn m-1 btn-sm sm:btn-md ${
+                className={`btn m-1 btn-sm btn-neutral sm:btn-md ${
                   changes.length > 0 ? 'btn-disabled' : ''
                 }`}
               >
@@ -135,7 +135,7 @@ const Stats: NextPage = () => {
               </label>
               <ul
                 tabIndex={0}
-                className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-28 sm:w-52"
+                className="dropdown-content sm menu p-2 shadow bg-base-100 rounded-box w-28 sm:w-52 relative z-10"
                 dir="rtl"
               >
                 <li>

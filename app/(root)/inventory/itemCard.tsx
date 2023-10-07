@@ -92,12 +92,12 @@ const ItemCard: FC<ItemCardProps> = ({
           </div>
 
           {!isEditing && !isRemoving && (
-            <button
+            <Button
               className="btn h-auto min-h-min rounded-full p-1"
               onClick={() => showHistory(id)}
             >
               <Icon icon={History} className="text-secondary" width={18} />
-            </button>
+            </Button>
           )}
 
           {isRemoving && (

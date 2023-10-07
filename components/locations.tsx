@@ -20,12 +20,12 @@ const Locations = ({ active, setActive }: LocationsProps) => {
 
   return (
     <div className="dropdown dropdown-end">
-      <label tabIndex={0} className="btn m-1 btn-sm sm:btn-md">
+      <label tabIndex={0} className="btn btn-neutral m-1 btn-sm sm:btn-md">
         المنطقة
       </label>
       <ul
         tabIndex={0}
-        className="dropdown-content compact menu p-2 shadow bg-base-100 rounded-box w-52"
+        className="dropdown-content sm menu p-2 shadow bg-base-100 rounded-box w-52 relative z-20"
       >
         {locations?.map(({ id, name }) => (
           <li key={id}>

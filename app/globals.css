@@ -49,4 +49,16 @@ body {
   .select {
     background-position: 25px, 21px !important;
   }
+
+  .table :where(thead, tfoot) :where(th, td) {
+    @apply bg-base-200 text-white;
+  }
+
+  .table :where(tbody th, tbody td) {
+    @apply bg-base-100;
+  }
+
+  .table tr.active :where(td, th) {
+    @apply !bg-base-300;
+  }
 }

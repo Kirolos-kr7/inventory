@@ -1,3 +1,4 @@
+import Button from '@/components/button'
 import { CheckoutChange } from '@/utils/types'
 import Filter from '@iconify/icons-mdi/filter-list'
 import { Icon } from '@iconify/react/dist/offline'
@@ -163,12 +164,12 @@ const CheckoutTable = ({
                       )}
                     </div>
                   </div>
-                  <button
-                    className="btn btn-square btn-xs"
+                  <Button
+                    className="btn-square btn-xs"
                     onClick={() => openFilter()}
                   >
                     <Icon icon={Filter} width={16} />
-                  </button>
+                  </Button>
                 </div>
               </th>
               {items?.map(({ name, count, id }, i) => {
@@ -178,7 +179,7 @@ const CheckoutTable = ({
                   <th key={i} className="text-sm px-3">
                     {name + ' '}
                     <span
-                      className={`px-1 badge me-1 ${
+                      className={`px-1 badge-neutral rounded-full me-1 inline-block ${
                         itemCount < 0 ? 'badge-error' : 'text-secondary'
                       }`}
                       dir="ltr"
