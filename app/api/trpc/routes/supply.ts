@@ -74,57 +74,112 @@ export const supplyRouter = router({
   addToSupply: protectedProcedure
     .input(
       z.object({
-        supply: z.array(
-          z.object({
-            src: z.object({
-              id: z.number(),
-              name: z.string()
-            }),
+        supply: z.object({
+          src: z.object({
+            id: z.number(),
+            name: z.string()
+          }),
 
-            count: z
-              .number({
-                invalid_type_error: 'قيمة غير صالحة'
-              })
-              .gt(0, 'غير مسموج بقيمة اقل من 1'),
-            pricePerUnit: z.number()
-          })
-        ),
+          count: z
+            .number({
+              invalid_type_error: 'قيمة غير صالحة'
+            })
+            .gt(0, 'غير مسموج بقيمة اقل من 1'),
+          pricePerUnit: z.number()
+        }),
         month: z.string(),
         year: z.string()
       })
     )
-    .mutation(async ({ input: { supply, month, year }, ctx: { user } }) => {
-      await Promise.all(
-        supply.map(async ({ src, count, pricePerUnit }) => {
-          await db.supply.create({
-            data: {
-              month,
-              year,
-              srcId: src.id,
-              count,
-              price: pricePerUnit
-            }
-          })
-
-          await db.item.update({
-            where: { id: src.id },
-            data: {
-              count: {
-                increment: count
-              }
-            }
-          })
-
-          await db.transaction.create({
-            data: {
-              itemId: src.id,
-              message: `قام ##### بالاضافة للمخزون بمقدار ${count}`,
-              userId: user?.id!
-            }
-          })
+    .mutation(
+      async ({
+        input: {
+          supply: { count, pricePerUnit, src },
+          month,
+          year
+        },
+        ctx: { user }
+      }) => {
+        await db.supply.create({
+          data: {
+            month,
+            year,
+            srcId: src.id,
+            count,
+            price: pricePerUnit
+          }
         })
-      )
-    }),
+
+        await db.item.update({
+          where: { id: src.id },
+          data: {
+            count: {
+              increment: count
+            }
+          }
+        })
+
+        await db.transaction.create({
+          data: {
+            itemId: src.id,
+            message: `قام ##### بالاضافة للمخزون بمقدار ${count}`,
+            userId: user?.id!
+          }
+        })
+      }
+    ),
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        count: z
+          .number({
+            invalid_type_error: 'قيمة غير صالحة'
+          })
+          .gt(0, 'غير مسموج بقيمة اقل من 1'),
+        oldCount: z
+          .number({
+            invalid_type_error: 'قيمة غير صالحة'
+          })
+          .gt(0, 'غير مسموج بقيمة اقل من 1'),
+        pricePerUnit: z.number()
+      })
+    )
+    .mutation(
+      async ({
+        input: { id, count, oldCount, pricePerUnit },
+        ctx: { user }
+      }) => {
+        const supply = await db.supply.update({
+          where: { id },
+          data: {
+            count,
+            price: pricePerUnit
+          }
+        })
+
+        if (count == oldCount) return
+
+        await db.item.update({
+          where: { id: supply.srcId },
+          data: {
+            count:
+              count > oldCount
+                ? { increment: count - oldCount }
+                : { decrement: oldCount - count }
+          }
+        })
+        await db.transaction.create({
+          data: {
+            itemId: supply.srcId,
+            message: `قام ##### ${
+              count > oldCount ? 'بالاضافة' : 'بالخصم'
+            } للمخزون بمقدار ${count}`,
+            userId: user?.id!
+          }
+        })
+      }
+    ),
   delete: protectedProcedure
     .input(
       z.object({

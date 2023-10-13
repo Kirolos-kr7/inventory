@@ -33,3 +33,8 @@ export const useResetDateStore = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setMonth, setYear])
 }
+
+export const floatW2 = (x: number | string) => {
+  x = typeof x == 'string' ? parseFloat(x) : x
+  return Math.round(x * 100) / 100
+}

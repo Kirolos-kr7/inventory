@@ -2,26 +2,31 @@
 
 import Button from '@/components/button'
 import Dialog from '@/components/dialog'
+import { floatW2 } from '@/utils/helpers'
 import { SupplyWithSrc } from '@/utils/types'
 import ChevronDown from '@iconify/icons-mdi/chevron-down'
 import ChevronUp from '@iconify/icons-mdi/chevron-up'
 import Delete from '@iconify/icons-mdi/delete'
 import Edit from '@iconify/icons-mdi/edit'
 import { Icon } from '@iconify/react/dist/offline'
-import { Fragment, useMemo, useState } from 'react'
+import { Dispatch, Fragment, SetStateAction, useMemo, useState } from 'react'
 import DeleteStockEntry from './deleteStockEntry'
+import EditStockEntry from './editStockEntry'
 
 const MonthlyStockTable = ({
   data,
   refetch,
-  pending
+  pending,
+  dialogOpened,
+  setDialogOpened
 }: {
   data: SupplyWithSrc[] | undefined
   refetch: () => Promise<void>
   pending: boolean
+  dialogOpened: boolean
+  setDialogOpened: Dispatch<SetStateAction<boolean>>
 }) => {
   const [activeSrc, setActiveSrc] = useState<number | null>(null)
-  const [editDialog, setEditDialog] = useState(true)
   const [deleteDialog, setDeleteDialog] = useState(false)
   const [selectedStock, setSelectedStock] = useState<number | null>(null)
 
@@ -98,8 +103,8 @@ const MonthlyStockTable = ({
                           </td>
                           <td>{itemsCount}</td>
                           <td>
-                            {avgPrice}
-                            <span className="badge mx-1 px-1 text-xs">
+                            {avgPrice && floatW2(avgPrice)}
+                            <span className="badge badge-sm badge-secondary mx-1">
                               متوسط
                             </span>
                           </td>
@@ -152,6 +157,10 @@ const MonthlyStockTable = ({
                                     ? 'text-secondary'
                                     : 'text-secondary/50'
                                 }`}
+                                onClick={() => {
+                                  setDialogOpened(true)
+                                  setSelectedStock(id)
+                                }}
                               >
                                 <Icon icon={Edit} width={16} />
                               </Button>
@@ -196,6 +205,26 @@ const MonthlyStockTable = ({
       </div>
 
       <Dialog
+        open={dialogOpened}
+        close={() => {
+          setDialogOpened(false)
+          setSelectedStock(null)
+        }}
+        header={selectedStock ? 'تعديل الادخال' : 'ادخال جديد'}
+        body={
+          <EditStockEntry
+            supply={data?.find(({ id }) => selectedStock == id)}
+            done={async () => {
+              await refetch()
+              setDialogOpened(false)
+              setSelectedStock(null)
+            }}
+            pending={pending}
+          />
+        }
+      />
+
+      <Dialog
         open={deleteDialog && typeof selectedStock == 'number'}
         close={() => setDeleteDialog(false)}
         header={'مسح الادخال'}
@@ -206,6 +235,7 @@ const MonthlyStockTable = ({
               await refetch()
               setDeleteDialog(false)
               setSelectedStock(null)
+              setActiveSrc(null)
             }}
             pending={pending}
           />

@@ -5,13 +5,14 @@ const db = new PrismaClient({
   log: ['query', 'info', 'warn', 'error']
 })
 
-const BACKUP_TS = 1693474801197
-const BASE_PATH = `./.db/${BACKUP_TS}`
-
 const main = async () => {
-  const dir = await readdir(BASE_PATH)
+  const MAIN_DIR = './.db'
+  const dotDB = await readdir(MAIN_DIR)
 
-  dir.map(async (fileName) => {
+  const BASE_PATH = MAIN_DIR + `\\` + dotDB.at(-1)
+  const backup = await readdir(BASE_PATH)
+
+  backup.map(async (fileName) => {
     const model = fileName.replace('.json', '')
     const file = await readFile(`${BASE_PATH}/${fileName}`, 'utf8')
 
