@@ -194,7 +194,7 @@ const CheckoutTable = ({
               const took = isRegular && didTake(doneeId)
 
               return (
-                <tr key={doneeId}>
+                <tr key={doneeId} className={!isRegular ? 'not-regular' : ''}>
                   <th className="p-0">
                     <div className="relative p-4 flex items-center gap-2">
                       <span

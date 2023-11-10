@@ -61,4 +61,15 @@ body {
   .table tr.active :where(td, th) {
     @apply !bg-base-300;
   }
+
+  .table tr.not-regular :where(th, td) {
+    background-size: 10px 10px;
+    background-image: repeating-linear-gradient(
+      45deg,
+      #f7444445 0,
+      #f7444445 1px,
+      #2d333a00 0,
+      #2d333a00 50%
+    );
+  }
 }
