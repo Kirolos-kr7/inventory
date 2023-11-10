@@ -157,6 +157,14 @@ const Checkout: NextPage = () => {
     }
   }
 
+  const getFormattedCheckoutBags = () => {
+    if (checked.length == 1) return `اخرج شنطة`
+    if (checked.length == 2) return `اخرج شنطتين`
+    if (checked.length > 1 && checked.length <= 10)
+      return `اخرج ${checked.length} شنط`
+    if (checked.length > 10) return `اخرج ${checked.length} شنطة`
+  }
+
   return (
     <div>
       <PageHeader
@@ -246,7 +254,7 @@ const Checkout: NextPage = () => {
                       isRefetching
                     }
                   >
-                    اخرج شنط
+                    {getFormattedCheckoutBags()}
                   </Button>
                 )}
               </motion.div>

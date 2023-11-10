@@ -157,11 +157,7 @@ const CheckoutTable = ({
                     />
                     <div className="flex items-end gap-1">
                       <span>المخدوم</span>
-                      {checked.length > 0 && (
-                        <span className="text-sm text-gray-400">
-                          [{checked.length}]
-                        </span>
-                      )}
+                      {checked.length > 0}
                     </div>
                   </div>
                   <Button
