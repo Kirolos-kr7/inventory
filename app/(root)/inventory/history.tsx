@@ -36,7 +36,7 @@ const History = ({ item }: { item: Item | null }) => {
             <span className="w-3 h-0.5 bg-gradient-to-r from-secondary to-primary from-60% " />
             <p className="flex gap-2">
               <span
-                className="tooltip tooltip-right"
+                className="tooltip tooltip-left"
                 data-tip={cat.format('dddd D MMM YYYY hh:mm A')}
               >
                 [{cat.format('hh:mm A')}]
