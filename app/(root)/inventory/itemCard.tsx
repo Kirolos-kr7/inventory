@@ -39,15 +39,21 @@ const ItemCard: FC<ItemCardProps> = ({
   pending
 }) => {
   const { id, name, count, perBag } = item
-  const PROGRESS = perBag * bags
 
   return (
     <div className="shadow-md bg-base-300/80 flex flex-col relative rounded-md">
-      <div className="tooltip -my-2.5" data-tip={'المطلوب ' + PROGRESS}>
+      <div
+        className="tooltip -my-2.5"
+        data-tip={
+          perBag * bags - count > 0
+            ? 'الفارق ' + (perBag * bags - count)
+            : 'مكتمل'
+        }
+      >
         <progress
           className="progress progress-primary w-full"
           value={count}
-          max={PROGRESS}
+          max={perBag * bags}
         />
       </div>
 
