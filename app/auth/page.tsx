@@ -8,6 +8,7 @@ import { trpc } from '@/utils/trpc'
 import { setCookie } from 'cookies-next'
 import { AnimatePresence, motion } from 'framer-motion'
 import { NextPage } from 'next'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { FormEvent, useState } from 'react'
 import { toast } from 'react-hot-toast'
@@ -71,50 +72,58 @@ const Auth: NextPage = () => {
             initial="off"
             animate="on"
             exit="off"
-            className="flex flex-col gap-5 bg-base-300/80 border border-base-100 rounded-lg w-[calc(100%-24px)] sm:w-[480px] shadow-lg p-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            className="flex flex-col items-center gap-5  absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
           >
-            <h1 className="text-2xl font-bold text-center">تسجيل الدخول</h1>
+            <Image
+              className="animate-bounce duration-1000 "
+              src="/icons/icon-128x128.png"
+              width={56}
+              height={56}
+              alt="logo"
+              quality={100}
+            />
 
-            <form onSubmit={login} className="flex flex-col  gap-2">
-              <div className="flex flex-col">
-                <label className="label" htmlFor="name">
-                  اسم المستخدم
-                </label>
-                <input
-                  type="text"
-                  className="input"
-                  id="name"
-                  placeholder="اكتب هنا"
-                  value={userData?.name}
-                  onChange={(e) =>
-                    setUserData((v) => ({ ...v, name: e.target.value }))
-                  }
-                  autoFocus
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label className="label" htmlFor="new-password">
-                  كلمة المرور
-                </label>
-                <input
-                  type="password"
-                  className="input"
-                  id="new-password"
-                  placeholder="اكتب هنا"
-                  value={userData?.password}
-                  onChange={(e) =>
-                    setUserData((v) => ({ ...v, password: e.target.value }))
-                  }
-                />
-              </div>
-
-              <div className="flex justify-end mt-1">
-                <Button type="submit" pending={pending}>
-                  دخول
-                </Button>
-              </div>
-            </form>
+            <div className=" shadow-lg p-4 bg-base-300/80 border border-base-100 rounded-lg w-[calc(100%-24px)] sm:w-[480px]">
+              <h1 className="text-2xl font-bold text-center">تسجيل الدخول</h1>
+              <form onSubmit={login} className="flex flex-col  gap-2">
+                <div className="flex flex-col">
+                  <label className="label" htmlFor="name">
+                    اسم المستخدم
+                  </label>
+                  <input
+                    type="text"
+                    className="input"
+                    id="name"
+                    placeholder="اكتب هنا"
+                    value={userData?.name}
+                    onChange={(e) =>
+                      setUserData((v) => ({ ...v, name: e.target.value }))
+                    }
+                    autoFocus
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label className="label" htmlFor="new-password">
+                    كلمة المرور
+                  </label>
+                  <input
+                    type="password"
+                    className="input"
+                    id="new-password"
+                    placeholder="اكتب هنا"
+                    value={userData?.password}
+                    onChange={(e) =>
+                      setUserData((v) => ({ ...v, password: e.target.value }))
+                    }
+                  />
+                </div>
+                <div className="flex justify-end mt-1">
+                  <Button type="submit" pending={pending}>
+                    دخول
+                  </Button>
+                </div>
+              </form>
+            </div>
           </motion.main>
         )}
       </AnimatePresence>
