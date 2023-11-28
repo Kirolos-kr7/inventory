@@ -10,7 +10,7 @@ import PageHeader from '@/components/pageHeader'
 import { handleError } from '@/utils/handleError'
 import { useDateStore } from '@/utils/store'
 import { trpc } from '@/utils/trpc'
-import { CheckoutChange } from '@/utils/types'
+import { CheckoutChange, DoneeFilterType } from '@/utils/types'
 import { Checkout, Item } from '@prisma/client'
 import { AnimatePresence, motion } from 'framer-motion'
 import { NextPage } from 'next'
@@ -22,6 +22,7 @@ const Checkout: NextPage = () => {
   const { month, year } = useDateStore()
   const [checkouts, setCheckouts] = useState<Checkout[]>([])
   const [filterOpened, setFilterOpened] = useState(false)
+  const [doneeFilter, setDoneeFilter] = useState<DoneeFilterType>('does')
   const [initial, setInitial] = useState(true)
   const [items, setItems] = useState<(Item & { isActive: boolean })[]>([])
   const [checked, setChecked] = useState<number[]>([])
@@ -200,6 +201,8 @@ const Checkout: NextPage = () => {
             donees={getDonees()}
             update={update}
             openFilter={() => setFilterOpened(true)}
+            doneeFilter={doneeFilter}
+            resetDoneeFilter={() => setDoneeFilter('all')}
           />
 
           <AnimatePresence>
@@ -266,10 +269,12 @@ const Checkout: NextPage = () => {
       {items && (
         <Dialog
           open={filterOpened}
-          header="اختار العناصر"
+          header=""
           body={
             <FilterCheckoutItems
               items={items}
+              doneeFilter={doneeFilter}
+              doneeFilterChanged={(v) => setDoneeFilter(v)}
               update={(id) => {
                 setItems((v) => {
                   v = v.map((item) => {

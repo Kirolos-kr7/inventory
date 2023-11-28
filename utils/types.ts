@@ -33,3 +33,5 @@ export interface ActiveLocation {
   name: string
   isActive: boolean
 }
+
+export type DoneeFilterType = 'all' | 'did' | 'does' | "didn't"

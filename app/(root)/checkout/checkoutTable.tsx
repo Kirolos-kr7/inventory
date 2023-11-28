@@ -1,5 +1,6 @@
 import Button from '@/components/button'
-import { CheckoutChange } from '@/utils/types'
+import { CheckoutChange, DoneeFilterType } from '@/utils/types'
+import X from '@iconify/icons-mdi/close'
 import Filter from '@iconify/icons-mdi/filter-list'
 import { Icon } from '@iconify/react/dist/offline'
 import { Checkout, Donee, Item } from '@prisma/client'
@@ -20,7 +21,9 @@ const CheckoutTable = ({
   checked,
   setChecked,
   update,
-  openFilter
+  openFilter,
+  doneeFilter,
+  resetDoneeFilter
 }: {
   data: Checkout[] | undefined
   items: Item[] | undefined
@@ -30,6 +33,8 @@ const CheckoutTable = ({
   setChecked: Dispatch<SetStateAction<number[]>>
   update: (doneeId: number, itemId: number, amount: number) => void
   openFilter: () => void
+  doneeFilter: DoneeFilterType
+  resetDoneeFilter: VoidFunction
 }) => {
   const [isMobile, setIsMobile] = useState(false)
   const mainCHK = useRef<HTMLInputElement>(null)
@@ -147,17 +152,33 @@ const CheckoutTable = ({
                       ref={mainCHK}
                       type="checkbox"
                       className="checkbox checkbox-xs checkbox-secondary"
-                      onChange={({
-                        currentTarget: { checked, indeterminate }
-                      }) => {
+                      onChange={({ currentTarget: { checked } }) => {
                         if (!checked) setChecked([])
                         else checkAll()
                       }}
                       disabled={changes.length > 0}
                     />
                     <div className="flex items-end gap-1">
-                      <span>المخدوم</span>
-                      {checked.length > 0}
+                      المخدوم
+                      {doneeFilter != 'all' && (
+                        <div className="bg-error text-error-content text-sm flex items-center gap-1 rounded-full px-1 ">
+                          <span className="mr-1 inline-block">
+                            {doneeFilter == 'does'
+                              ? 'يصرف'
+                              : doneeFilter == 'did'
+                              ? 'قام بالصرف'
+                              : doneeFilter == "didn't"
+                              ? 'لم يصرف'
+                              : 'الكل'}
+                          </span>
+                          <button
+                            className="bg-base-100 text-white grid place-content-center p-1 rounded-full w-4 h-4"
+                            onClick={resetDoneeFilter}
+                          >
+                            <Icon icon={X} width={14} />
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <Button
@@ -190,44 +211,55 @@ const CheckoutTable = ({
             </tr>
           </thead>
           <tbody>
-            {donees?.map(({ id: doneeId, name, isRegular }) => {
-              const took = isRegular && didTake(doneeId)
+            {donees
+              ?.filter(({ isRegular, id }) => {
+                if (doneeFilter == 'all') return true
+                if (doneeFilter == 'does' && isRegular) return true
 
-              return (
-                <tr key={doneeId} className={!isRegular ? 'not-regular' : ''}>
-                  <th className="p-0">
-                    <div className="relative p-4 flex items-center gap-2">
-                      <span
-                        className={`absolute start-0 w-1 h-4 rounded-e-md  inset-y-1/2 -translate-y-1/2 
+                const took = didTake(id)
+                if (doneeFilter == 'did' && took) return true
+                if (doneeFilter == "didn't" && !took && isRegular) return true
+
+                return false
+              })
+              .map(({ id: doneeId, name, isRegular }) => {
+                const took = isRegular && didTake(doneeId)
+
+                return (
+                  <tr key={doneeId} className={!isRegular ? 'not-regular' : ''}>
+                    <th className="p-0">
+                      <div className="relative p-4 flex items-center gap-2">
+                        <span
+                          className={`absolute start-0 w-1 h-4 rounded-e-md  inset-y-1/2 -translate-y-1/2 
                       ${took ? 'bg-green-400' : 'bg-secondary'}
                       ${isRegular ? '' : '!bg-red-400'}`}
-                      />
-                      <input
-                        type="checkbox"
-                        id={`${doneeId}`}
-                        className="checkbox checkbox-xs checkbox-secondary"
-                        checked={checked.includes(doneeId)}
-                        onChange={() =>
-                          setChecked((v) => {
-                            if (v?.includes(doneeId))
-                              return v.filter((n) => n != doneeId)
-                            else return [...v, doneeId]
-                          })
-                        }
-                        disabled={took || changes?.length > 0 ? true : false}
-                      />
-                      {getName(name)}
-                    </div>
-                  </th>
+                        />
+                        <input
+                          type="checkbox"
+                          id={`${doneeId}`}
+                          className="checkbox checkbox-xs checkbox-secondary"
+                          checked={checked.includes(doneeId)}
+                          onChange={() =>
+                            setChecked((v) => {
+                              if (v?.includes(doneeId))
+                                return v.filter((n) => n != doneeId)
+                              else return [...v, doneeId]
+                            })
+                          }
+                          disabled={took || changes?.length > 0 ? true : false}
+                        />
+                        {getName(name)}
+                      </div>
+                    </th>
 
-                  {items?.map(({ id: itemId }, i) => (
-                    <td className="px-2" key={i}>
-                      {getCell(doneeId, itemId)}
-                    </td>
-                  ))}
-                </tr>
-              )
-            })}
+                    {items?.map(({ id: itemId }, i) => (
+                      <td className="px-2" key={i}>
+                        {getCell(doneeId, itemId)}
+                      </td>
+                    ))}
+                  </tr>
+                )
+              })}
           </tbody>
         </table>
       </div>
