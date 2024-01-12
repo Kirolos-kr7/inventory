@@ -5,6 +5,7 @@ interface InputNumberInterface {
   dir?: 'ltr' | 'rtl'
   size?: 'xs' | 'sm' | 'md' | 'lg'
   className?: string
+  min: number
   value?: number
   disabled?: boolean
   update?: (v: string) => void
@@ -15,6 +16,7 @@ const InputNumber: FC<InputNumberInterface> = ({
   dir = 'ltr',
   size = 'md',
   className,
+  min = 1,
   value,
   disabled = false,
   update
@@ -34,7 +36,7 @@ const InputNumber: FC<InputNumberInterface> = ({
       onFocus={({ target }) => target.select()}
       onWheel={({ target }) => (target as HTMLInputElement).blur()}
       id={id}
-      min={0}
+      min={min}
       disabled={disabled}
     />
   )

@@ -126,6 +126,7 @@ const EditStockEntry = ({
               <InputNumber
                 id="ppu"
                 className="input input-sm w-full focus:outline-none focus:ring-1 ring-inset ring-gray-500/80 rounded-r-none rounded-l-none text-center bg-base-200"
+                min={0}
                 value={values.ppu}
                 update={(value) => {
                   setValues((v) => {
