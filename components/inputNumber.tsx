@@ -34,7 +34,7 @@ const InputNumber: FC<InputNumberInterface> = ({
       onFocus={({ target }) => target.select()}
       onWheel={({ target }) => (target as HTMLInputElement).blur()}
       id={id}
-      min={1}
+      min={0}
       disabled={disabled}
     />
   )
