@@ -5,7 +5,7 @@ interface InputNumberInterface {
   dir?: 'ltr' | 'rtl'
   size?: 'xs' | 'sm' | 'md' | 'lg'
   className?: string
-  min: number
+  min?: number
   value?: number
   disabled?: boolean
   update?: (v: string) => void
