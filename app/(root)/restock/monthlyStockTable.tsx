@@ -64,8 +64,10 @@ const MonthlyStockTable = ({
         .reduce((p, c) => p + c)
 
       row.avgPrice =
-        row.items.map(({ price }) => price).reduce((p, c) => p + c) /
-        row.items.length
+        row.items
+          .map(({ price, count }) => price * count)
+          .reduce((p, c) => p + c) /
+        row.items.map(({ count }) => count).reduce((p, c) => p + c)
 
       return row
     })
@@ -75,7 +77,7 @@ const MonthlyStockTable = ({
 
   return (
     <>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-lg">
         <table className="table w-full text-right">
           <thead>
             <tr>
@@ -96,6 +98,10 @@ const MonthlyStockTable = ({
                         <tr
                           className={`table-sm ${
                             activeSrc && '[&>td]:border-b-0'
+                          } ${
+                            activeSrc && src.id != activeSrc
+                              ? 'text-gray-600'
+                              : ''
                           }`}
                         >
                           <td className="text-base font-semibold">
@@ -104,7 +110,13 @@ const MonthlyStockTable = ({
                           <td>{itemsCount}</td>
                           <td>
                             {avgPrice && floatW2(avgPrice)}
-                            <span className="badge badge-sm badge-secondary mx-1">
+                            <span
+                              className={`badge badge-sm badge-secondary mx-1 ${
+                                activeSrc && src.id != activeSrc
+                                  ? 'opacity-0'
+                                  : ''
+                              }`}
+                            >
                               متوسط
                             </span>
                           </td>
@@ -139,7 +151,7 @@ const MonthlyStockTable = ({
                               : ''
                           } ${
                             activeSrc && src.id != activeSrc
-                              ? 'text-gray-500'
+                              ? 'text-gray-600'
                               : ''
                           }`}
                         >

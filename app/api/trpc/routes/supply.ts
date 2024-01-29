@@ -30,16 +30,20 @@ export const supplyRouter = router({
     async () => await db.item.findMany({ select: { id: true, name: true } })
   ),
   getSupplyPerMonth: protectedProcedure
-    .input(z.object({ month: z.string(), year: z.string() }))
+    .input(
+      z.object({
+        month: z.string(),
+        year: z.string(),
+        view: z.enum(['table', 'timeline'])
+      })
+    )
     .query(
-      async ({ input: { month, year } }) =>
+      async ({ input: { month, year, view } }) =>
         await db.supply.findMany({
           where: { month, year },
           include: { src: true },
           orderBy: {
-            src: {
-              id: 'asc'
-            }
+            ...(view == 'timeline' ? { createdAt: 'desc' } : { srcId: 'asc' })
           }
         })
     ),

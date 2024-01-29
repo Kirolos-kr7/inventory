@@ -6,20 +6,19 @@ import Loading from '@/components/loading'
 import PageHeader from '@/components/pageHeader'
 import { useDateStore } from '@/utils/store'
 import { trpc } from '@/utils/trpc'
+import Table from '@iconify/icons-mdi/table'
+import Timeline from '@iconify/icons-mdi/timeline'
+import { Icon } from '@iconify/react/dist/offline'
 import { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import MonthlyStockTable from './monthlyStockTable'
+import MonthlyStockTimeline from './monthlyStockTimeline'
 
 type src = { id: number; name: string }
-interface RestockSupply {
-  src: src
-  count: number
-  pricePerUnit: number
-  totalPrice: number
-}
 
 const InventoryAdd: NextPage = () => {
   const { month, year } = useDateStore()
+  const [view, setView] = useState<'table' | 'timeline'>('table')
   const { data } = trpc.item.getAll.useQuery()
   const {
     data: prev,
@@ -28,9 +27,9 @@ const InventoryAdd: NextPage = () => {
     isRefetching
   } = trpc.supply.getSupplyPerMonth.useQuery({
     month,
-    year
+    year,
+    view
   })
-  const supplyMutation = trpc.supply.addToSupply.useMutation()
 
   const [srcList, setSrcList] = useState<src[]>([])
   const [dialogOpened, setDialogOpened] = useState(false)
@@ -46,65 +45,37 @@ const InventoryAdd: NextPage = () => {
       })
   }, [data])
 
-  const [supply, setSupply] = useState<RestockSupply[]>([])
-
-  const add = () => {
-    if (!srcList) return
-
-    setSupply((v) => [
-      ...v,
-      {
-        src: srcList[0],
-        count: 0,
-        pricePerUnit: 0,
-        totalPrice: 0
-      }
-    ])
-  }
-
-  const remove = (i: number) => {
-    setSupply((v) => v.filter((_, index) => index != i))
-  }
-
-  const handleChange = (
-    field: 'src' | 'count' | 'pricePerUnit' | 'totalPrice',
-    value: string,
-    index: number
-  ) => {
-    setSupply((v) => {
-      v = v.map((entry, i) => {
-        if (index == i) {
-          const x = srcList?.find(({ name }) => value == name)
-          if (x) entry.src = x
-
-          if (
-            field == 'count' ||
-            field == 'pricePerUnit' ||
-            field == 'totalPrice'
-          )
-            entry[field] = parseFloat(value)
-
-          if (field == 'totalPrice')
-            entry['pricePerUnit'] = entry['totalPrice'] / entry['count']
-          if (field == 'pricePerUnit')
-            entry['totalPrice'] = entry['pricePerUnit'] * entry['count']
-        }
-
-        return entry
-      })
-
-      return v
-    })
-  }
-
   return (
     <div>
       <PageHeader
         title="اضافة للمخزون"
         actions={
-          <>
-            <Button onClick={() => setDialogOpened(true)}>اضافة</Button>
-          </>
+          <div className="flex items-center gap-2">
+            {view == 'timeline' && (
+              <Button
+                className="btn-sm sm:btn-md"
+                onClick={() => setView('table')}
+              >
+                <Icon icon={Table} width={26} />
+              </Button>
+            )}
+            {view == 'table' && (
+              <>
+                <Button
+                  className="btn-sm sm:btn-md"
+                  onClick={() => setView('timeline')}
+                >
+                  <Icon icon={Timeline} width={26} />
+                </Button>
+                <Button
+                  className="btn-sm sm:btn-md"
+                  onClick={() => setDialogOpened(true)}
+                >
+                  اضافة
+                </Button>
+              </>
+            )}
+          </div>
         }
         subtitle={<DateSelector />}
       />
@@ -113,13 +84,25 @@ const InventoryAdd: NextPage = () => {
 
       {!isLoading && (
         <>
-          <MonthlyStockTable
-            data={prev}
-            refetch={refetch as any}
-            pending={isRefetching}
-            dialogOpened={dialogOpened}
-            setDialogOpened={setDialogOpened}
-          />
+          {prev?.length == 0 ? (
+            <div className="flex items-center justify-center w-full h-60">
+              لا توجد عمليات شراء لهذا الشهر.
+            </div>
+          ) : (
+            <>
+              {view == 'table' ? (
+                <MonthlyStockTable
+                  data={prev}
+                  refetch={refetch as any}
+                  pending={isRefetching}
+                  dialogOpened={dialogOpened}
+                  setDialogOpened={setDialogOpened}
+                />
+              ) : (
+                <MonthlyStockTimeline data={prev} />
+              )}
+            </>
+          )}
         </>
       )}
     </div>
