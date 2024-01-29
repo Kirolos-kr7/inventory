@@ -52,7 +52,7 @@ const YearlyTable = ({
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto rounded-lg">
       <table className="table w-full text-right">
         <thead>
           <tr>

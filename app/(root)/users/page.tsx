@@ -47,7 +47,7 @@ const Users: NextPage = () => {
       {isLoading && <Loading />}
 
       {!isLoading && (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto rounded-lg">
           <table className="table w-full text-right">
             <thead>
               <tr className="[&>*]:first-of-type:rounded-t-none [&>*]:text-base [&>*]:last-of-type:rounded-t-none sticky top-0 shadow-sm z-[12]">
