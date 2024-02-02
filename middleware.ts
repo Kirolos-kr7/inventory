@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
 import { jwtVerify } from 'jose'
+import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
 
 export async function middleware(request: NextRequest) {
   let isAuthed = false
@@ -27,6 +27,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|site.webmanifest|icons/).*)'
+    '/((?!api|_next/static|_next/image|favicon.ico|cross.svg|site.webmanifest|icons/).*)'
   ]
 }
