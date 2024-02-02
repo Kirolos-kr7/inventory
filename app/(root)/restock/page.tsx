@@ -11,8 +11,7 @@ import Timeline from '@iconify/icons-mdi/timeline'
 import { Icon } from '@iconify/react/dist/offline'
 import { NextPage } from 'next'
 import { useEffect, useState } from 'react'
-import MonthlyStockTable from './monthlyStockTable'
-import MonthlyStockTimeline from './monthlyStockTimeline'
+import MonthlyStock from './monthlyStock'
 
 type src = { id: number; name: string }
 
@@ -83,27 +82,14 @@ const InventoryAdd: NextPage = () => {
       {isLoading && <Loading />}
 
       {!isLoading && (
-        <>
-          {prev?.length == 0 ? (
-            <div className="flex items-center justify-center w-full h-60">
-              لا توجد عمليات شراء لهذا الشهر.
-            </div>
-          ) : (
-            <>
-              {view == 'table' ? (
-                <MonthlyStockTable
-                  data={prev}
-                  refetch={refetch as any}
-                  pending={isRefetching}
-                  dialogOpened={dialogOpened}
-                  setDialogOpened={setDialogOpened}
-                />
-              ) : (
-                <MonthlyStockTimeline data={prev} />
-              )}
-            </>
-          )}
-        </>
+        <MonthlyStock
+          view={view}
+          data={prev}
+          refetch={refetch as any}
+          pending={isRefetching}
+          dialogOpened={dialogOpened}
+          setDialogOpened={setDialogOpened}
+        />
       )}
     </div>
   )

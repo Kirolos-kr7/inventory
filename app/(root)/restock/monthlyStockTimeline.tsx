@@ -22,8 +22,6 @@ const MonthlyStockTimeline = ({
 }: {
   data: SupplyWithSrc[] | undefined
 }) => {
-  console.log(data?.map(({ createdAt }) => ({ createdAt })))
-
   const dates = useMemo(() => {
     const purchases = data?.map(
       ({ count, price, id, createdAt, src: { name } }) => {
