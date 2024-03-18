@@ -18,7 +18,7 @@ import { useEffect, useMemo, useState } from 'react'
 import CheckoutTable from './checkoutTable'
 import FilterCheckoutItems from './filterCheckoutItems'
 
-const Checkout: NextPage = () => {
+const CheckoutPage: NextPage = () => {
   const { month, year } = useDateStore()
   const [checkouts, setCheckouts] = useState<Checkout[]>([])
   const [filterOpened, setFilterOpened] = useState(false)
@@ -296,4 +296,4 @@ const Checkout: NextPage = () => {
   )
 }
 
-export default Checkout
+export default CheckoutPage

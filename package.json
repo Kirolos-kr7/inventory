@@ -9,6 +9,7 @@
     "backup": "tsx prisma/backup.ts",
     "restore": "tsx prisma/restore.ts",
     "start": "next start",
+    "typecheck": "tsc --noEmit --incremental false",    
     "lint": "next lint"
   },
   "prisma": {
