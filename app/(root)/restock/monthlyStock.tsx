@@ -81,7 +81,7 @@ const MonthlyStockTable = ({
   return (
     <>
       {data?.length == 0 ? (
-        <div className="flex items-center justify-center w-full h-60">
+        <div className="flex items-center justify-center w-full h-60 bg-base-200/75 rounded border border-base-100">
           لا توجد عمليات شراء لهذا الشهر.
         </div>
       ) : (

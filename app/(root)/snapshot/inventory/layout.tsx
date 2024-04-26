@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 export const metadata = {
-  title: 'تاريخ العمليات | St. Kriakos Org'
+  title: 'لقطة المخزون | St. Kriakos Org'
 }
 
 export default function Layout({ children }: { children: ReactNode }) {
