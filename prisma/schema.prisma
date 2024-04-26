@@ -119,3 +119,17 @@ model meta {
   key   String @id
   value String
 }
+
+enum SnapshotType {
+  inventory
+}
+
+model snapshot {
+  createdAt DateTime     @id @default(now())
+  month     String
+  year      String
+  content   Json
+  type      SnapshotType @default(inventory)
+
+  @@index([month, year])
+}
