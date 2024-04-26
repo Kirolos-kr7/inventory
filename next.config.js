@@ -1,9 +1,14 @@
-const { withSentryConfig } = require('@sentry/nextjs')
-
 /** @type {import('next').NextConfig} */
 
 const nextOptions = {
-  reactStrictMode: false
+  reactStrictMode: false,
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        '@/': './'
+      }
+    }
+  }
 }
 
 const withPWA = require('next-pwa')({
@@ -13,19 +18,4 @@ const withPWA = require('next-pwa')({
   disable: process.env.NODE_ENV === 'development'
 })
 
-module.exports = withSentryConfig(
-  withPWA(nextOptions),
-  {
-    silent: true,
-    org: 'kiroloss',
-    project: 'stk'
-  },
-  {
-    widenClientFileUpload: true,
-    transpileClientSDK: true,
-    tunnelRoute: '/monitoring',
-    hideSourceMaps: true,
-    disableLogger: true,
-    automaticVercelMonitors: true
-  }
-)
+module.exports = withPWA(nextOptions)
