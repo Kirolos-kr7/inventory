@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/inventory-snapshot",
-      "schedule": "35 18 * * *"
+      "schedule": "* 5 * * *"
     }
   ]
 }
