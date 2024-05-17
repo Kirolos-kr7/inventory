@@ -1,8 +1,9 @@
+import { env } from '@/env'
+import { User } from '@prisma/client'
 import { inferAsyncReturnType } from '@trpc/server'
-import { cookies } from 'next/headers'
 import { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch'
 import { jwtVerify } from 'jose'
-import { User } from '@prisma/client'
+import { cookies } from 'next/headers'
 
 export async function createContext({
   req,
@@ -22,7 +23,7 @@ const getUser = async () => {
     const token: any = cookies().get('auth')?.value
     if (!token) return null
 
-    const secret = new TextEncoder().encode(process.env.SECRET_TOKEN)
+    const secret = new TextEncoder().encode(env.SECRET_TOKEN)
     const { payload } = await jwtVerify(token, secret)
     const { id, name, isAdmin } = payload as User
 

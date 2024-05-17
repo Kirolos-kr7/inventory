@@ -1,3 +1,4 @@
+import { env } from '@/env'
 import { jwtVerify } from 'jose'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
@@ -8,7 +9,7 @@ export async function middleware(request: NextRequest) {
   try {
     const token = request.cookies.get('auth')?.value
     if (!token) throw new Error()
-    const secret = new TextEncoder().encode(process.env.SECRET_TOKEN)
+    const secret = new TextEncoder().encode(env.SECRET_TOKEN)
     await jwtVerify(token, secret)
 
     isAuthed = true

@@ -1,7 +1,8 @@
+import { env } from '@/env'
 import { SignJWT } from 'jose'
 
 export const genJWT = async (payload: any) => {
-  const secret = new TextEncoder().encode(process.env.SECRET_TOKEN)
+  const secret = new TextEncoder().encode(env.SECRET_TOKEN)
 
   const jwt = await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
