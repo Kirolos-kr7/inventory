@@ -1,12 +1,15 @@
 'use client'
 
+import Button from '@/components/button'
 import DateSelector from '@/components/dateSelector'
 import Loading from '@/components/loading'
 import PageHeader from '@/components/pageHeader'
 import { useDateStore } from '@/utils/store'
 import { trpc } from '@/utils/trpc'
 import { Item } from '@prisma/client'
+import { useMutation } from '@tanstack/react-query'
 import { NextPage } from 'next'
+import toast from 'react-hot-toast'
 
 type src = { id: number; name: string }
 
@@ -17,7 +20,7 @@ const History: NextPage = () => {
     initialData: []
   })
 
-  const { data, isLoading } = trpc.snapshot.getAll.useQuery({
+  const { data, isLoading, refetch } = trpc.snapshot.getAll.useQuery({
     month,
     year,
     type: 'inventory'
@@ -26,9 +29,36 @@ const History: NextPage = () => {
   const getValue = (row: Item[], id: number) =>
     row.find(({ id: xId }) => xId == id)?.count || '-'
 
+  const { mutate, isLoading: isLoadingSnapshot } = useMutation({
+    mutationFn: async () => {
+      const res = await fetch('/api/inventory-snapshot')
+      const { status } = await res.json()
+
+      if (status) {
+        await refetch()
+        toast.success('تم بنجاح')
+        return
+      }
+
+      toast.error('محدث بالفعل')
+    }
+  })
+
   return (
     <div>
-      <PageHeader title="لقطة المخزون" subtitle={<DateSelector />} />
+      <PageHeader
+        title="لقطة المخزون"
+        subtitle={<DateSelector />}
+        actions={
+          <Button
+            className="btn-sm sm:btn-md"
+            onClick={mutate}
+            pending={isLoadingSnapshot}
+          >
+            خد لقطة
+          </Button>
+        }
+      />
 
       {isLoading && <Loading />}
 
