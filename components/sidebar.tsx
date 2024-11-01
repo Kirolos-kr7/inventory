@@ -5,7 +5,6 @@ import Donee from '@iconify/icons-mdi/account-cash'
 import Bag from '@iconify/icons-mdi/bag-checked'
 import Menu from '@iconify/icons-mdi/chevron-double-left'
 import Stats from '@iconify/icons-mdi/finance'
-import History from '@iconify/icons-mdi/history'
 import Home from '@iconify/icons-mdi/home'
 import Checkout from '@iconify/icons-mdi/money'
 import Inventory from '@iconify/icons-mdi/package-variant'
@@ -59,11 +58,6 @@ const Sidebar = () => {
       name: 'إضافة',
       to: '/restock',
       icon: Restock
-    },
-    {
-      name: 'اللقطة',
-      to: '/snapshot/inventory',
-      icon: History
     },
     {
       name: 'الشنطة',
