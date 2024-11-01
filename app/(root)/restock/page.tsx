@@ -66,14 +66,14 @@ const InventoryAdd: NextPage = () => {
                 >
                   <Icon icon={Timeline} width={26} />
                 </Button>
-                <Button
-                  className="btn-sm sm:btn-md"
-                  onClick={() => setDialogOpened(true)}
-                >
-                  اضافة
-                </Button>
               </>
             )}
+            <Button
+              className="btn-sm sm:btn-md"
+              onClick={() => setDialogOpened(true)}
+            >
+              اضافة
+            </Button>
           </div>
         }
         subtitle={<DateSelector />}
