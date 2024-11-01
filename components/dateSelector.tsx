@@ -4,26 +4,58 @@ import { MONTHS } from '@/utils/dayjs'
 import { yearList } from '@/utils/helpers'
 import { fadeIn, slideDown } from '@/utils/motion'
 import { useDateStore } from '@/utils/store'
-import Edit from '@iconify/icons-mdi/calendar-edit'
-import { Icon } from '@iconify/react/dist/offline'
+import ChevronLeft from '@iconify/icons-mdi/chevron-left'
+import ChevronRight from '@iconify/icons-mdi/chevron-right'
+import { Icon } from '@iconify/react/dist/offline.js'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import Button from './button'
 
 const DateSelector = ({ onlyYear = false }: { onlyYear?: boolean }) => {
-  const { month, year } = useDateStore()
+  const { month, year, setMonth, setYear } = useDateStore()
   const [dateEdit, setDateEdit] = useState(false)
+
+  const SetPrevMonth = () => {
+    if (month == MONTHS[0]) {
+      setMonth(MONTHS[MONTHS.length - 1])
+      setYear(String(+year - 1))
+
+      return
+    }
+
+    setMonth(MONTHS[MONTHS.indexOf(month) - 1])
+  }
+
+  const SetNextMonth = () => {
+    if (month == MONTHS[MONTHS.length - 1]) {
+      setMonth(MONTHS[0])
+      setYear(String(+year + 1))
+
+      return
+    }
+
+    setMonth(MONTHS[MONTHS.indexOf(month) + 1])
+  }
 
   return (
     <>
       <div>
-        <div className="flex gap-2 mt-1">
-          <p className="text-gray-400">
+        <div className="flex gap-1.5 mt-1">
+          <Button
+            className="btn-xs size-6 p-0.5"
+            onClick={() => SetPrevMonth()}
+          >
+            <Icon icon={ChevronRight} width={18} />
+          </Button>
+          <Button
+            className="btn-xs size-6 p-0.5"
+            onClick={() => SetNextMonth()}
+          >
+            <Icon icon={ChevronLeft} width={18} />
+          </Button>
+          <Button className="btn-xs" onClick={() => setDateEdit(true)}>
             {onlyYear && `لسنة ${year}-${parseInt(year) + 1}`}
             {!onlyYear && `${month} ${year}`}
-          </p>
-          <Button className="btn-xs" onClick={() => setDateEdit(true)}>
-            <Icon icon={Edit} />
           </Button>
         </div>
       </div>
