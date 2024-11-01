@@ -20,11 +20,16 @@ const History: NextPage = () => {
     initialData: []
   })
 
-  const { data, isLoading, refetch } = trpc.snapshot.getAll.useQuery({
-    month,
-    year,
-    type: 'inventory'
-  })
+  const { data, isLoading, refetch } = trpc.snapshot.getAll.useQuery(
+    {
+      month,
+      year,
+      type: 'inventory'
+    },
+    {
+      initialData: []
+    }
+  )
 
   const getValue = (row: Item[], id: number) =>
     row.find(({ id: xId }) => xId == id)?.count || '-'

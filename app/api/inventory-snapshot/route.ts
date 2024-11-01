@@ -23,22 +23,24 @@ export async function GET() {
     orderBy: { createdAt: 'desc' }
   })
 
-  let notChanged = true
-  const ss = lastSnapshot?.content as Prisma.JsonArray
-  ss.map((sx) => {
-    const item = sx as any as Item
-    const foundAndUnchanged = inventory.find(
-      ({ id, count }) => id == item.id && count == item.count
-    )
+  if (lastSnapshot) {
+    let notChanged = true
+    const ss = lastSnapshot?.content as Prisma.JsonArray
+    ss.map((sx) => {
+      const item = sx as any as Item
+      const foundAndUnchanged = inventory.find(
+        ({ id, count }) => id == item.id && count == item.count
+      )
 
-    if (!!!foundAndUnchanged) {
-      notChanged = false
-      return
-    }
-  })
+      if (!!!foundAndUnchanged) {
+        notChanged = false
+        return
+      }
+    })
 
-  if (notChanged)
-    return Response.json({ status: false, message: 'Stale' }, { status: 200 })
+    if (notChanged)
+      return Response.json({ status: false, message: 'Stale' }, { status: 200 })
+  }
 
   await db.snapshot.create({
     data: {
