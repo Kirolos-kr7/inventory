@@ -42,8 +42,7 @@ export const checkoutRouter = router({
           z.object({
             doneeId: z.number(),
             itemId: z.number(),
-            amount: z.number(),
-            diff: z.number()
+            amount: z.number()
           })
         ),
         month: z.string(),
@@ -52,7 +51,7 @@ export const checkoutRouter = router({
     )
     .mutation(async ({ input: { changes, month, year } }) => {
       await Promise.all(
-        changes.map(async ({ doneeId, itemId, amount, diff }) => {
+        changes.map(async ({ doneeId, itemId, amount }) => {
           if (amount == 0)
             await db.checkout.delete({
               where: {
@@ -67,14 +66,6 @@ export const checkoutRouter = router({
               create: { doneeId, itemId, month, year, amount },
               update: { amount }
             })
-
-          const operation: { increment?: number; decrement?: number } =
-            diff < 0 ? { increment: Math.abs(diff) } : { decrement: diff }
-
-          await db.item.update({
-            where: { id: itemId },
-            data: { count: operation }
-          })
         })
       )
     }),
@@ -97,18 +88,13 @@ export const checkoutRouter = router({
           async (dId) =>
             await Promise.all(
               items.map(async ({ id: iId, perBag }) => {
-                await db.item.update({
-                  where: { id: iId },
+                await db.checkout.create({
                   data: {
-                    count: { decrement: perBag },
-                    Checkout: {
-                      create: {
-                        doneeId: dId,
-                        month,
-                        year,
-                        amount: perBag
-                      }
-                    }
+                    doneeId: dId,
+                    itemId: iId,
+                    month,
+                    year,
+                    amount: perBag
                   }
                 })
               })

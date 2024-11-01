@@ -5,7 +5,9 @@ import Confirmation from '@/components/confirmation'
 import Dialog from '@/components/dialog'
 import Loading from '@/components/loading'
 import PageHeader from '@/components/pageHeader'
+import { useDateStore } from '@/utils/store'
 import { trpc } from '@/utils/trpc'
+import { ItemWithCount } from '@/utils/types'
 import Add from '@iconify/icons-mdi/add'
 import { Icon } from '@iconify/react/offline'
 import { Item } from '@prisma/client'
@@ -16,7 +18,8 @@ import History from './history'
 import ItemCard from './itemCard'
 
 const Inventory: NextPage = () => {
-  const [updatedData, setUpdatedData] = useState<Item[]>()
+  const { month, year } = useDateStore()
+  const [updatedData, setUpdatedData] = useState<ItemWithCount[]>()
   const [countTransactions, setCountTransactions] = useState<
     {
       itemId: number
@@ -119,7 +122,11 @@ const Inventory: NextPage = () => {
 
   const save = async () => {
     countTransactions.length > 0 &&
-      (await countMutation.mutateAsync(countTransactions))
+      (await countMutation.mutateAsync({
+        transactions: countTransactions,
+        month,
+        year
+      }))
     nameTransactions.length > 0 &&
       (await nameMutation.mutateAsync(nameTransactions))
 

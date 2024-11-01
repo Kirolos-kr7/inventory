@@ -25,41 +25,58 @@ export const transactionRouter = router({
     }),
   updateCounts: protectedProcedure
     .input(
-      z.array(
-        z.object({
-          itemId: z.number(),
-          type: z.enum(['inc', 'dec']),
-          by: z.number()
-        })
-      )
+      z.object({
+        transactions: z.array(
+          z.object({
+            itemId: z.number(),
+            type: z.enum(['inc', 'dec']),
+            by: z.number()
+          })
+        ),
+        month: z.string(),
+        year: z.string()
+      })
     )
-    .mutation(async ({ input: transactions, ctx: { user } }) => {
-      await Promise.all(
-        transactions.map(async ({ itemId, type, by }) => {
-          const operation: { increment?: number; decrement?: number } = {}
-
-          if (type == 'inc') operation.increment = by
-          if (type == 'dec') operation.decrement = by
-
-          await db.item.update({
-            data: {
-              count: operation
-            },
-            where: { id: itemId }
-          })
-
-          await db.transaction.create({
-            data: {
-              itemId,
-              message: `قام ##### ${
-                type == 'inc' ? 'بزيادة المخزون' : 'بالخصم من المخزون'
-              } بمقدار ${by}`,
-              userId: user?.id!
+    .mutation(
+      async ({ input: { transactions, month, year }, ctx: { user } }) => {
+        await Promise.all(
+          transactions.map(async ({ itemId, type, by }) => {
+            if (type == 'inc') {
+              await db.supply.create({
+                data: {
+                  srcId: itemId,
+                  count: by,
+                  month,
+                  year,
+                  price: 0
+                }
+              })
             }
+            if (type == 'dec') {
+              await db.checkout.create({
+                data: {
+                  itemId,
+                  month,
+                  year,
+                  doneeId: 0,
+                  amount: by
+                }
+              })
+            }
+
+            await db.transaction.create({
+              data: {
+                itemId,
+                message: `قام ##### ${
+                  type == 'inc' ? 'بزيادة المخزون' : 'بالخصم من المخزون'
+                } بمقدار ${by}`,
+                userId: user?.id!
+              }
+            })
           })
-        })
-      )
-    }),
+        )
+      }
+    ),
   updateNames: protectedProcedure
     .input(
       z.array(

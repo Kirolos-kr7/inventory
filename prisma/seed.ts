@@ -15,18 +15,18 @@ const main = async () => {
   })
 
   const itemsPayload = [
-    { id: 1, name: 'رز', perBag: 2, count: 107 },
-    { id: 2, name: 'سكر', perBag: 2, count: 79 },
-    { id: 3, name: 'مكرونة', perBag: 2, count: 123 },
-    { id: 4, name: 'شاي', perBag: 2, count: 6 },
-    { id: 5, name: 'زيت', perBag: 1, count: 23 },
-    { id: 6, name: 'فراخ', perBag: 1, count: 0 },
-    { id: 7, name: 'لحمة', perBag: 0, count: 0 },
-    { id: 8, name: 'ملح', perBag: 0, count: 28 },
-    { id: 9, name: 'عدس', perBag: 1, count: 17 },
-    { id: 10, name: 'سمنة', perBag: 0, count: 40 },
-    { id: 11, name: 'لبن', perBag: 0, count: 0 },
-    { id: 12, name: 'جبنة', perBag: 0, count: 0 }
+    { id: 1, name: 'رز', perBag: 2 },
+    { id: 2, name: 'سكر', perBag: 2 },
+    { id: 3, name: 'مكرونة', perBag: 2 },
+    { id: 4, name: 'شاي', perBag: 2 },
+    { id: 5, name: 'زيت', perBag: 1 },
+    { id: 6, name: 'فراخ', perBag: 0 },
+    { id: 7, name: 'لحمة', perBag: 1 },
+    { id: 8, name: 'ملح', perBag: 0 },
+    { id: 9, name: 'عدس', perBag: 0 },
+    { id: 10, name: 'سمنة', perBag: 0 },
+    { id: 11, name: 'لبن', perBag: 0 },
+    { id: 12, name: 'جبنة', perBag: 0 }
   ]
 
   await db.item.createMany({

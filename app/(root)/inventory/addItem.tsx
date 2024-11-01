@@ -13,7 +13,6 @@ const AddItem = ({ done, pending }: { done: () => void; pending: boolean }) => {
     try {
       await mutation.mutateAsync({
         name,
-        count: 0,
         perBag: 0
       })
 

@@ -1,4 +1,8 @@
-import { Finance, FinanceList, FinanceType, Supply } from '@prisma/client'
+import { Finance, FinanceList, FinanceType, Item, Supply } from '@prisma/client'
+
+export interface ItemWithCount extends Item {
+  count: number
+}
 
 export interface FinanceWithSrc extends Finance {
   src: FinanceList

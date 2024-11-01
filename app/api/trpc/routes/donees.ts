@@ -7,13 +7,14 @@ export const doneeRouter = router({
   getAll: protectedProcedure.query(async () => {
     return await db.donee.findMany({
       include: { location: true },
-      orderBy: [{ locationId: 'asc' }, { id: 'asc' }]
+      orderBy: [{ locationId: 'asc' }, { id: 'asc' }],
+      where: { id: { not: 0 } }
     })
   }),
   getCount: protectedProcedure.query(
     async () =>
       await db.donee.count({
-        where: { isRegular: true }
+        where: { isRegular: true, id: { not: 0 } }
       })
   ),
   getLocations: protectedProcedure.query(async () => {
