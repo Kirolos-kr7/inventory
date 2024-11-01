@@ -20,7 +20,7 @@ export async function createContext({
 
 const getUser = async () => {
   try {
-    const token: any = cookies().get('auth')?.value
+    const token: any = (await cookies()).get('auth')?.value
     if (!token) return null
 
     const secret = new TextEncoder().encode(env.SECRET_TOKEN)
